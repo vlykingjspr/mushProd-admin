@@ -1,0 +1,223 @@
+<script lang="ts">
+	import { Modal, ProgressRadial, getModalStore } from '@skeletonlabs/skeleton';
+	import type { ModalSettings, ModalComponent } from '@skeletonlabs/skeleton';
+	import { fade } from 'svelte/transition';
+	import { Paginator } from '@skeletonlabs/skeleton';
+	// modals
+	import AddModal from '$lib/components/PlantedBags/AddBagsModal.svelte';
+	import UpdateModal from '$lib/components/PlantedBags/UpdateBagsModal.svelte';
+	import DeleteModal from '$lib/components/PlantedBags/RemoveBagsModal.svelte';
+	import ModalRecordPlanted from '$lib/components/PlantedBags/ModalRecordPlanted.svelte';
+	import { planted } from '$lib/stores/stores';
+
+	// toast
+	import { Toast, getToastStore } from '@skeletonlabs/skeleton';
+	import type { ToastSettings, ToastStore } from '@skeletonlabs/skeleton';
+
+	// getting data
+	import { collection, getDocs, query, doc, onSnapshot } from 'firebase/firestore';
+	import { db } from '$lib/firebase/firebase';
+	import { format } from 'date-fns';
+	import { onDestroy, onMount } from 'svelte';
+
+	let source: any = [];
+
+	let tableData: any[] = [];
+	let totalBags: number = 0;
+	let isLoading = true;
+	// Function to calculate the total number of bags
+	function calculateTotalBags() {
+		totalBags = tableData.reduce((acc, row) => acc + row.quantity, 0);
+	}
+
+	const toastStore = getToastStore();
+	const t: ToastSettings = {
+		message: 'This message will auto-hide after 10 seconds.',
+		timeout: 10000
+	};
+	function updated(params: any) {
+		toastStore.trigger(t);
+	}
+	// Create a Firestore listener and initialize tableData
+	onMount(async () => {
+		const userDocRef = doc(db, 'user', '123456');
+		const bagsRecordCollectionRef = collection(userDocRef, 'bags record');
+		const q = query(bagsRecordCollectionRef);
+
+		const unsubscribe = onSnapshot(q, (querySnapshot) => {
+			source = [];
+			querySnapshot.forEach((doc) => {
+				const data = doc.data();
+				// Ensure that the `date` field is a valid Firestore Timestamp
+				if (data.date && data.date.toDate) {
+					// Convert Firestore Timestamp to JavaScript Date
+					data.date = format(data.date.toDate(), 'MMMM dd, yyyy');
+				}
+				// Add the ID to the data object
+				data.id = doc.id;
+				// tableData.push(data);
+				source.push(data);
+			});
+			calculateTotalBags();
+			isLoading = false;
+		});
+
+		// Don't forget to unsubscribe when your component is no longer needed
+	});
+
+	$: {
+		paginationSettings.size = source.length;
+	}
+	let paginationSettings = {
+		page: 0,
+		limit: 5, // Number of items to display per page
+		size: source.length, // Total number of items
+		amounts: [1, 2, 5, 10] // Available amounts for the paginator
+	};
+
+	$: paginatedSource = source.slice(
+		paginationSettings.page * paginationSettings.limit,
+		paginationSettings.page * paginationSettings.limit + paginationSettings.limit
+	);
+
+	//Modals for clicking data
+	const modalStore = getModalStore();
+	function modalData(row: any): void {
+		const c: ModalComponent = { ref: ModalRecordPlanted };
+		planted.set({
+			id: row.id,
+			date: row.date,
+			quantity: row.quantity,
+			remarks: row.remarks
+		});
+		const modal: ModalSettings = {
+			type: 'component',
+			component: c,
+			title: '',
+			body: ''
+		};
+		modalStore.trigger(modal);
+	}
+	function showAddModal(): void {
+		const c: ModalComponent = { ref: AddModal };
+		const modal: ModalSettings = {
+			type: 'component',
+			component: c,
+			title: '',
+			body: ''
+		};
+		modalStore.trigger(modal);
+	}
+	function showUpdateModal(row: any): void {
+		const c: ModalComponent = { ref: UpdateModal };
+		planted.set({
+			id: row.id,
+			date: row.date,
+			quantity: row.quantity,
+			remarks: row.remarks
+		});
+		const modal: ModalSettings = {
+			type: 'component',
+			component: c,
+			title: '',
+			body: ''
+		};
+		modalStore.trigger(modal);
+	}
+	function showDeleteModal(row: any): void {
+		const c: ModalComponent = { ref: DeleteModal };
+		planted.set({
+			id: row.id,
+			date: row.date,
+			quantity: row.quantity,
+			remarks: row.remarks
+		});
+		const modal: ModalSettings = {
+			type: 'component',
+			component: c,
+			title: '',
+			body: ''
+		};
+		modalStore.trigger(modal);
+	}
+	function truncateText(text: string, maxLength: number = 20): string {
+		if (text.length > maxLength) {
+			return `${text.slice(0, maxLength)}...`;
+		}
+		return text;
+	}
+</script>
+
+<Modal transitionIn={fade} transitionInParams={{ duration: 200 }} />
+
+{#if isLoading}
+	<!-- Display the ProgressRadial when isLoading is true -->
+	<div class="flex justify-center items-center h-fit">
+		<ProgressRadial value={undefined} />
+	</div>
+{:else}
+	<Toast />
+	<div class=" m-5">
+		<table class="table table-hover">
+			<thead>
+				<tr>
+					<th>Date</th>
+					<th>Number of Bags</th>
+					<th>Remarks</th>
+					<th class="flex items-center justify-center"
+						><button
+							type="button"
+							class="btn btn-md variant-filled-primary mr-2"
+							on:click={showAddModal}
+						>
+							<i class="fa-solid fa-plus" />
+							<span>Add</span>
+						</button></th
+					>
+				</tr>
+			</thead>
+			<tbody>
+				{#each paginatedSource as row (row.id)}
+					<tr class="" on:click={() => modalData(row)}>
+						<td>{row.date}</td>
+						<td>{row.quantity}</td>
+						<td>{truncateText(row.remarks)}</td>
+						<td class="flex items-center justify-center">
+							<button
+								type="button"
+								class="btn btn-sm variant-filled-tertiary mr-2"
+								on:click|stopPropagation={() => {
+									showUpdateModal(row);
+								}}
+							>
+								<i class="fa-solid fa-pen-to-square" />
+								<span>Update</span>
+							</button><button
+								type="button"
+								class="btn btn-sm variant-filled-error"
+								on:click|stopPropagation={() => {
+									showDeleteModal(row);
+								}}
+							>
+								<i class="fa-solid fa-trash" />
+								<span>Remove</span>
+							</button>
+						</td>
+					</tr>
+				{/each}
+			</tbody>
+			<tfoot>
+				<div class="m-2">
+					<Paginator
+						bind:settings={paginationSettings}
+						showFirstLastButtons={false}
+						showPreviousNextButtons={true}
+					/>
+				</div>
+				<tr>
+					<th colspan="3"> Total Planted Bags: {totalBags}</th>
+				</tr>
+			</tfoot>
+		</table>
+	</div>
+{/if}
