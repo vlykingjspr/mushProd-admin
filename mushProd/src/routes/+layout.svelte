@@ -2,7 +2,7 @@
 	import { onMount } from 'svelte';
 	import { auth, db } from '../lib/firebase/firebase';
 	import { getDoc, doc, setDoc, type DocumentData } from 'firebase/firestore';
-	import { authStore } from '../lib/store';
+	import { authStore } from '../lib/stores/Authstore';
 	import { loading } from '$lib/stores/stores';
 	import '../app.postcss';
 	import { ProgressRadial } from '@skeletonlabs/skeleton';

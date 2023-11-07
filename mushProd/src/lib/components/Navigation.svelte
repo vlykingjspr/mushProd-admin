@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { getDrawerStore, type ModalSettings } from '@skeletonlabs/skeleton';
-	import { currentPageTitle } from '$lib/stores/pageTitle';
+	import { currentPageTitle } from '$lib/stores/stores';
 	import { Avatar, ProgressRadial } from '@skeletonlabs/skeleton';
-	import { authHandlers } from '$lib/store';
+	import { authHandlers } from '$lib/stores/Authstore';
 	import { getModalStore } from '@skeletonlabs/skeleton';
 	import { onMount } from 'svelte';
 	import { loading } from '$lib/stores/stores';

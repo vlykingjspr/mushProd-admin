@@ -1,5 +1,5 @@
 <script>
-	import { currentPageTitle } from '$lib/stores/pageTitle';
+	import { currentPageTitle } from '$lib/stores/stores';
 	import { LightSwitch } from '@skeletonlabs/skeleton';
 </script>
 

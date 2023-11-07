@@ -48,9 +48,3 @@ export async function sendNotification(temperature: number, humidity: number) {
     }
 
 }
-
-// Example usage
-// Check if the temperature and humidity meet certain conditions
-// if (temperature >= 30 && humidity >= 70) {
-//     sendNotification(temperature, humidity);
-// }

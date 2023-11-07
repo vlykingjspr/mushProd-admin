@@ -18,6 +18,7 @@
 	let source: any = [];
 	let tableData: any[] = [];
 	let isLoading = true;
+
 	onMount(async () => {
 		const userDocRef = doc(db, 'user', '123456');
 		const bagsRecordCollectionRef = collection(userDocRef, 'notifications');

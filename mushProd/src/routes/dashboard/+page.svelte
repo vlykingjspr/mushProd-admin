@@ -16,10 +16,10 @@
 	import AddBagsModal from '$lib/components/PlantedBags/AddBagsModal.svelte';
 	import AddHarvestedModal from '$lib/components/Harvested/AddHarvestedModal.svelte';
 	import { fade } from 'svelte/transition';
-	import { currentPageTitle } from '$lib/stores/pageTitle';
+	import { currentPageTitle } from '$lib/stores/stores';
 
 	// notif
-	import { sendNotification } from '$lib/addNotification';
+	import { sendNotification } from '$lib/stores/addNotification';
 	//getting data
 	import { getDatabase, ref, get, query, limitToLast, onValue } from 'firebase/database';
 	import Plot from 'svelte-plotly.js';
