@@ -2,7 +2,7 @@
 	// firebase data
 	import { onMount } from 'svelte';
 	import { fetchFarmData } from '$lib/firebase/staticData';
-	// @ts-ignore
+
 	import {
 		Avatar,
 		Modal,
@@ -22,7 +22,6 @@
 	import { sendNotification } from '$lib/stores/addNotification';
 	//getting data
 	import { getDatabase, ref, get, query, limitToLast, onValue } from 'firebase/database';
-	import Plot from 'svelte-plotly.js';
 
 	import { loading } from '$lib/stores/stores';
 
@@ -33,15 +32,9 @@
 		LastDateInBagsRecord
 	} from '../../lib/firebase/allRecord';
 	import type { Timestamp } from 'firebase/firestore';
-	import { format } from 'date-fns';
-	const data = [
-		{
-			x: [1, 2, 3, 4, 5],
-			y: [1, 2, 4, 8, 16]
-		}
-	];
+
 	const rdb = getDatabase();
-	const dateRef = ref(rdb, 'BETAPEAK/1970-01-01/sensorData');
+	const dateRef = ref(rdb, '/BETAPEAK/1970-1-1/sensorData');
 	const bagsRecordRef = ref(rdb, 'user/123456/bags record');
 	// Create a query to get the last child (latest data)
 	const queryRef = query(dateRef, limitToLast(1));
@@ -70,7 +63,7 @@
 			humd = lastEntry.Humd;
 			temp = lastEntry.Temp;
 			time = lastEntry.Time;
-
+			console.log(temp);
 			if (24 >= temp && 85 >= humd && 29 <= temp && 95 <= humd) {
 				// uncomment to send notif
 				// sendNotification(temp, humd);
@@ -80,7 +73,7 @@
 			loading.set(false);
 			isLoading = false;
 		} else {
-			console.log();
+			console.log('it does not exist');
 		}
 	});
 	// modals
@@ -130,6 +123,7 @@
 	const val2 = val1 + 5;
 
 	// chart
+	import Chart from '../../lib/components/Charts/Chart.svelte';
 </script>
 
 <Modal transitionIn={fade} transitionInParams={{ duration: 200 }} />
@@ -195,26 +189,10 @@
 				</a>
 			</div>
 		</div>
-
 		<div class={`md:col-span-2`}>
-			<Plot
-				{data}
-				layout={{
-					margin: { t: 0 }
-				}}
-				fillParent="width"
-				debounce={250}
-			/>
-			<!-- <div class="p-4 space-y-4"> -->
-			<!-- <h6 class="h6">Chart here!</h6>
-			<h1 class="h1">{currentMonth}</h1>
-			<article>
-				<p>
-					<!-- cspell:disable -->
-			<!-- cspell:enable -->
-			<!-- </p>
-			</article> -->
-			<!-- </div> -->
+			<div class={`p-4 ${cardStyle}`}>
+				<Chart />
+			</div>
 		</div>
 		<div class="">
 			<div class={`mb-3 ${cardStyle}`}>

@@ -93,6 +93,12 @@
 					<span>NOTIFICATION</span></a
 				>
 			</li>
+			<li class="mt-8">
+				<a class=" mt-4 mb-4 font-bold text-lg" href="/yield" on:click={() => updateTitle('Yield')}>
+					<i class="fa-solid fa-weight-scale fa-xl" />
+					<span>YIELD</span></a
+				>
+			</li>
 			<hr />
 			<li>
 				<!-- svelte-ignore a11y-invalid-attribute -->

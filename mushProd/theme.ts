@@ -2,8 +2,8 @@
 import type { CustomThemeConfig } from '@skeletonlabs/tw-plugin';
 
 export const myCustomTheme: CustomThemeConfig = {
-    name: 'my-custom-theme',
-    properties: {
+	name: 'my-custom-theme',
+	properties: {
 		// =~= Theme Properties =~=
 		"--theme-font-family-base": `system-ui`,
 		"--theme-font-family-heading": `Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji'`,
@@ -98,6 +98,6 @@ export const myCustomTheme: CustomThemeConfig = {
 		"--color-surface-700": "7 62 95", // #073e5f
 		"--color-surface-800": "5 50 76", // #05324c
 		"--color-surface-900": "4 41 62", // #04293e
-		
+
 	}
 }
