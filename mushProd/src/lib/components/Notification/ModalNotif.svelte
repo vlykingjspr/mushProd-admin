@@ -44,18 +44,30 @@
 		</header>
 		<article />
 
-		<h1 class="text-lg">{date}</h1>
+		<div class="flex justify-between items-center">
+			<h1 class="text-lg">
+				<strong>
+					{date}
+				</strong>
+			</h1>
+		</div>
 
-		<h1 class="text-base">
-			Optimal temperature exceed : <strong class="text-lg">{temperature}°C</strong>
-		</h1>
-		<h1 class="text-base">
-			Optimal humidity exceed : <strong class="text-lg">{humidity}%</strong>
-		</h1>
-		<h1>
+		<div class="flex justify-between items-center">
+			<h1 class="text-base">
+				Optimal Temperature exceed : <strong class="text-1xl md:text-1xl lg:text-2xl"
+					>{temperature}°C</strong
+				>
+			</h1>
+			<h1 class="text-base">
+				Optimal Humidity exceed : <strong class="text-1xl md:text-1xl lg:text-2xl"
+					>{humidity}%</strong
+				>
+			</h1>
+		</div>
+
+		<blockquote class="blockquote">
 			{alertMessage}
-		</h1>
-
+		</blockquote>
 		<!-- prettier-ignore -->
 		<footer class="modal-footer {parent.regionFooter}">
 			<!-- <button class="btn {parent.buttonNeutral}" on:click={parent.onClose}

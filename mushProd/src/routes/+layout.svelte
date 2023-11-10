@@ -3,9 +3,9 @@
 	import { auth, db } from '../lib/firebase/firebase';
 	import { getDoc, doc, setDoc, type DocumentData } from 'firebase/firestore';
 	import { authStore } from '../lib/stores/Authstore';
-	import { loading } from '$lib/stores/stores';
+	import { loading, setLoading } from '$lib/stores/stores';
 	import '../app.postcss';
-	import { ProgressRadial } from '@skeletonlabs/skeleton';
+	import { ProgressRadial, setInitialClassState } from '@skeletonlabs/skeleton';
 	import { initializeStores } from '@skeletonlabs/skeleton';
 	import {
 		AppShell,
@@ -17,7 +17,6 @@
 		Toast,
 		getToastStore
 	} from '@skeletonlabs/skeleton';
-
 	import { computePosition, autoUpdate, flip, shift, offset, arrow } from '@floating-ui/dom';
 	//page title and nav bar
 
@@ -27,7 +26,20 @@
 
 	import Authenticate from '$lib/components/Authenticate.svelte';
 	storePopup.set({ computePosition, autoUpdate, flip, shift, offset, arrow });
+	let loadingDelay: NodeJS.Timeout;
 
+	function setLoadingFalseWithDelay() {
+		// Clear any existing timeouts
+		clearTimeout(loadingDelay);
+
+		// Set loading to true initially
+		loading.set(true);
+
+		// Set loading to false after a delay of 2000 milliseconds (2 seconds)
+		loadingDelay = setTimeout(() => {
+			loading.set(false);
+		}, 2000);
+	}
 	initializeStores();
 	const drawerStore = getDrawerStore();
 	function drawerOpen(): void {
@@ -37,6 +49,7 @@
 	const nonAuthRoutes = ['/'];
 	let users: boolean = false;
 	onMount(() => {
+		setLoading(false);
 		const unsubscribe = auth.onAuthStateChanged(async (user) => {
 			const currentPath = window.location.pathname;
 
@@ -65,6 +78,9 @@
 		});
 		return unsubscribe;
 	});
+	function log(d: boolean) {
+		console.log(d);
+	}
 </script>
 
 {#if users}
@@ -77,13 +93,13 @@
 			<Navigation />
 		</svelte:fragment>
 		<div class="container mx-auto">
-			<!-- {#if loading}
+			{#if $loading}
 				<div class="flex justify-center items-center h-screen">
 					<ProgressRadial value={undefined} />
 				</div>
-			{:else} -->
-			<slot />
-			<!-- {/if} -->
+			{:else}
+				<slot />
+			{/if}
 		</div>
 		<svelte:fragment slot="pageHeader">
 			<AppBar

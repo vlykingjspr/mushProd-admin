@@ -1,4 +1,4 @@
-import { getDocs, collection, doc, query, Timestamp } from 'firebase/firestore';
+import { getDocs, collection, doc, query, Timestamp, orderBy, limit } from 'firebase/firestore';
 import { db } from './firebase';
 import { format } from 'date-fns';
 
@@ -36,29 +36,27 @@ export async function allHarvestedGrams(): Promise<number> {
 
     return totalGrams;
 }
-let lastDate: any;
-let lastDateFormatted: any;
-export async function LastDateInBagsRecord(): Promise<Timestamp> {
-    const userDocRef = doc(db, 'user', '123456');
-    const bagsRecordCollectionRef = collection(userDocRef, 'bags record');
-    const q = query(bagsRecordCollectionRef);
+
+
+export async function LastDateInBagsRecord(): Promise<string | null> {
+    const bagsRecordCollectionRef = collection(db, 'user', '123456', 'bags record');
+    const q = query(bagsRecordCollectionRef, orderBy('date', 'desc'), limit(1));
     const querySnapshot = await getDocs(q);
 
-
-
-    querySnapshot.forEach((doc) => {
-        const data = doc.data();
-        if (data.date && typeof data.date.toDate === 'function') {
-            const documentDate = data.date.toDate();
-            if (!lastDate || documentDate > lastDate) {
-                lastDate = documentDate;
-            }
-        }
-    });
-
-    if (lastDate) {
-        lastDateFormatted = format(lastDate, 'MMMM dd yyyy');
-
+    if (querySnapshot.empty) {
+        return null; // No documents found
     }
-    return lastDateFormatted;
+
+    const latestDocument = querySnapshot.docs[0];
+    const data = latestDocument.data();
+
+    // if (data.date && typeof data.date.toDate === 'function') {
+    //     const lastDate = format(data.date.toDate(), 'MMMM dd yyyy');
+
+    //     console.log(lastDate)
+    //     return lastDate;
+
+    // }
+
+    return data.date; // No valid date found
 }

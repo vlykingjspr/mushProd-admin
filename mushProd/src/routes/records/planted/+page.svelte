@@ -207,15 +207,17 @@
 				{/each}
 			</tbody>
 			<tfoot>
-				<div class="m-2">
-					<Paginator
-						bind:settings={paginationSettings}
-						showFirstLastButtons={false}
-						showPreviousNextButtons={true}
-					/>
-				</div>
 				<tr>
-					<th colspan="3"> Total Planted Bags: {totalBags}</th>
+					<th colspan="3">
+						<h1 class="mb-2">
+							Total Bags Planted: {totalBags} bags
+						</h1>
+						<Paginator
+							bind:settings={paginationSettings}
+							showFirstLastButtons={false}
+							showPreviousNextButtons={true}
+						/>
+					</th>
 				</tr>
 			</tfoot>
 		</table>

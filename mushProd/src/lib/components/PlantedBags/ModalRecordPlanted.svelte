@@ -39,14 +39,20 @@
 			<div class="flex items-center justify-center">Record</div>
 		</header>
 		<article />
+		<div class="flex justify-between items-center">
+			<h1 class="text-lg">
+				<strong>
+					{date}
+				</strong>
+			</h1>
+		</div>
+		<h1 class="text-1xl md:text-1xl lg:text-2xl">
+			Bags Planted: <strong>{quantity} bags</strong>
+		</h1>
 
-		<h1 class="text-lg">{date}</h1>
-		<h1 class="text-base">
-			Quantity Planted : <strong class="text-lg">{quantity}</strong>
-		</h1>
-		<h1>
+		<blockquote class="blockquote">
 			{remarks}
-		</h1>
+		</blockquote>
 
 		<!-- prettier-ignore -->
 		<footer class="modal-footer {parent.regionFooter}">

@@ -199,15 +199,17 @@
 				{/each}
 			</tbody>
 			<tfoot>
-				<div class="m-2">
-					<Paginator
-						bind:settings={paginationSettings}
-						showFirstLastButtons={false}
-						showPreviousNextButtons={true}
-					/>
-				</div>
 				<tr>
-					<th colspan="3"> Total Weight Harvested: {totalWeightHarvested} grams</th>
+					<th colspan="3">
+						<h1 class="mb-2">
+							Total Grams Harvested: {totalWeightHarvested} grams
+						</h1>
+						<Paginator
+							bind:settings={paginationSettings}
+							showFirstLastButtons={false}
+							showPreviousNextButtons={true}
+						/>
+					</th>
 				</tr>
 			</tfoot>
 		</table>

@@ -18,4 +18,14 @@
 	ChartJS.register(Title, Tooltip, Legend, LineElement, LinearScale, PointElement, CategoryScale);
 </script>
 
-<Line {data} options={{ responsive: true }} />
+<Line
+	{data}
+	options={{
+		responsive: true,
+		scales: {
+			y: {
+				beginAtZero: true
+			}
+		}
+	}}
+/>

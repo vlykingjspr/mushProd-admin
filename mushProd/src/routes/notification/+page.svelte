@@ -25,14 +25,10 @@
 		const q = query(bagsRecordCollectionRef);
 
 		const unsubscribe = onSnapshot(q, (querySnapshot) => {
-			// Clear the existing data before adding new data
 			source = [];
-
 			querySnapshot.forEach((doc) => {
 				const data = doc.data();
-				// Convert Firestore Timestamp to JavaScript Date
 				if (data.date && typeof data.date.toDate === 'function') {
-					// Convert Firestore Timestamp to JavaScript Date
 					data.date = format(data.date.toDate(), 'MMMM dd, yyyy');
 				}
 				// Add the ID to the data object
@@ -105,9 +101,7 @@
 </script>
 
 <Modal transitionIn={fade} transitionInParams={{ duration: 200 }} />
-<!-- Responsive Container (recommended) -->
 
-<!-- Native Table Element -->
 {#if isLoading}
 	<!-- Display the ProgressRadial when isLoading is true -->
 	<div class="flex justify-center items-center h-fit">
@@ -151,18 +145,17 @@
 				{/each}
 			</tbody>
 			<tfoot>
-				<div class="m-2">
-					<Paginator
-						bind:settings={paginationSettings}
-						showFirstLastButtons={false}
-						showPreviousNextButtons={true}
-					/>
-				</div>
 				<tr>
-					<th colspan="3"> Total Planted Bags</th>
+					<th colspan="3"
+						><Paginator
+							bind:settings={paginationSettings}
+							showFirstLastButtons={false}
+							showPreviousNextButtons={true}
+						/></th
+					>
+					<br />
 				</tr>
 			</tfoot>
 		</table>
-		<!-- <Table source={tableSimple} interactive={true} on:selected={selected} /> -->
 	</div>
 {/if}

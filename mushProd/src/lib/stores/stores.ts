@@ -2,6 +2,9 @@ import { writable } from 'svelte/store';
 
 // Initialize the loading store with an initial value of false (not loading)
 export const loading = writable(true);
+export const setLoading = (value: boolean) => {
+    loading.set(value);
+};
 export const currentPageTitle = writable('Dashboard');
 export const notifications = writable({
     id: '',
@@ -21,4 +24,7 @@ export const planted = writable({
     date: '',
     quantity: 0,
     remarks: '',
+});
+export const report = writable({
+    // date: '',
 });

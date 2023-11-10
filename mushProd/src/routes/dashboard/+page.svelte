@@ -2,7 +2,14 @@
 	// firebase data
 	import { onMount } from 'svelte';
 	import { fetchFarmData } from '$lib/firebase/staticData';
+	import {
+		allPlantedBags,
+		allHarvestedGrams,
+		LastDateInBagsRecord
+	} from '../../lib/firebase/allRecord';
+	import type { Timestamp } from 'firebase/firestore';
 
+	// components
 	import {
 		Avatar,
 		Modal,
@@ -12,11 +19,12 @@
 	} from '@skeletonlabs/skeleton';
 	// modal
 	import { getModalStore } from '@skeletonlabs/skeleton';
-
+	import ModalReport from '$lib/components/Report/ModalReport.svelte';
 	import AddBagsModal from '$lib/components/PlantedBags/AddBagsModal.svelte';
 	import AddHarvestedModal from '$lib/components/Harvested/AddHarvestedModal.svelte';
 	import { fade } from 'svelte/transition';
-	import { currentPageTitle } from '$lib/stores/stores';
+	import { currentPageTitle, setLoading, report } from '$lib/stores/stores';
+	import { format } from 'date-fns';
 
 	// notif
 	import { sendNotification } from '$lib/stores/addNotification';
@@ -25,53 +33,58 @@
 
 	import { loading } from '$lib/stores/stores';
 
-	// getting all grams and bags
-	import {
-		allPlantedBags,
-		allHarvestedGrams,
-		LastDateInBagsRecord
-	} from '../../lib/firebase/allRecord';
-	import type { Timestamp } from 'firebase/firestore';
-
-	const rdb = getDatabase();
-	const dateRef = ref(rdb, '/BETAPEAK/1970-1-1/sensorData');
-	const bagsRecordRef = ref(rdb, 'user/123456/bags record');
-	// Create a query to get the last child (latest data)
-	const queryRef = query(dateRef, limitToLast(1));
-	// Set up a real-time listener to listen for changes in the last child
-	let tableData: any[] = [];
 	let humd: number;
 	let temp: number;
 	let time: any;
 	let bagCount: number;
 	let gramsCount: number;
-	let lastDatePlanted: Timestamp;
+	let lastDatePlanted: any;
 	let notificationSent = false;
 	let isLoading = true;
+
+	// getting all data of added bags and grams
 	async function fetchData() {
 		bagCount = await allPlantedBags();
 		gramsCount = await allHarvestedGrams();
 		lastDatePlanted = await LastDateInBagsRecord();
+
 		loading.set(false);
 	}
 	fetchData();
+
+	setLoading(true);
+
+	// creating a current date format
+	const currentDate = new Date();
+	const formattedDate = format(currentDate, 'yyyy-MM-dd');
+
+	// getting data from firebase
+	const rdb = getDatabase();
+	const dateRef = ref(rdb, `/BETAPEAK/${formattedDate}`);
+
+	const bagsRecordRef = ref(rdb, 'user/123456/bags record');
+
+	const queryRef = query(dateRef, limitToLast(1));
+
 	onValue(queryRef, (snapshot) => {
 		if (snapshot.exists()) {
 			const data = snapshot.val();
-			const lastEntryKey = Object.keys(data)[0]; // Get the key of the last entry
+
+			const lastEntryKey = Object.keys(data)[0];
 			const lastEntry = data[lastEntryKey];
 			humd = lastEntry.Humd;
 			temp = lastEntry.Temp;
 			time = lastEntry.Time;
-			console.log(temp);
+
 			if (24 >= temp && 85 >= humd && 29 <= temp && 95 <= humd) {
 				// uncomment to send notif
 				// sendNotification(temp, humd);
-				console.log('notifcation sent');
+				console.log('notification sent');
 				notificationSent = true;
 			}
 			loading.set(false);
-			isLoading = false;
+
+			// isLoading = false;
 		} else {
 			console.log('it does not exist');
 		}
@@ -105,13 +118,29 @@
 	function updateTitle(title: string): void {
 		currentPageTitle.set(title);
 	}
+	function showReportModal(): void {
+		const c: ModalComponent = { ref: ModalReport };
+		// report.set({});
+		const modal: ModalSettings = {
+			type: 'component',
+			component: c,
+			title: '',
+			body: '',
+
+			response: (r) => console.log('response:', r)
+		};
+		modalStore.trigger(modal);
+	}
+
+	// styles
 	const cardStyle = 'card card-hover overflow-hidden ';
+	const chartStyle = 'card card-hover bg-surface-100 overflow-hidden ';
 	const cardInsideStyle = 'p-4 space-y-4';
-	const h2Style = 'text-1xl md:text-2xl lg:text-4xl';
-	const h3Style = 'text-l md:text-1xl lg:text-2xl';
-	const valueStyle = 'flex justify-center items-center text-9xl md:text-7xl lg:text-8xl';
+	const h2Style = 'text-1xl md:text-2xl lg:text-2xl';
+	const h3Style = 'text-l md:text-1xl lg:text-1xl';
+	const valueStyle = 'flex justify-center items-center text-7xl md:text-4xl lg:text-8xl';
 	const smallValueStyle = 'flex justify-center items-center text-5xl';
-	const smallerValueStyle = 'flex justify-center items-center text-4xl';
+	const smallerValueStyle = 'flex justify-center items-center text-2xl';
 
 	// Function to generate a random number
 	function getRandomNumber() {
@@ -189,9 +218,11 @@
 				</a>
 			</div>
 		</div>
-		<div class={`md:col-span-2`}>
-			<div class={`p-4 ${cardStyle}`}>
-				<Chart />
+		<div class={`md:col-span-2 `}>
+			<div class={`p-4  ${cardStyle}`}>
+				<div class={`p-4 bg-surface-100  `}>
+					<Chart />
+				</div>
 			</div>
 		</div>
 		<div class="">
@@ -200,7 +231,11 @@
 					<h2 class={h2Style}>Last Date Planted</h2>
 					<hr class="opacity-50" />
 					<div class={smallValueStyle}>
-						<strong> <h1>{lastDatePlanted}</h1> </strong>
+						<h1 class={smallerValueStyle}>
+							<strong>
+								{lastDatePlanted}
+							</strong>
+						</h1>
 					</div>
 				</div>
 			</div>
@@ -208,8 +243,15 @@
 				<div class={cardInsideStyle}>
 					<h2 class={h2Style}>Yield Prediction</h2>
 					<hr class="opacity-50" />
-					<div class={smallValueStyle}>
-						<strong> <h1>{val1}g - {val2}g</h1> </strong>
+					<div class="">
+						<div class={smallerValueStyle}>
+							<strong> <h1>{val1}g - {val2}g</h1> </strong>
+						</div>
+						<div class="flex justify-center align-center space-x-4 m-4">
+							<button class="grow btn btn-sm variant-filled-primary" on:click={showReportModal}
+								>Generate Report</button
+							>
+						</div>
 					</div>
 				</div>
 			</div>

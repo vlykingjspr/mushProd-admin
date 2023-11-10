@@ -5,7 +5,7 @@
 	import { authHandlers } from '$lib/stores/Authstore';
 	import { getModalStore } from '@skeletonlabs/skeleton';
 	import { onMount } from 'svelte';
-	import { loading } from '$lib/stores/stores';
+	import { loading, setLoading } from '$lib/stores/stores';
 	import { fetchFarmData } from '$lib/firebase/staticData';
 	let farmData: any[] = [];
 	onMount(async () => {
@@ -38,7 +38,7 @@
 			// TRUE if confirm pressed, FALSE if cancel pressed
 			response: async (confirmed: boolean) => {
 				if (confirmed) {
-					loading.set(false);
+					setLoading(true);
 					isLoggingOut = true; // Set the loading state to true
 					await Promise.resolve();
 					await authHandlers.logout(); // Call the logout function
@@ -49,6 +49,7 @@
 		};
 		modalStore.trigger(modal);
 	}
+	const style = 'mr-2';
 </script>
 
 {#if isLoggingOut}
@@ -60,13 +61,15 @@
 	<nav class="list-nav">
 		<div class="mt-5 flex justify-center items-center">
 			<Avatar
-				initials="VK"
+				initials="BF"
 				border="border-4 border-surface-300-600-token hover:!border-primary-500"
-				cursor="cursor-pointer"
 			/>
 		</div>
 		<div class="mb-4 ml-3">
-			<h1>betaPeak@gmail.com</h1>
+			{#each farmData as farm}
+				<p class={style}><strong>{farm.farm_name}</strong></p>
+				<p class={style}>{farm.farm_address}</p>
+			{/each}
 		</div>
 
 		<hr />
