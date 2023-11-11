@@ -92,7 +92,7 @@
 		};
 		modalStore.trigger(modal);
 	}
-	function truncateAlertMessage(alertMessage: string, maxLength: number = 20): string {
+	function truncateAlertMessage(alertMessage: string, maxLength: number = 22): string {
 		if (alertMessage.length > maxLength) {
 			return `${alertMessage.slice(0, maxLength)}...`;
 		}

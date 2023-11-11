@@ -65,7 +65,7 @@
 				border="border-4 border-surface-300-600-token hover:!border-primary-500"
 			/>
 		</div>
-		<div class="mb-4 ml-3">
+		<div class="mb-4 ml-3 pl-2">
 			{#each farmData as farm}
 				<p class={style}><strong>{farm.farm_name}</strong></p>
 				<p class={style}>{farm.farm_address}</p>
@@ -73,41 +73,43 @@
 		</div>
 
 		<hr />
+
 		<ul class="">
-			<li class="mt-4">
+			<li class="mt-4 pl-2">
 				<a class="font-bold text-lg" href="/dashboard" on:click={() => updateTitle('Dashboard')}>
-					<i class="fa-solid fa-square-poll-vertical fa-xl" />
-					<span>DASHBOARD</span></a
+					<i class="fa-solid fa-square-poll-vertical fa-md" />
+					<span><h1 class="text-sm">DASHBOARD</h1></span></a
 				>
 			</li>
-			<li class="mt-8">
+			<li class="mt-8 pl-2">
+				<a class=" mt-4 mb-4 font-bold text-lg" href="/yield" on:click={() => updateTitle('Yield')}>
+					<i class="fa-solid fa-weight-scale fa-md" />
+					<span><h1 class="text-sm">YIELD</h1></span></a
+				>
+			</li>
+			<li class="mt-8 pl-2">
 				<a class="mt-4 font-bold text-lg" href="/records" on:click={() => updateTitle('Records')}>
-					<i class="fa-solid fa-clipboard fa-xl" />
-					<span>RECORDS</span></a
+					<i class="fa-solid fa-clipboard fa-md" />
+					<span><h1 class="text-sm">RECORDS</h1></span></a
 				>
 			</li>
-			<li class="mt-8">
+			<li class="mt-8 pl-2">
 				<a
 					class=" mt-4 mb-4 font-bold text-lg"
 					href="/notification"
 					on:click={() => updateTitle('Notification')}
 				>
-					<i class="fa-solid fa-bell fa-xl" />
-					<span>NOTIFICATION</span></a
+					<i class="fa-solid fa-bell fa-md" />
+					<span><h1 class="text-sm">NOTIFICATIONS</h1></span></a
 				>
 			</li>
-			<li class="mt-8">
-				<a class=" mt-4 mb-4 font-bold text-lg" href="/yield" on:click={() => updateTitle('Yield')}>
-					<i class="fa-solid fa-weight-scale fa-xl" />
-					<span>YIELD</span></a
-				>
-			</li>
+
 			<hr />
-			<li>
+			<li class=" pl-2">
 				<!-- svelte-ignore a11y-invalid-attribute -->
 				<a class=" mt-4 font-bold text-lg" href="#" on:click={logOut}>
-					<i class="fa-solid fa-right-from-bracket fa-xl" />
-					<span>LOG OUT</span></a
+					<i class="fa-solid fa-right-from-bracket fa-md" />
+					<span><h1 class="text-sm">LOG OUT</h1></span></a
 				>
 			</li>
 		</ul>

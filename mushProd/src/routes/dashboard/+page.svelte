@@ -8,15 +8,16 @@
 		LastDateInBagsRecord
 	} from '../../lib/firebase/allRecord';
 	import type { Timestamp } from 'firebase/firestore';
-
+	// chart
+	import Chart from '../../lib/components/Charts/Chart.svelte';
 	// components
 	import {
-		Avatar,
 		Modal,
 		ProgressRadial,
 		type ModalComponent,
 		type ModalSettings
 	} from '@skeletonlabs/skeleton';
+
 	// modal
 	import { getModalStore } from '@skeletonlabs/skeleton';
 	import ModalReport from '$lib/components/Report/ModalReport.svelte';
@@ -28,6 +29,7 @@
 
 	// notif
 	import { sendNotification } from '$lib/stores/addNotification';
+
 	//getting data
 	import { getDatabase, ref, get, query, limitToLast, onValue } from 'firebase/database';
 
@@ -40,14 +42,12 @@
 	let gramsCount: number;
 	let lastDatePlanted: any;
 	let notificationSent = false;
-	let isLoading = true;
 
 	// getting all data of added bags and grams
 	async function fetchData() {
 		bagCount = await allPlantedBags();
 		gramsCount = await allHarvestedGrams();
 		lastDatePlanted = await LastDateInBagsRecord();
-
 		loading.set(false);
 	}
 	fetchData();
@@ -61,8 +61,6 @@
 	// getting data from firebase
 	const rdb = getDatabase();
 	const dateRef = ref(rdb, `/BETAPEAK/${formattedDate}`);
-
-	const bagsRecordRef = ref(rdb, 'user/123456/bags record');
 
 	const queryRef = query(dateRef, limitToLast(1));
 
@@ -79,7 +77,7 @@
 			if (24 >= temp && 85 >= humd && 29 <= temp && 95 <= humd) {
 				// uncomment to send notif
 				// sendNotification(temp, humd);
-				console.log('notification sent');
+
 				notificationSent = true;
 			}
 			loading.set(false);
@@ -144,15 +142,11 @@
 
 	// Function to generate a random number
 	function getRandomNumber() {
-		// Generate a random number between 1 and 100 (you can adjust the range as needed)
 		const randomNumber = Math.floor(Math.random() * 100) + 1;
 		return randomNumber;
 	}
 	const val1 = getRandomNumber();
 	const val2 = val1 + 5;
-
-	// chart
-	import Chart from '../../lib/components/Charts/Chart.svelte';
 </script>
 
 <Modal transitionIn={fade} transitionInParams={{ duration: 200 }} />
@@ -170,7 +164,15 @@
 			<div class={cardInsideStyle}>
 				<h2 class={h2Style}>Temperature</h2>
 				<hr class="opacity-50" />
-				<div class={valueStyle}><h1>{temp}°C</h1></div>
+				<div class={valueStyle}>
+					{#if temp}
+						<h1>{temp}°C</h1>
+					{:else}
+						<div class="flex justify-center items-center">
+							<ProgressRadial width="w-20" value={undefined} />
+						</div>
+					{/if}
+				</div>
 			</div>
 		</div>
 		<!-- Humidity -->
@@ -178,7 +180,16 @@
 			<div class={cardInsideStyle}>
 				<h2 class={h2Style}>Humidity</h2>
 				<hr class="opacity-50" />
-				<div class={valueStyle}><h1>{humd}%</h1></div>
+
+				<div class={valueStyle}>
+					{#if humd}
+						<h1>{humd}%</h1>
+					{:else}
+						<div class="flex justify-center items-center">
+							<ProgressRadial width="w-20" value={undefined} />
+						</div>
+					{/if}
+				</div>
 			</div>
 		</div>
 		<!-- Total bags and harvest -->
@@ -191,7 +202,13 @@
 
 						<div class="flex items-center justify-between">
 							<div>
-								<strong><div class={smallerValueStyle}><h1>{bagCount} bags</h1></div></strong>
+								{#if bagCount}
+									<strong><div class={smallerValueStyle}><h1>{bagCount} bags</h1></div></strong>
+								{:else}
+									<div class="flex justify-center items-center">
+										<ProgressRadial width="w-10" value={undefined} />
+									</div>
+								{/if}
 							</div>
 							<div class="flex justify-center align-center space-x-4 m-4">
 								<button class="grow btn btn-sm variant-filled-primary" on:click={showAddBagModal}
@@ -205,7 +222,13 @@
 						<hr class="opacity-50" />
 						<div class="flex items-center justify-between">
 							<div>
-								<strong><div class={smallerValueStyle}><h1>{gramsCount} kg.</h1></div></strong>
+								{#if gramsCount}
+									<strong><div class={smallerValueStyle}><h1>{gramsCount} kg.</h1></div></strong>
+								{:else}
+									<div class="flex justify-center items-center">
+										<ProgressRadial width="w-10" value={undefined} />
+									</div>
+								{/if}
 							</div>
 							<div class="flex justify-center align-center space-x-4 m-4">
 								<button
@@ -233,7 +256,13 @@
 					<div class={smallValueStyle}>
 						<h1 class={smallerValueStyle}>
 							<strong>
-								{lastDatePlanted}
+								{#if lastDatePlanted}
+									{lastDatePlanted}
+								{:else}
+									<div class="flex justify-center items-center">
+										<ProgressRadial width="w-10" value={undefined} />
+									</div>
+								{/if}
 							</strong>
 						</h1>
 					</div>

@@ -1,6 +1,6 @@
 import { getDocs, collection, doc, query, Timestamp, orderBy, limit } from 'firebase/firestore';
 import { db } from './firebase';
-import { format } from 'date-fns';
+import { format, toDate } from 'date-fns';
 
 export async function allPlantedBags(): Promise<number> {
     const userDocRef = doc(db, 'user', '123456');
@@ -50,13 +50,13 @@ export async function LastDateInBagsRecord(): Promise<string | null> {
     const latestDocument = querySnapshot.docs[0];
     const data = latestDocument.data();
 
-    // if (data.date && typeof data.date.toDate === 'function') {
-    //     const lastDate = format(data.date.toDate(), 'MMMM dd yyyy');
+    if (data.date && typeof data.date.toDate === 'function') {
+        const lastDate = toDate(data.date.toDate());
+        const formattedDate = format(lastDate, 'MMMM dd, yyyy');
 
-    //     console.log(lastDate)
-    //     return lastDate;
 
-    // }
+        return formattedDate;
+    }
 
-    return data.date; // No valid date found
+    return null;
 }

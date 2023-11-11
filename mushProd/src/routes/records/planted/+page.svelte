@@ -15,19 +15,20 @@
 	import type { ToastSettings, ToastStore } from '@skeletonlabs/skeleton';
 
 	// getting data
-	import { collection, getDocs, query, doc, onSnapshot } from 'firebase/firestore';
+	import { collection, getDocs, query, doc, onSnapshot, orderBy } from 'firebase/firestore';
 	import { db } from '$lib/firebase/firebase';
 	import { format } from 'date-fns';
 	import { onDestroy, onMount } from 'svelte';
-
+	import { allPlantedBags } from '../../../lib/firebase/allRecord';
 	let source: any = [];
 
-	let tableData: any[] = [];
-	let totalBags: number = 0;
 	let isLoading = true;
 	// Function to calculate the total number of bags
-	function calculateTotalBags() {
-		totalBags = tableData.reduce((acc, row) => acc + row.quantity, 0);
+	let searchQuery = '';
+
+	let bagCount: number;
+	async function fetchData() {
+		bagCount = await allPlantedBags();
 	}
 
 	const toastStore = getToastStore();
@@ -42,10 +43,11 @@
 	onMount(async () => {
 		const userDocRef = doc(db, 'user', '123456');
 		const bagsRecordCollectionRef = collection(userDocRef, 'bags record');
-		const q = query(bagsRecordCollectionRef);
+		const q = query(bagsRecordCollectionRef, orderBy('date', 'asc'));
 
 		const unsubscribe = onSnapshot(q, (querySnapshot) => {
 			source = [];
+
 			querySnapshot.forEach((doc) => {
 				const data = doc.data();
 				// Ensure that the `date` field is a valid Firestore Timestamp
@@ -58,7 +60,8 @@
 				// tableData.push(data);
 				source.push(data);
 			});
-			calculateTotalBags();
+
+			fetchData();
 			isLoading = false;
 		});
 
@@ -140,11 +143,30 @@
 		};
 		modalStore.trigger(modal);
 	}
-	function truncateText(text: string, maxLength: number = 20): string {
+	function truncateText(text: string, maxLength: number = 22): string {
 		if (text.length > maxLength) {
 			return `${text.slice(0, maxLength)}...`;
 		}
 		return text;
+	}
+
+	function rowMatchesSearch(row: any): boolean {
+		const searchTerms = searchQuery.toLowerCase().split(' ');
+
+		// Check if any of the search terms match any field in the row
+		return searchTerms.every((term) =>
+			Object.values(row).some(
+				(value) => typeof value === 'string' && value.toLowerCase().includes(term)
+			)
+		);
+	}
+	function search(): void {
+		paginatedSource = source
+			.filter((row: any) => rowMatchesSearch(row))
+			.slice(
+				paginationSettings.page * paginationSettings.limit,
+				paginationSettings.page * paginationSettings.limit + paginationSettings.limit
+			);
 	}
 </script>
 
@@ -158,6 +180,18 @@
 {:else}
 	<Toast />
 	<div class=" m-5">
+		<div class=" flex items-center justify-center">
+			<input
+				type="text"
+				bind:value={searchQuery}
+				placeholder="Search..."
+				class="input mb-2 mr-2 sm:w-36 ml-auto h-8"
+			/>
+			<button type="button" class="btn btn-sm variant-filled-tertiary h-8 mb-2" on:click={search}>
+				<i class="fa-solid fa-search" />
+				<span>Search</span>
+			</button>
+		</div>
 		<table class="table table-hover">
 			<thead>
 				<tr>
@@ -210,7 +244,15 @@
 				<tr>
 					<th colspan="3">
 						<h1 class="mb-2">
-							Total Bags Planted: {totalBags} bags
+							Total Bags Planted: <span class="text-2xl">
+								{#if bagCount}
+									{bagCount} bags
+								{:else}
+									<div class="flex justify-center items-center">
+										<ProgressRadial width="w-10" value={undefined} />
+									</div>
+								{/if}
+							</span>
 						</h1>
 						<Paginator
 							bind:settings={paginationSettings}

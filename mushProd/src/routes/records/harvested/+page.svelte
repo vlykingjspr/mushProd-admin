@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { Modal, ProgressRadial, getModalStore } from '@skeletonlabs/skeleton';
-	import type { ModalSettings, ModalComponent, ModalStore } from '@skeletonlabs/skeleton';
+	import { Modal, ProgressRadial, filter, getModalStore } from '@skeletonlabs/skeleton';
+	import type { ModalSettings, ModalComponent } from '@skeletonlabs/skeleton';
 	import { fade } from 'svelte/transition';
 
 	import AddHarvested from '$lib/components/Harvested/AddHarvestedModal.svelte';
@@ -11,41 +11,37 @@
 	import { Paginator } from '@skeletonlabs/skeleton';
 
 	// getting data
-	import { collection, getDocs, query, doc, onSnapshot } from 'firebase/firestore';
+	import { collection, getDocs, query, doc, onSnapshot, orderBy } from 'firebase/firestore';
 	import { db } from '$lib/firebase/firebase';
 	import { format } from 'date-fns';
-	import { onDestroy, onMount } from 'svelte';
+	import { onMount } from 'svelte';
+	import { allHarvestedGrams } from '../../../lib/firebase/allRecord';
 
 	let source: any = [];
-
-	let tableData: any[] = [];
-	let totalWeightHarvested: number = 0;
 	let isLoading = true;
-	// Function to calculate the total weight harvested
-	function calculateTotalWeightHarvested() {
-		totalWeightHarvested = tableData.reduce((acc, row) => acc + row.grams, 0);
+	let searchQuery = '';
+	let gramsCount: number;
+
+	async function fetchData() {
+		gramsCount = await allHarvestedGrams();
 	}
 	onMount(async () => {
 		const userDocRef = doc(db, 'user', '123456');
 		const bagsRecordCollectionRef = collection(userDocRef, 'harvest record');
-		const q = query(bagsRecordCollectionRef);
+		const q = query(bagsRecordCollectionRef, orderBy('date_harvested', 'asc'));
 
 		const unsubscribe = onSnapshot(q, (querySnapshot) => {
 			source = [];
-
 			querySnapshot.forEach((doc) => {
 				const data = doc.data();
-				// Ensure that the `date` field is a valid Firestore Timestamp
+
 				if (data.date_harvested && data.date_harvested.toDate) {
-					// Convert Firestore Timestamp to JavaScript Date
 					data.date_harvested = format(data.date_harvested.toDate(), 'MMMM dd, yyyy');
 				}
-				// Add the ID to the data object
 				data.id = doc.id;
-
 				source.push(data);
 			});
-			calculateTotalWeightHarvested();
+			fetchData();
 			isLoading = false;
 		});
 		// onDestroy(unsubscribe);
@@ -65,7 +61,6 @@
 		paginationSettings.page * paginationSettings.limit + paginationSettings.limit
 	);
 	// Modals
-
 	const modalStore = getModalStore();
 	function showAddModal(): void {
 		const c: ModalComponent = { ref: AddHarvested };
@@ -131,11 +126,30 @@
 		};
 		modalStore.trigger(modal);
 	}
-	function truncateRemarks(remarks: string, maxLength: number = 20): string {
+	function truncateRemarks(remarks: string, maxLength: number = 22): string {
 		if (remarks.length > maxLength) {
 			return `${remarks.slice(0, maxLength)}...`;
 		}
 		return remarks;
+	}
+
+	function rowMatchesSearch(row: any): boolean {
+		const searchTerms = searchQuery.toLowerCase().split(' ');
+
+		// Check if any of the search terms match any field in the row
+		return searchTerms.every((term) =>
+			Object.values(row).some(
+				(value) => typeof value === 'string' && value.toLowerCase().includes(term)
+			)
+		);
+	}
+	function search(): void {
+		paginatedSource = source
+			.filter((row: any) => rowMatchesSearch(row))
+			.slice(
+				paginationSettings.page * paginationSettings.limit,
+				paginationSettings.page * paginationSettings.limit + paginationSettings.limit
+			);
 	}
 </script>
 
@@ -148,24 +162,38 @@
 		<ProgressRadial value={undefined} />
 	</div>
 {:else}
-	<div class=" m-5">
+	<div class=" mr-5 ml-5 mb-5">
 		<!-- Native Table Element -->
+		<div class=" flex items-center justify-center">
+			<input
+				type="text"
+				bind:value={searchQuery}
+				placeholder="Search..."
+				class="input mb-2 mr-2 sm:w-36 ml-auto h-8"
+			/>
+			<button type="button" class="btn btn-sm variant-filled-tertiary h-8 mb-2" on:click={search}>
+				<i class="fa-solid fa-search" />
+				<span>Search</span>
+			</button>
+		</div>
+		<!-- ... existing code ... -->
+
 		<table class="table table-hover">
 			<thead>
 				<tr>
 					<th>Date</th>
 					<th>Grams Harvested</th>
 					<th>Remarks</th>
-					<th class="flex items-center justify-center"
-						><button
+					<th class="flex items-center justify-center">
+						<button
 							type="button"
 							class="btn btn-md variant-filled-primary mr-2"
 							on:click={showAddModal}
 						>
 							<i class="fa-solid fa-plus" />
 							<span>Add</span>
-						</button></th
-					>
+						</button>
+					</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -202,7 +230,15 @@
 				<tr>
 					<th colspan="3">
 						<h1 class="mb-2">
-							Total Grams Harvested: {totalWeightHarvested} grams
+							Total Grams Harvested: <span class="text-2xl">
+								{#if gramsCount}
+									{gramsCount} grams
+								{:else}
+									<div class="flex justify-center items-center">
+										<ProgressRadial width="w-10" value={undefined} />
+									</div>
+								{/if}
+							</span>
 						</h1>
 						<Paginator
 							bind:settings={paginationSettings}

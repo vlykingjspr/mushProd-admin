@@ -1,8 +1,13 @@
 export const data = {
-  labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+  labels: [
+    '12:00 AM', '1:00 AM', '2:00 AM', '3:00 AM', '4:00 AM', '5:00 AM',
+    '6:00 AM', '7:00 AM', '8:00 AM', '9:00 AM', '10:00 AM', '11:00 AM',
+    '12:00 PM', '1:00 PM', '2:00 PM', '3:00 PM', '4:00 PM', '5:00 PM',
+    '6:00 PM', '7:00 PM', '8:00 PM', '9:00 PM', '10:00 PM', '11:00 PM'
+  ],
   datasets: [
     {
-      label: 'My First dataset',
+      label: 'Temperature',
       fill: true,
       lineTension: 0.3,
       backgroundColor: 'rgba(225, 204,230, .3)',
@@ -11,7 +16,7 @@ export const data = {
       borderDash: [],
       borderDashOffset: 0.0,
       borderJoinStyle: 'miter',
-      pointBorderColor: 'rgb(205, 130,1 58)',
+      pointBorderColor: 'rgba(30, 147, 234, 0.8)',
       pointBackgroundColor: 'rgb(255, 255, 255)',
       pointBorderWidth: 10,
       pointHoverRadius: 5,
@@ -20,13 +25,13 @@ export const data = {
       pointHoverBorderWidth: 2,
       pointRadius: 1,
       pointHitRadius: 10,
-      data: [65, 59, 80, 81, 56, 55, 40],
+      data: [65, 59, 80, 81, 56, 55, 40, 65, 59, 80, 81, 56, 55, 40, 65, 59, 80, 81, 56, 55, 40, 65, 59, 80, 81, 56, 55, 40],
     },
     {
-      label: 'My Second dataset',
+      label: 'Humidity',
       fill: true,
       lineTension: 0.3,
-      backgroundColor: 'rgb(59 130 246) ',
+      backgroundColor: 'rgba(225, 204,230, .3) ',
       borderColor: 'rgb(35, 26, 136)',
       borderCapStyle: 'butt',
       borderDash: [],
@@ -41,7 +46,7 @@ export const data = {
       pointHoverBorderWidth: 2,
       pointRadius: 1,
       pointHitRadius: 10,
-      data: [28, 48, 40, 19, 86, 27, 90],
+      data: [28, 48, 40, 19, 86, 27, 90, 28, 48, 40, 19, 86, 27, 90, 28, 48, 40, 19, 86, 27, 90, 86, 27, 90],
     },
   ],
 };
