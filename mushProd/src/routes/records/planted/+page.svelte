@@ -195,9 +195,9 @@
 		<table class="table table-hover">
 			<thead>
 				<tr>
-					<th>Date</th>
-					<th>Number of Bags</th>
-					<th>Remarks</th>
+					<th><i class="fa-solid fa-calendar-days mr-2" />Date</th>
+					<th><i class="fa-solid fa-bag-shopping mr-2" />Number of Bags</th>
+					<th> <i class="fa-solid fa-pen-to-square mr-2" />Remarks</th>
 					<th class="flex items-center justify-center"
 						><button
 							type="button"

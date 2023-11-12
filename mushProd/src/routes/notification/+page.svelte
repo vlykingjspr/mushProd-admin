@@ -112,11 +112,12 @@
 	<div class=" m-5">
 		<table class="table table-hover">
 			<thead>
-				<tr>
-					<th>Date</th>
-					<th>Temperature</th>
-					<th>Humidity</th>
-					<th>Alert Message</th>
+				<tr
+					><th><i class="fa-solid fa-calendar-days mr-2" />Date</th>
+					<th><i class="fa-solid fa-temperature-three-quarters mr-2" />Temperature</th>
+					<th> <i class="fa-solid fa-droplet mr-2" />Humidity</th>
+					<th> <i class="fa-solid fa-circle-exclamation mr-2" />Alert Message</th>
+
 					<th />
 				</tr>
 			</thead>

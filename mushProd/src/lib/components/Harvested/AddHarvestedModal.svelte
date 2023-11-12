@@ -61,7 +61,10 @@
 {#if $modalStore[0]}
 	<div class="modal-example-form {cBase}">
 		<header class={cHeader}>
-			<div class="flex items-center justify-center">Add Harvested Data</div>
+			<div class="flex items-center justify-center">
+				<i class="fa-solid fa-plus mr-2" />
+				Add Harvested Data
+			</div>
 		</header>
 		<div class="input-group input-group-divider grid-cols-[auto_1fr_auto]">
 			<div class="input-group-shim"><i class="fa-solid fa-calendar" /></div>

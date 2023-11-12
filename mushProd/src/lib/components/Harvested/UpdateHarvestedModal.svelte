@@ -52,7 +52,10 @@
 {#if $modalStore[0]}
 	<div class="modal-example-form {cBase}">
 		<header class={cHeader}>
-			<div class="flex items-center justify-center">Edit Harvested Mushrooms</div>
+			<div class="flex items-center justify-center">
+				<i class="fa-solid fa-pen-to-square mr-2" />
+				Update Harvested Mushrooms
+			</div>
 		</header>
 		<div class="input-group input-group-divider grid-cols-[auto_1fr_auto]">
 			<div class="input-group-shim"><i class="fa-solid fa-calendar" /></div>

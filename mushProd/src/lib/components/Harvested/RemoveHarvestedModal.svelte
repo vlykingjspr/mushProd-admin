@@ -48,7 +48,10 @@
 {#if $modalStore[0]}
 	<div class="modal-example-form {cBase}">
 		<header class={cHeader}>
-			<div class="flex items-center justify-center">Please Confirm to Remove</div>
+			<div class="flex items-center">
+				<i class="fa-solid fa-trash mr-2" />
+				Please Confirm to Remove
+			</div>
 		</header>
 		<div>
 			<h1>Are you sure you want to remove the recorded harvested mushrooms?</h1>

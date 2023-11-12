@@ -1,8 +1,10 @@
 import { loading } from '$lib/stores/stores';
+import { format } from 'date-fns';
 
 import { getDatabase, limitToLast, onValue, query, ref } from 'firebase/database';
 
-
+const currentDate = new Date();
+const formattedDate = format(currentDate, 'yyyy-MM-dd');
 // Define the structure of your data
 interface DataItem {
     Humd: number;
@@ -18,11 +20,10 @@ const calculateAverage = (arr: number[]): number => {
 export function getHourlyAverages(): Promise<{ Hour: string, AverageHumidity: number, AverageTemperature: number }[]> {
     return new Promise((resolve, reject) => {
         const rdb = getDatabase();
-        const dateRef = ref(rdb, '/BETAPEAK/2023-11-11');
+        const dateRef = ref(rdb, `/BETAPEAK/${formattedDate}`);
         const queryRef = query(dateRef);
 
         const hourlyAverages: Record<string, { Humd: number; Temp: number }[]> = {};
-
         onValue(queryRef, (snapshot) => {
             if (snapshot.exists()) {
                 const rawData = Object.values(snapshot.val() || []) as DataItem[];

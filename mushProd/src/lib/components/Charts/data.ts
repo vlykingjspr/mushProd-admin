@@ -8,6 +8,17 @@ let humdData
 
 const averagesArray = await getHourlyAverages();
 
+
+averagesArray.sort((a, b) => {
+  // Convert "Hour" values to numbers for proper numerical comparison
+  const hourA = parseInt(a.Hour);
+  const hourB = parseInt(b.Hour);
+
+  // Compare the "Hour" values
+  return hourA - hourB;
+});
+
+
 // Process averagesArray and update data and data2
 const temperatureData = averagesArray.map((entry) => Math.floor(entry.AverageTemperature));
 const humidityData = averagesArray.map((entry) => Math.floor(entry.AverageHumidity));

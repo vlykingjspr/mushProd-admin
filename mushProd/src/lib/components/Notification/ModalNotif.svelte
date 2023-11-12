@@ -40,13 +40,17 @@
 {#if $modalStore[0]}
 	<div class="modal-example-form {cBase}">
 		<header class={cHeader}>
-			<div class="flex items-center justify-center">Notification</div>
+			<div class="flex items-center justify-center">
+				<i class="fa-solid fa-circle-exclamation mr-2" />
+				Notification
+			</div>
 		</header>
 		<article />
 
 		<div class="flex justify-between items-center">
 			<h1 class="text-lg">
 				<strong>
+					<i class="fa-solid fa-calendar-days mr-1" />
 					{date}
 				</strong>
 			</h1>

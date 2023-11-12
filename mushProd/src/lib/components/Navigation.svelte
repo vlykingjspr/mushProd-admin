@@ -10,15 +10,14 @@
 	let farmData: any[] = [];
 	onMount(async () => {
 		farmData = await fetchFarmData();
+		isLoggingOut = false; // Initially, the loader is hidden
 	});
 	const modalStore = getModalStore();
 	const drawerStore = getDrawerStore();
 	function drawerClose(): void {
 		drawerStore.close();
 	}
-	onMount(() => {
-		isLoggingOut = false; // Initially, the loader is hidden
-	});
+	onMount(() => {});
 	function updateTitle(title: string): void {
 		currentPageTitle.set(title);
 		// drawerClose();
@@ -33,7 +32,7 @@
 		const modal: ModalSettings = {
 			type: 'confirm',
 			// Data
-			title: 'Please Confirm',
+			title: '<i class="fa-solid fa-right-from-bracket"></i> Please Confirm',
 			body: 'Are you sure you wish to proceed?',
 			// TRUE if confirm pressed, FALSE if cancel pressed
 			response: async (confirmed: boolean) => {
@@ -49,7 +48,6 @@
 		};
 		modalStore.trigger(modal);
 	}
-	const style = 'mr-2';
 </script>
 
 {#if isLoggingOut}
@@ -67,8 +65,18 @@
 		</div>
 		<div class="mb-4 ml-3 pl-2">
 			{#each farmData as farm}
-				<p class={style}><strong>{farm.farm_name}</strong></p>
-				<p class={style}>{farm.farm_address}</p>
+				<p class="mr-2 flex items-center">
+					<strong>
+						<i class="fa-solid fa-tractor text-base mr-2" />
+						{farm.farm_name}
+					</strong>
+				</p>
+				<p class="mr-2 flex items-center">
+					<strong>
+						<i class="fa-solid fa-location-dot text-base mr-4" />
+						{farm.farm_address}
+					</strong>
+				</p>
 			{/each}
 		</div>
 
@@ -77,7 +85,7 @@
 		<ul class="">
 			<li class="mt-4 pl-2">
 				<a class=" mb-4 font-bold text-lg" href="/home" on:click={() => updateTitle('')}>
-					<i class="fa-solid fa-home fa-md" />
+					<i class="fa-solid fa-house fa-md" />
 					<span><h1 class="text-sm">HOME</h1></span>
 				</a>
 			</li>
@@ -87,12 +95,7 @@
 					<span><h1 class="text-sm">DASHBOARD</h1></span></a
 				>
 			</li>
-			<li class="mt-8 pl-2">
-				<a class=" mt-4 mb-4 font-bold text-lg" href="/yield" on:click={() => updateTitle('Yield')}>
-					<i class="fa-solid fa-weight-scale fa-md" />
-					<span><h1 class="text-sm">YIELD</h1></span></a
-				>
-			</li>
+
 			<li class="mt-8 pl-2">
 				<a class="mt-4 font-bold text-lg" href="/records" on:click={() => updateTitle('Records')}>
 					<i class="fa-solid fa-clipboard fa-md" />

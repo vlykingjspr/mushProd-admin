@@ -182,9 +182,9 @@
 		<table class="table table-hover">
 			<thead>
 				<tr>
-					<th>Date</th>
-					<th>Grams Harvested</th>
-					<th>Remarks</th>
+					<th><i class="fa-solid fa-calendar-days mr-2" />Date</th>
+					<th><i class="fa-solid fa-layer-group mr-2" />Grams Harvested</th>
+					<th> <i class="fa-solid fa-pen-to-square mr-2" />Remarks</th>
 					<th class="flex items-center justify-center">
 						<button
 							type="button"

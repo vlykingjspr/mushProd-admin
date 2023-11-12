@@ -60,8 +60,8 @@
 
 	// getting data from firebase
 	const rdb = getDatabase();
-	const dateRef = ref(rdb, `/BETAPEAK/2023-11-11`);
-	// const dateRef = ref(rdb, `/BETAPEAK/${formattedDate}`);
+	// const dateRef = ref(rdb, `/BETAPEAK/2023-11-11`);
+	const dateRef = ref(rdb, `/BETAPEAK/${formattedDate}`);
 
 	const queryRef = query(dateRef, limitToLast(1));
 
@@ -132,7 +132,7 @@
 	// styles
 	const cardStyle = 'card card-hover overflow-hidden ';
 	const chartStyle = 'card card-hover bg-surface-100 overflow-hidden ';
-	const cardInsideStyle = 'p-4 space-y-4';
+	const cardInsideStyle = 'p-4 space-y-4 ';
 	const h2Style = 'text-1xl md:text-2xl lg:text-2xl';
 	const h3Style = 'text-l md:text-1xl lg:text-1xl';
 	const valueStyle = 'flex justify-center items-center text-7xl md:text-4xl lg:text-8xl';
@@ -151,18 +151,19 @@
 <Modal transitionIn={fade} transitionInParams={{ duration: 200 }} />
 
 {#if $loading}
-	<!-- Display the ProgressRadial when isLoading is true -->
 	<div class="flex justify-center items-center h-screen">
 		<ProgressRadial value={undefined} />
 	</div>
 {:else}
-	<!-- Display the page content when isLoading is false -->
 	<div class="w-full text-token grid grid-cols-1 md:grid-cols-3 gap-4 p-4">
 		<!-- Temperature -->
+
 		<div class={cardStyle}>
-			<span class="ml-2"> Last update on {time}</span>
 			<div class={cardInsideStyle}>
-				<h2 class={h2Style}>Temperature</h2>
+				<div class="flex items-start">
+					<i class="fa-solid fa-temperature-three-quarters text-3xl mr-2" />
+					<h2 class={h2Style}>Temperature</h2>
+				</div>
 				<hr class="opacity-50" />
 				<div class={valueStyle}>
 					{#if temp}
@@ -178,7 +179,10 @@
 		<!-- Humidity -->
 		<div class={cardStyle}>
 			<div class={cardInsideStyle}>
-				<h2 class={h2Style}>Humidity</h2>
+				<div class="flex items-start">
+					<i class="fa-solid fa-droplet text-3xl mr-2" />
+					<h2 class={h2Style}>Humidity</h2>
+				</div>
 				<hr class="opacity-50" />
 
 				<div class={valueStyle}>
@@ -197,7 +201,10 @@
 			<div class={cardInsideStyle}>
 				<a href="/records" on:click={() => updateTitle('Records')}>
 					<div>
-						<h3 class={h3Style}>Total Bags</h3>
+						<div class="flex items-start">
+							<i class="fa-solid fa-bag-shopping fa-md text-base mr-2" />
+							<h3 class={h3Style}>Total Bags</h3>
+						</div>
 						<hr class="opacity-50" />
 
 						<div class="flex items-center justify-between">
@@ -218,7 +225,10 @@
 						</div>
 					</div>
 					<div>
-						<h3 class={h3Style}>Total Harvest (October)</h3>
+						<div class="flex items-start">
+							<i class="fa-solid fa-layer-group fa-md text-base mr-2" />
+							<h3 class={h3Style}>Total Harvest</h3>
+						</div>
 						<hr class="opacity-50" />
 						<div class="flex items-center justify-between">
 							<div>
@@ -251,7 +261,11 @@
 		<div class="">
 			<div class={`mb-3 ${cardStyle}`}>
 				<div class={cardInsideStyle}>
-					<h2 class={h2Style}>Last Date Planted</h2>
+					<div class="flex items-start">
+						<i class="fa-solid fa-calendar-days fa-md text-base mr-2" />
+						<h2 class={h3Style}>Last Date Planted</h2>
+					</div>
+
 					<hr class="opacity-50" />
 					<div class={smallValueStyle}>
 						<h1 class={smallerValueStyle}>
@@ -270,7 +284,10 @@
 			</div>
 			<div class={cardStyle}>
 				<div class={cardInsideStyle}>
-					<h2 class={h2Style}>Yield Prediction</h2>
+					<div class="flex items-start">
+						<i class="fa-solid fa-seedling fa-md text-base mr-2" />
+						<h2 class={h3Style}>Yield Prediction</h2>
+					</div>
 					<hr class="opacity-50" />
 					<div class="">
 						<div class={smallerValueStyle}>
