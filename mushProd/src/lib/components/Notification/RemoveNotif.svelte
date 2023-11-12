@@ -3,6 +3,8 @@
 	import { notifications } from '$lib/stores/stores';
 	import { doc, deleteDoc, collection } from 'firebase/firestore';
 	import { db } from '$lib/firebase/firebase';
+	import { showErrorToast } from '../Toast/toast';
+
 	/** Exposes parent props to this component. */
 	export let parent: any;
 
@@ -11,7 +13,9 @@
 	export let id: string;
 
 	let selectedRowData: any;
-
+	function removeToast() {
+		showErrorToast('Notification Removed Successfully');
+	}
 	// Handle Form Submission
 	notifications.subscribe((data) => {
 		selectedRowData = data;
@@ -25,6 +29,7 @@
 			await deleteDoc(bagsRecordDocRef);
 			console.log('success');
 			modalStore.close();
+			removeToast();
 		} catch (error) {
 			console.error('Error deleting document:', error);
 		}

@@ -3,18 +3,16 @@
 	import { planted } from '$lib/stores/stores';
 	import { doc, updateDoc } from 'firebase/firestore'; // Import the necessary Firestore functions
 	import { db } from '$lib/firebase/firebase';
+	import { showUpdateToast, showErrorToast } from '../Toast/toast';
 
-	/** Exposes parent props to this component. */
 	export let parent: any;
-
-	// Local
 	const modalStore = getModalStore();
-
-	// Handle Form Submission
-	function onFormSubmit(): void {
-		modalStore.close();
+	function updateToast() {
+		showUpdateToast('Bags Updated Successfully');
 	}
-
+	function errorToast() {
+		showErrorToast('Failed to Update Bags');
+	}
 	// Base Classes
 	const cBase = 'card p-4 w-modal shadow-xl space-y-4 ';
 	const cHeader = 'text-2xl font-bold';
@@ -46,9 +44,10 @@
 
 		try {
 			await updateDoc(bagsRecordDocRef, updatedData);
+			updateToast();
 			modalStore.close();
 		} catch (error) {
-			console.error('Error updating document:', error);
+			// errorToast();
 		}
 	}
 </script>

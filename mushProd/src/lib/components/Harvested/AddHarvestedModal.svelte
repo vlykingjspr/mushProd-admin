@@ -1,9 +1,10 @@
 <script lang="ts">
 	import { getModalStore } from '@skeletonlabs/skeleton';
 	import { collection, addDoc, Timestamp } from 'firebase/firestore';
-	import { harvested } from '$lib/stores/stores';
+	import { showSuccessToast, showErrorToast } from '../Toast/toast';
+
 	import { db } from '$lib/firebase/firebase';
-	import { format, parse } from 'date-fns';
+	import { parse } from 'date-fns';
 
 	/** Exposes parent props to this component. */
 	export let parent: any;
@@ -11,9 +12,11 @@
 	// Local
 	const modalStore = getModalStore();
 
-	// Handle Form Submission
-	function onFormSubmit(): void {
-		modalStore.close();
+	function addedToast() {
+		showSuccessToast('Harvest Data Recorded Successfully');
+	}
+	function errorToast() {
+		showErrorToast('Failed to Record Harvest Data');
 	}
 
 	// Base Classes
@@ -45,13 +48,11 @@
 		try {
 			// Add the data to Firestore
 			const docRef = await addDoc(userDocRef, data);
-			console.log('Document added with ID: ', docRef.id);
-
+			addedToast();
 			// Close the modal
 			modalStore.close();
 		} catch (error) {
-			console.error('Error adding document: ', error);
-			// Handle the error, show a message, or take appropriate action
+			// errorToast();
 		}
 	}
 </script>

@@ -1,8 +1,9 @@
 <script lang="ts">
-	import { getModalStore } from '@skeletonlabs/skeleton';
+	import { Toast, getModalStore } from '@skeletonlabs/skeleton';
 	import { planted } from '$lib/stores/stores';
 	import { doc, deleteDoc } from 'firebase/firestore';
 	import { db } from '$lib/firebase/firebase';
+	import { showSuccessToast, showErrorToast } from '../Toast/toast';
 
 	export let parent: any;
 	export let id: string;
@@ -12,7 +13,12 @@
 	function onFormSubmit(): void {
 		modalStore.close();
 	}
-
+	function removeToast() {
+		showSuccessToast('Bag Removed Successfully');
+	}
+	function errorToast() {
+		showErrorToast('Failed to Remove Bags');
+	}
 	// Classes
 	const cBase = 'card p-4 w-modal shadow-xl space-y-4 ';
 	const cHeader = 'text-2xl font-bold';
@@ -27,9 +33,11 @@
 		const bagsRecordDocRef = doc(userDocRef, 'bags record', id);
 		try {
 			await deleteDoc(bagsRecordDocRef);
+			removeToast();
+
 			modalStore.close();
 		} catch (error) {
-			console.error('Error deleting document:', error);
+			// errorToast();
 		}
 	}
 </script>

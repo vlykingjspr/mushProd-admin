@@ -1,9 +1,10 @@
 <script lang="ts">
-	import { getModalStore } from '@skeletonlabs/skeleton';
-
+	import { getModalStore, getToastStore, Toast, type ToastSettings } from '@skeletonlabs/skeleton';
+	import { showSuccessToast, showErrorToast } from '../Toast/toast';
 	import { Timestamp, addDoc, collection } from 'firebase/firestore';
 	import { db } from '$lib/firebase/firebase';
 	import { parse } from 'date-fns';
+	import { tick } from 'svelte';
 
 	/** Exposes parent props to this component. */
 	export let parent: any;
@@ -11,11 +12,12 @@
 	// Local
 	const modalStore = getModalStore();
 
-	// Handle Form Submission
-	function onFormSubmit(): void {
-		modalStore.close();
+	function addedToast() {
+		showSuccessToast('Bag Recorded Successfully');
 	}
-
+	function errorToast() {
+		showErrorToast('Failed to Record Bags');
+	}
 	// Base Classes
 	const cBase = 'card p-4 w-modal shadow-xl space-y-4 ';
 	const cHeader = 'text-2xl font-bold';
@@ -26,14 +28,14 @@
 
 	let errorMessage: string = '';
 	let isDisable: boolean = false;
-
+	let toastSucc: any = null;
+	let toastError: any = null;
 	async function addData(): Promise<void> {
 		if (!date || !quantity) {
 			errorMessage = 'Date and grams are required.';
 
 			return;
 		}
-
 		const formattedDate = parse(date, 'yyyy-MM-dd', new Date());
 		date = Timestamp.fromDate(formattedDate);
 		const data = {
@@ -47,6 +49,8 @@
 			// Add the data to Firestore
 			const docRef = await addDoc(userDocRef, data);
 			console.log('Document added with ID: ', docRef.id);
+
+			addedToast();
 
 			modalStore.close();
 		} catch (error) {

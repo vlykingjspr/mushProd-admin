@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Modal, ProgressRadial, filter, getModalStore } from '@skeletonlabs/skeleton';
+	import { Modal, ProgressRadial, Toast, filter, getModalStore } from '@skeletonlabs/skeleton';
 	import type { ModalSettings, ModalComponent } from '@skeletonlabs/skeleton';
 	import { fade } from 'svelte/transition';
 
@@ -163,6 +163,7 @@
 		<div>sad</div>
 	</div>
 {:else}
+	<Toast />
 	<div class=" mr-5 ml-5 mb-5">
 		<!-- Native Table Element -->
 		<div class=" flex items-center justify-center">
@@ -188,7 +189,7 @@
 					<th class="flex items-center justify-center">
 						<button
 							type="button"
-							class="btn btn-md variant-filled-primary mr-2"
+							class="btn btn-sm variant-filled-primary mr-2"
 							on:click={showAddModal}
 						>
 							<i class="fa-solid fa-plus" />

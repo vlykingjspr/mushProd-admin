@@ -34,11 +34,7 @@
 		register = !register;
 	}
 	// Base Classes
-	const cBase = 'card p-4 w-modal shadow-xl space-y-4 ';
 	const cHeader = 'text-2xl font-bold';
-	let date: any;
-	let quantity: any;
-	let remarks: string;
 </script>
 
 <div class="authContainer">
@@ -76,7 +72,7 @@
 			{#if authenticating}
 				<i class="fa-solid fa-spinner spin" />
 			{:else}
-				Login
+				<i class="fa-solid fa-right-to-bracket mr-2" /> Login
 			{/if}
 		</button>
 	</form>

@@ -28,18 +28,6 @@
 	storePopup.set({ computePosition, autoUpdate, flip, shift, offset, arrow });
 	let loadingDelay: NodeJS.Timeout;
 
-	function setLoadingFalseWithDelay() {
-		// Clear any existing timeouts
-		clearTimeout(loadingDelay);
-
-		// Set loading to true initially
-		loading.set(true);
-
-		// Set loading to false after a delay of 2000 milliseconds (2 seconds)
-		loadingDelay = setTimeout(() => {
-			loading.set(false);
-		}, 2000);
-	}
 	initializeStores();
 	const drawerStore = getDrawerStore();
 	function drawerOpen(): void {
@@ -78,9 +66,6 @@
 		});
 		return unsubscribe;
 	});
-	function log(d: boolean) {
-		console.log(d);
-	}
 </script>
 
 {#if users}

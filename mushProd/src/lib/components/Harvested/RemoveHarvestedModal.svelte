@@ -3,6 +3,8 @@
 	import { harvested } from '$lib/stores/stores';
 	import { doc, deleteDoc } from 'firebase/firestore';
 	import { db } from '$lib/firebase/firebase';
+	import { showErrorToast } from '../Toast/toast';
+
 	/** Exposes parent props to this component. */
 	export let parent: any;
 
@@ -13,7 +15,9 @@
 	function onFormSubmit(): void {
 		modalStore.close();
 	}
-
+	function RemoveToast() {
+		showErrorToast('Harvested Data Removed Successfully');
+	}
 	// Base Classes
 	const cBase = 'card p-4 w-modal shadow-xl space-y-4 ';
 	const cHeader = 'text-2xl font-bold';
@@ -37,6 +41,7 @@
 		try {
 			await deleteDoc(bagsRecordDocRef);
 			modalStore.close();
+			RemoveToast();
 		} catch (error) {
 			console.error('Error deleting document:', error);
 		}

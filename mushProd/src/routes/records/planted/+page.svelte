@@ -36,7 +36,7 @@
 		message: 'This message will auto-hide after 10 seconds.',
 		timeout: 10000
 	};
-	function updated(params: any) {
+	function updated() {
 		toastStore.trigger(t);
 	}
 	// Create a Firestore listener and initialize tableData
@@ -201,7 +201,7 @@
 					<th class="flex items-center justify-center"
 						><button
 							type="button"
-							class="btn btn-md variant-filled-primary mr-2"
+							class="btn btn-sm variant-filled-primary mr-2"
 							on:click={showAddModal}
 						>
 							<i class="fa-solid fa-plus" />

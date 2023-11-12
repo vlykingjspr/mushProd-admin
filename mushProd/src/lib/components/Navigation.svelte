@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { getDrawerStore, type ModalSettings } from '@skeletonlabs/skeleton';
 	import { currentPageTitle } from '$lib/stores/stores';
-	import { Avatar, ProgressRadial } from '@skeletonlabs/skeleton';
+	import { Avatar } from '@skeletonlabs/skeleton';
 	import { authHandlers } from '$lib/stores/Authstore';
 	import { getModalStore } from '@skeletonlabs/skeleton';
 	import { onMount } from 'svelte';
@@ -10,21 +10,15 @@
 	let farmData: any[] = [];
 	onMount(async () => {
 		farmData = await fetchFarmData();
-		isLoggingOut = false; // Initially, the loader is hidden
 	});
 	const modalStore = getModalStore();
 	const drawerStore = getDrawerStore();
-	function drawerClose(): void {
-		drawerStore.close();
-	}
-	onMount(() => {});
+
 	function updateTitle(title: string): void {
 		currentPageTitle.set(title);
-		// drawerClose();
 	}
-	let showLogoutModal = false;
-	let isLoggingOut = false;
 
+	let showLogoutModal = false;
 	function closeLogoutModal(): void {
 		showLogoutModal = false;
 	}
@@ -34,14 +28,11 @@
 			// Data
 			title: '<i class="fa-solid fa-right-from-bracket"></i> Please Confirm',
 			body: 'Are you sure you wish to proceed?',
-			// TRUE if confirm pressed, FALSE if cancel pressed
+
 			response: async (confirmed: boolean) => {
 				if (confirmed) {
-					setLoading(true);
-					isLoggingOut = true; // Set the loading state to true
 					await Promise.resolve();
-					await authHandlers.logout(); // Call the logout function
-					isLoggingOut = false; // Set the loading state back to false
+					await authHandlers.logout();
 				}
 				closeLogoutModal();
 			}
@@ -50,77 +41,72 @@
 	}
 </script>
 
-{#if isLoggingOut}
-	<!-- Show a loading screen while logging out -->
-	<div class="flex justify-center items-center h-screen">
-		<ProgressRadial value={undefined} />
-	</div>
-{:else}
-	<nav class="list-nav">
-		<div class="mt-5 flex justify-center items-center">
+<nav class="list-nav">
+	<div class="mt-5 flex justify-center items-center">
+		<a href="/home" on:click={() => updateTitle('')}>
 			<Avatar
 				initials="BF"
 				border="border-4 border-surface-300-600-token hover:!border-primary-500"
-			/>
-		</div>
-		<div class="mb-4 ml-3 pl-2">
-			{#each farmData as farm}
-				<p class="mr-2 flex items-center">
-					<strong>
-						<i class="fa-solid fa-tractor text-base mr-2" />
-						{farm.farm_name}
-					</strong>
-				</p>
-				<p class="mr-2 flex items-center">
-					<strong>
-						<i class="fa-solid fa-location-dot text-base mr-4" />
-						{farm.farm_address}
-					</strong>
-				</p>
-			{/each}
-		</div>
+			/></a
+		>
+	</div>
+	<div class="mb-4 ml-3 pl-2">
+		{#each farmData as farm}
+			<p class="mr-2 flex items-center">
+				<strong>
+					<i class="fa-solid fa-house-user text-base mr-2 mb-2" />
+					{farm.farm_name}
+				</strong>
+			</p>
+			<p class="mr-2 flex items-center">
+				<strong>
+					<i class="fa-solid fa-location-dot text-base mr-4" />
+					{farm.farm_address}
+				</strong>
+			</p>
+		{/each}
+	</div>
+
+	<hr />
+
+	<ul>
+		<li class="mt-4 pl-2">
+			<a class=" mb-4 font-bold text-lg" href="/home" on:click={() => updateTitle('')}>
+				<i class="fa-solid fa-house fa-md" />
+				<span><h1 class="text-sm">HOME</h1></span>
+			</a>
+		</li>
+		<li data-sveltekit-preload-data="hover" class="mt-4 pl-2">
+			<a class="font-bold text-lg" href="/dashboard" on:click={() => updateTitle('Dashboard')}>
+				<i class="fa-solid fa-square-poll-vertical fa-md" />
+				<span><h1 class="text-sm">DASHBOARD</h1></span></a
+			>
+		</li>
+
+		<li class="mt-8 pl-2">
+			<a class="mt-4 font-bold text-lg" href="/records" on:click={() => updateTitle('Records')}>
+				<i class="fa-solid fa-clipboard fa-md" />
+				<span><h1 class="text-sm">RECORDS</h1></span></a
+			>
+		</li>
+		<li class="mt-8 pl-2">
+			<a
+				class=" mt-4 mb-4 font-bold text-lg"
+				href="/notification"
+				on:click={() => updateTitle('Notification')}
+			>
+				<i class="fa-solid fa-bell fa-md" />
+				<span><h1 class="text-sm">NOTIFICATIONS</h1></span></a
+			>
+		</li>
 
 		<hr />
-
-		<ul class="">
-			<li class="mt-4 pl-2">
-				<a class=" mb-4 font-bold text-lg" href="/home" on:click={() => updateTitle('')}>
-					<i class="fa-solid fa-house fa-md" />
-					<span><h1 class="text-sm">HOME</h1></span>
-				</a>
-			</li>
-			<li class="mt-4 pl-2">
-				<a class="font-bold text-lg" href="/dashboard" on:click={() => updateTitle('Dashboard')}>
-					<i class="fa-solid fa-square-poll-vertical fa-md" />
-					<span><h1 class="text-sm">DASHBOARD</h1></span></a
-				>
-			</li>
-
-			<li class="mt-8 pl-2">
-				<a class="mt-4 font-bold text-lg" href="/records" on:click={() => updateTitle('Records')}>
-					<i class="fa-solid fa-clipboard fa-md" />
-					<span><h1 class="text-sm">RECORDS</h1></span></a
-				>
-			</li>
-			<li class="mt-8 pl-2">
-				<a
-					class=" mt-4 mb-4 font-bold text-lg"
-					href="/notification"
-					on:click={() => updateTitle('Notification')}
-				>
-					<i class="fa-solid fa-bell fa-md" />
-					<span><h1 class="text-sm">NOTIFICATIONS</h1></span></a
-				>
-			</li>
-
-			<hr />
-			<li class=" pl-2">
-				<!-- svelte-ignore a11y-invalid-attribute -->
-				<a class=" mt-4 font-bold text-lg" href="#" on:click={logOut}>
-					<i class="fa-solid fa-right-from-bracket fa-md" />
-					<span><h1 class="text-sm">LOG OUT</h1></span></a
-				>
-			</li>
-		</ul>
-	</nav>
-{/if}
+		<li class=" pl-2">
+			<!-- svelte-ignore a11y-invalid-attribute -->
+			<a class=" mt-4 font-bold text-lg" href="#" on:click={logOut}>
+				<i class="fa-solid fa-right-from-bracket fa-md" />
+				<span><h1 class="text-sm">LOG OUT</h1></span></a
+			>
+		</li>
+	</ul>
+</nav>

@@ -4,9 +4,10 @@
 	import { fade } from 'svelte/transition';
 	import { loading } from '$lib/stores/stores';
 
-	import { format } from 'date-fns';
 	import { fetchFarmData } from '$lib/firebase/staticData';
 	import { onMount } from 'svelte';
+	import { dateFormat, updateTime } from '../../lib/components/Data/DateAndTime';
+
 	let farmData: any[] = [];
 	onMount(async () => {
 		farmData = await fetchFarmData();
@@ -21,31 +22,16 @@
 	const h2Style = 'text-1xl md:text-2xl lg:text-2xl';
 	const valueStyle = 'flex justify-center items-center text-7xl md:text-4xl lg:text-8xl';
 
-	const currdate = new Date();
-	const currdateformatted = format(currdate, 'MMMM dd, yyyy');
-
 	$loading = false;
 
 	let currentTime: any;
-
 	onMount(() => {
 		updateTime();
-		// Update the time every second
-		setInterval(updateTime, 1000);
+
+		setInterval(() => {
+			currentTime = updateTime(); // Update the time every second
+		}, 1000);
 	});
-
-	function updateTime() {
-		const now = new Date();
-		let hours = now.getHours();
-		const minutes = now.getMinutes().toString().padStart(2, '0');
-		const seconds = now.getSeconds().toString().padStart(2, '0');
-
-		// Convert hours to 12-hour format and determine AM/PM
-		const ampm = hours >= 12 ? 'PM' : 'AM';
-		hours = hours % 12 || 12;
-
-		currentTime = `${hours}:${minutes}:${seconds} ${ampm}`;
-	}
 </script>
 
 <Modal transitionIn={fade} transitionInParams={{ duration: 200 }} />
@@ -64,7 +50,7 @@
 			</div>
 			<div class="h4">
 				<i class="fa-solid fa-calendar-days" />
-				{currdateformatted}
+				{dateFormat()}
 			</div>
 		</div>
 		<h1 class="h1 mb-10">Welcome to MushProd</h1>

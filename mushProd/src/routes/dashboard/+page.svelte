@@ -25,7 +25,7 @@
 	import { format } from 'date-fns';
 
 	// notif
-	import { sendNotification } from '$lib/stores/addNotification';
+	import { sendNotification } from '$lib/components/Data/addNotification';
 
 	//getting data
 	import { getDatabase, ref, get, query, limitToLast, onValue } from 'firebase/database';
@@ -60,8 +60,8 @@
 
 	// getting data from firebase
 	const rdb = getDatabase();
-	// const dateRef = ref(rdb, `/BETAPEAK/2023-11-11`);
-	const dateRef = ref(rdb, `/BETAPEAK/${formattedDate}`);
+	const dateRef = ref(rdb, `/BETAPEAK/2023-11-11`);
+	// const dateRef = ref(rdb, `/BETAPEAK/${formattedDate}`);
 
 	const queryRef = query(dateRef, limitToLast(1));
 
