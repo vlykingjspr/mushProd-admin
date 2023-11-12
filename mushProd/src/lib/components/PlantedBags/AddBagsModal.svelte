@@ -28,8 +28,7 @@
 
 	let errorMessage: string = '';
 	let isDisable: boolean = false;
-	let toastSucc: any = null;
-	let toastError: any = null;
+
 	async function addData(): Promise<void> {
 		if (!date || !quantity) {
 			errorMessage = 'Date and grams are required.';
