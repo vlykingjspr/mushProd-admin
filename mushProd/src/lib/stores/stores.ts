@@ -5,7 +5,7 @@ export const loading = writable(true);
 export const setLoading = (value: boolean) => {
     loading.set(value);
 };
-export const currentPageTitle = writable('Dashboard');
+export const currentPageTitle = writable('');
 export const notifications = writable({
     id: '',
     date: '',

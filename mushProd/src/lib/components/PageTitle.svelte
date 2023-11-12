@@ -1,4 +1,6 @@
 <script>
+	// @ts-nocheck
+
 	import { currentPageTitle } from '$lib/stores/stores';
 </script>
 

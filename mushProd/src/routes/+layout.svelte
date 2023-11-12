@@ -61,7 +61,7 @@
 			}
 
 			if (user && currentPath === '/') {
-				window.location.href = '/dashboard';
+				window.location.href = '/home';
 
 				return;
 			}
@@ -133,7 +133,7 @@
 		<svelte:fragment slot="footer"><Footer /></svelte:fragment>
 	</AppShell>
 {:else}
-	<slot />
+	<Authenticate />
 {/if}
 
 <style>

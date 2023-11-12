@@ -1,13 +1,10 @@
 <script lang="ts">
 	// firebase data
-	import { onMount } from 'svelte';
-	import { fetchFarmData } from '$lib/firebase/staticData';
 	import {
 		allPlantedBags,
 		allHarvestedGrams,
 		LastDateInBagsRecord
 	} from '../../lib/firebase/allRecord';
-	import type { Timestamp } from 'firebase/firestore';
 	// chart
 	import Chart from '../../lib/components/Charts/Chart.svelte';
 	// components
@@ -34,6 +31,7 @@
 	import { getDatabase, ref, get, query, limitToLast, onValue } from 'firebase/database';
 
 	import { loading } from '$lib/stores/stores';
+	import { onMount } from 'svelte';
 
 	let humd: number;
 	let temp: number;
@@ -42,25 +40,28 @@
 	let gramsCount: number;
 	let lastDatePlanted: any;
 	let notificationSent = false;
-
+	let HourAverage: any;
 	// getting all data of added bags and grams
 	async function fetchData() {
 		bagCount = await allPlantedBags();
 		gramsCount = await allHarvestedGrams();
 		lastDatePlanted = await LastDateInBagsRecord();
+
 		loading.set(false);
 	}
-	fetchData();
+	onMount(() => {
+		fetchData();
+	});
 
 	setLoading(true);
-
 	// creating a current date format
 	const currentDate = new Date();
 	const formattedDate = format(currentDate, 'yyyy-MM-dd');
 
 	// getting data from firebase
 	const rdb = getDatabase();
-	const dateRef = ref(rdb, `/BETAPEAK/${formattedDate}`);
+	const dateRef = ref(rdb, `/BETAPEAK/2023-11-11`);
+	// const dateRef = ref(rdb, `/BETAPEAK/${formattedDate}`);
 
 	const queryRef = query(dateRef, limitToLast(1));
 
@@ -81,8 +82,6 @@
 				notificationSent = true;
 			}
 			loading.set(false);
-
-			// isLoading = false;
 		} else {
 			console.log('it does not exist');
 		}
@@ -161,6 +160,7 @@
 	<div class="w-full text-token grid grid-cols-1 md:grid-cols-3 gap-4 p-4">
 		<!-- Temperature -->
 		<div class={cardStyle}>
+			<span class="ml-2"> Last update on {time}</span>
 			<div class={cardInsideStyle}>
 				<h2 class={h2Style}>Temperature</h2>
 				<hr class="opacity-50" />

@@ -76,6 +76,12 @@
 
 		<ul class="">
 			<li class="mt-4 pl-2">
+				<a class=" mb-4 font-bold text-lg" href="/home" on:click={() => updateTitle('')}>
+					<i class="fa-solid fa-home fa-md" />
+					<span><h1 class="text-sm">HOME</h1></span>
+				</a>
+			</li>
+			<li class="mt-4 pl-2">
 				<a class="font-bold text-lg" href="/dashboard" on:click={() => updateTitle('Dashboard')}>
 					<i class="fa-solid fa-square-poll-vertical fa-md" />
 					<span><h1 class="text-sm">DASHBOARD</h1></span></a

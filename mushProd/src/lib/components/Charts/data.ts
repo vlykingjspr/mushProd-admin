@@ -1,3 +1,20 @@
+
+import { onMount } from 'svelte';
+import { getHourlyAverages } from '../Data/calculateAverage';
+
+
+let tempData;
+let humdData
+
+const averagesArray = await getHourlyAverages();
+
+// Process averagesArray and update data and data2
+const temperatureData = averagesArray.map((entry) => Math.floor(entry.AverageTemperature));
+const humidityData = averagesArray.map((entry) => Math.floor(entry.AverageHumidity));
+
+$: tempData = temperatureData
+$: humdData = humidityData
+
 export const data = {
   labels: [
     '12:00 AM', '1:00 AM', '2:00 AM', '3:00 AM', '4:00 AM', '5:00 AM',
@@ -8,7 +25,7 @@ export const data = {
   datasets: [
     {
       label: 'Temperature',
-      fill: true,
+      // fill: true,
       lineTension: 0.3,
       backgroundColor: 'rgba(225, 204,230, .3)',
       borderColor: 'rgba(11, 104, 158, 0.8)',
@@ -25,11 +42,11 @@ export const data = {
       pointHoverBorderWidth: 2,
       pointRadius: 1,
       pointHitRadius: 10,
-      data: [65, 59, 80, 81, 56, 55, 40, 65, 59, 80, 81, 56, 55, 40, 65, 59, 80, 81, 56, 55, 40, 65, 59, 80, 81, 56, 55, 40],
+      data: tempData,
     },
     {
       label: 'Humidity',
-      fill: true,
+      // fill: true,
       lineTension: 0.3,
       backgroundColor: 'rgba(225, 204,230, .3) ',
       borderColor: 'rgb(35, 26, 136)',
@@ -46,54 +63,7 @@ export const data = {
       pointHoverBorderWidth: 2,
       pointRadius: 1,
       pointHitRadius: 10,
-      data: [28, 48, 40, 19, 86, 27, 90, 28, 48, 40, 19, 86, 27, 90, 28, 48, 40, 19, 86, 27, 90, 86, 27, 90],
-    },
-  ],
-};
-export const data2 = {
-  labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-  datasets: [
-    {
-      label: 'My Other dataset',
-      fill: true,
-      lineTension: 0.3,
-      backgroundColor: 'rgba(225, 204,230, .3)',
-      borderColor: 'rgb(205, 130, 158)',
-      borderCapStyle: 'butt',
-      borderDash: [],
-      borderDashOffset: 0.0,
-      borderJoinStyle: 'miter',
-      pointBorderColor: 'rgb(205, 130,1 58)',
-      pointBackgroundColor: 'rgb(255, 255, 255)',
-      pointBorderWidth: 10,
-      pointHoverRadius: 5,
-      pointHoverBackgroundColor: 'rgb(0, 0, 0)',
-      pointHoverBorderColor: 'rgba(11, 104, 158, 0.8)',
-      pointHoverBorderWidth: 2,
-      pointRadius: 1,
-      pointHitRadius: 10,
-      data: [65, 59, 80, 81, 56, 55, 40],
-    },
-    {
-      label: 'My Others dataset',
-      fill: true,
-      lineTension: 0.3,
-      backgroundColor: 'rgb(59 130 246) ',
-      borderColor: 'rgb(35, 26, 136)',
-      borderCapStyle: 'butt',
-      borderDash: [],
-      borderDashOffset: 0.0,
-      borderJoinStyle: 'miter',
-      pointBorderColor: 'rgb(35, 26, 136)',
-      pointBackgroundColor: 'rgb(255, 255, 255)',
-      pointBorderWidth: 10,
-      pointHoverRadius: 5,
-      pointHoverBackgroundColor: 'rgb(0, 0, 0)',
-      pointHoverBorderColor: 'rgba(220, 220, 220, 1)',
-      pointHoverBorderWidth: 2,
-      pointRadius: 1,
-      pointHitRadius: 10,
-      data: [28, 48, 40, 19, 86, 27, 90],
+      data: humdData,
     },
   ],
 };
