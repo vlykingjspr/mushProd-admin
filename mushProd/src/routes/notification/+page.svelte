@@ -13,18 +13,18 @@
 	import { collection, getDocs, query, doc, onSnapshot } from 'firebase/firestore';
 	import { db } from '$lib/firebase/firebase';
 	import { format } from 'date-fns';
-	import { onMount } from 'svelte';
+	import { onDestroy, onMount } from 'svelte';
 
 	let source: any = [];
 	let tableData: any[] = [];
 	let isLoading = true;
-
+	let unsubscribe: any;
 	onMount(async () => {
 		const userDocRef = doc(db, 'user', '123456');
 		const bagsRecordCollectionRef = collection(userDocRef, 'notifications');
 		const q = query(bagsRecordCollectionRef);
 
-		const unsubscribe = onSnapshot(q, (querySnapshot) => {
+		unsubscribe = onSnapshot(q, (querySnapshot) => {
 			source = [];
 			querySnapshot.forEach((doc) => {
 				const data = doc.data();
@@ -37,7 +37,11 @@
 				isLoading = false;
 			});
 		});
-		// onDestroy(unsubscribe);
+	});
+	onDestroy(() => {
+		if (unsubscribe) {
+			unsubscribe();
+		}
 	});
 	// pagination
 	$: {

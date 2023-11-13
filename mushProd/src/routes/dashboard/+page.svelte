@@ -31,7 +31,7 @@
 	import { getDatabase, ref, get, query, limitToLast, onValue } from 'firebase/database';
 
 	import { loading } from '$lib/stores/stores';
-	import { onMount } from 'svelte';
+	import { onDestroy, onMount } from 'svelte';
 
 	let humd: number;
 	let temp: number;
@@ -46,7 +46,6 @@
 		bagCount = await allPlantedBags();
 		gramsCount = await allHarvestedGrams();
 		lastDatePlanted = await LastDateInBagsRecord();
-
 		loading.set(false);
 	}
 	onMount(() => {
@@ -65,7 +64,7 @@
 
 	const queryRef = query(dateRef, limitToLast(1));
 
-	onValue(queryRef, (snapshot) => {
+	const unsubscribe = onValue(queryRef, (snapshot) => {
 		if (snapshot.exists()) {
 			const data = snapshot.val();
 
@@ -85,6 +84,10 @@
 		} else {
 			console.log('it does not exist');
 		}
+	});
+	onDestroy(() => {
+		// Unsubscribe from Firebase when the component is destroyed
+		unsubscribe();
 	});
 	// modals
 	const modalStore = getModalStore();
@@ -270,13 +273,13 @@
 					<div class={smallValueStyle}>
 						<h1 class={smallerValueStyle}>
 							<strong>
-								{#if lastDatePlanted}
-									{lastDatePlanted}
-								{:else}
+								<!-- {#if lastDatePlanted} -->
+								{lastDatePlanted}
+								<!-- {:else}
 									<div class="flex justify-center items-center">
 										<ProgressRadial width="w-10" value={undefined} />
 									</div>
-								{/if}
+								{/if} -->
 							</strong>
 						</h1>
 					</div>

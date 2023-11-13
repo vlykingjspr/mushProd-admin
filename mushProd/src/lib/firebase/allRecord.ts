@@ -41,22 +41,31 @@ export async function allHarvestedGrams(): Promise<number> {
 export async function LastDateInBagsRecord(): Promise<string | null> {
     const bagsRecordCollectionRef = collection(db, 'user', '123456', 'bags record');
     const q = query(bagsRecordCollectionRef, orderBy('date', 'desc'), limit(1));
-    const querySnapshot = await getDocs(q);
 
-    if (querySnapshot.empty) {
-        return null; // No documents found
+    try {
+        const querySnapshot = await getDocs(q);
+
+        if (querySnapshot.empty) {
+            return null; // No documents found
+        }
+
+        const latestDocument = querySnapshot.docs[0];
+        const data = latestDocument.data();
+
+
+        if (data.date && data.date instanceof Timestamp) {
+            // Convert Firestore Timestamp to JavaScript Date
+            const jsDate = data.date.toDate();
+
+            // Format the JavaScript Date as needed
+            const formattedDate = format(jsDate, 'MMMM dd, yyyy');
+            return formattedDate;
+        } else {
+            console.log('Invalid date format or missing date field');
+            return null;
+        }
+    } catch (error) {
+        console.error('Error fetching data:', error);
+        return null;
     }
-
-    const latestDocument = querySnapshot.docs[0];
-    const data = latestDocument.data();
-
-    if (data.date && typeof data.date.toDate === 'function') {
-        const lastDate = toDate(data.date.toDate());
-        const formattedDate = format(lastDate, 'MMMM dd, yyyy');
-
-
-        return formattedDate;
-    }
-
-    return null;
 }
