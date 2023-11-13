@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Toast, getModalStore } from '@skeletonlabs/skeleton';
+	import { Toast, getModalStore, getToastStore } from '@skeletonlabs/skeleton';
 	import { planted } from '$lib/stores/stores';
 	import { doc, deleteDoc } from 'firebase/firestore';
 	import { db } from '$lib/firebase/firebase';
@@ -9,15 +9,16 @@
 	export let id: string;
 
 	const modalStore = getModalStore();
+	const toastStore = getToastStore();
 
 	function onFormSubmit(): void {
 		modalStore.close();
 	}
 	function removeToast() {
-		showSuccessToast('Bag Removed Successfully');
+		showErrorToast(toastStore, 'Bag Removed Successfully');
 	}
 	function errorToast() {
-		showErrorToast('Failed to Remove Bags');
+		showErrorToast(toastStore, 'Failed to Remove Bags');
 	}
 	// Classes
 	const cBase = 'card p-4 w-modal shadow-xl space-y-4 ';
@@ -33,11 +34,10 @@
 		const bagsRecordDocRef = doc(userDocRef, 'bags record', id);
 		try {
 			await deleteDoc(bagsRecordDocRef);
-			removeToast();
-
 			modalStore.close();
+			removeToast();
 		} catch (error) {
-			// errorToast();
+			errorToast();
 		}
 	}
 </script>
@@ -50,6 +50,8 @@
 				Please Confirm to Remove
 			</div>
 		</header>
+		<hr class="opacity-50" />
+
 		<div>
 			<h1>Are you sure you want to remove the fruiting bags?</h1>
 		</div>

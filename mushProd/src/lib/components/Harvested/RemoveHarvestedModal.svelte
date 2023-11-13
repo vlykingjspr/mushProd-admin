@@ -1,22 +1,25 @@
 <script lang="ts">
-	import { getModalStore } from '@skeletonlabs/skeleton';
+	import { getModalStore, getToastStore } from '@skeletonlabs/skeleton';
 	import { harvested } from '$lib/stores/stores';
 	import { doc, deleteDoc } from 'firebase/firestore';
 	import { db } from '$lib/firebase/firebase';
-	import { showErrorToast } from '../Toast/toast';
+	import { showErrorToast, showSuccessToast } from '../Toast/toast';
 
 	/** Exposes parent props to this component. */
 	export let parent: any;
 
 	// Local
 	const modalStore = getModalStore();
-
+	const toastStore = getToastStore();
 	// Handle Form Submission
 	function onFormSubmit(): void {
 		modalStore.close();
 	}
-	function RemoveToast() {
-		showErrorToast('Harvested Data Removed Successfully');
+	function removeToast() {
+		showErrorToast(toastStore, 'Harvested Data Removed Successfully');
+	}
+	function errorToast(error: any) {
+		showErrorToast(toastStore, `Failed to Remove Harvest Data ${error}`);
 	}
 	// Base Classes
 	const cBase = 'card p-4 w-modal shadow-xl space-y-4 ';
@@ -41,9 +44,9 @@
 		try {
 			await deleteDoc(bagsRecordDocRef);
 			modalStore.close();
-			RemoveToast();
+			removeToast();
 		} catch (error) {
-			console.error('Error deleting document:', error);
+			errorToast(error);
 		}
 	}
 </script>
@@ -58,6 +61,8 @@
 				Please Confirm to Remove
 			</div>
 		</header>
+		<hr class="opacity-50" />
+
 		<div>
 			<h1>Are you sure you want to remove the recorded harvested mushrooms?</h1>
 		</div>

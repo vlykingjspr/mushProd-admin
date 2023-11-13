@@ -1,16 +1,21 @@
 <script lang="ts">
-	import { getModalStore } from '@skeletonlabs/skeleton';
+	import { getModalStore, getToastStore } from '@skeletonlabs/skeleton';
 	import { harvested } from '$lib/stores/stores';
 	import { doc, updateDoc } from 'firebase/firestore';
 	import { db } from '$lib/firebase/firebase';
-	import { showUpdateToast } from '../Toast/toast';
+	import { showErrorToast, showUpdateToast } from '../Toast/toast';
 
 	export let parent: any;
 
 	// Local
 	const modalStore = getModalStore();
+	const toastStore = getToastStore();
+
 	function updatedToast() {
-		showUpdateToast('Harvested Data Updated Successfully');
+		showUpdateToast(toastStore, 'Harvested Data Updated Successfully');
+	}
+	function errorToast(error: any) {
+		showErrorToast(toastStore, `Failed to Updated  Harvested Data ${error}`);
 	}
 	// Classes
 	const cBase = 'card p-4 w-modal shadow-xl space-y-4 ';
@@ -44,7 +49,7 @@
 			modalStore.close();
 			updatedToast();
 		} catch (error) {
-			console.error('Error updating document:', error);
+			errorToast(error);
 		}
 	}
 </script>
@@ -57,9 +62,11 @@
 				Update Harvested Mushrooms
 			</div>
 		</header>
+		<hr class="opacity-50" />
+
 		<div class="input-group input-group-divider grid-cols-[auto_1fr_auto]">
 			<div class="input-group-shim"><i class="fa-solid fa-calendar" /></div>
-			<h1 class="h3 p-2">{date_harvested}</h1>
+			<p class=" p-2">{date_harvested}</p>
 		</div>
 		<div class="input-group input-group-divider grid-cols-[auto_1fr_auto]">
 			<div class="input-group-shim"><i class="fa-solid fa-seedling" /></div>

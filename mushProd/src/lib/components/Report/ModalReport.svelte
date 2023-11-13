@@ -125,7 +125,8 @@
 		<header class={cHeader}>
 			<div class="flex items-center">Generate Report</div>
 		</header>
-		<article />
+		<hr class="opacity-50" />
+
 		<h1 class="text-base">Do you want to generate report ?</h1>
 
 		<!-- prettier-ignore -->

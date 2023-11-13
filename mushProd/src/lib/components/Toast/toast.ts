@@ -1,7 +1,6 @@
-import { getToastStore, type ToastSettings } from '@skeletonlabs/skeleton';
+import type { ToastSettings } from '@skeletonlabs/skeleton';
 
-export function showSuccessToast(message: string): void {
-    const toastStore = getToastStore();
+export function showSuccessToast(toastStore: any, message: string): void {
     const t: ToastSettings = {
         message,
         background: 'variant-filled-success',
@@ -11,8 +10,7 @@ export function showSuccessToast(message: string): void {
     toastStore.trigger(t);
 }
 
-export function showErrorToast(message: string): void {
-    const toastStore = getToastStore();
+export function showErrorToast(toastStore: any, message: string): void {
     const t: ToastSettings = {
         message,
         background: 'variant-filled-error',
@@ -21,8 +19,8 @@ export function showErrorToast(message: string): void {
     toastStore.trigger(t);
 }
 
-export function showUpdateToast(message: string): void {
-    const toastStore = getToastStore();
+export function showUpdateToast(toastStore: any, message: string): void {
+
     const t: ToastSettings = {
         message,
         background: 'variant-filled-tertiary',

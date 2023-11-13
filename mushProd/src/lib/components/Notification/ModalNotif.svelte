@@ -21,6 +21,7 @@
 	let date: string;
 	let id: string;
 	let alertMessage: string;
+	let alertTitle: string;
 	let temperature: string;
 	let humidity: string;
 
@@ -29,6 +30,7 @@
 		selectedRowData = data;
 		id = selectedRowData.id;
 		date = selectedRowData.date;
+		alertTitle = selectedRowData.alertTitle;
 		alertMessage = selectedRowData.alertMessage;
 		temperature = selectedRowData.temperature;
 		humidity = selectedRowData.humidity;
@@ -46,8 +48,15 @@
 			</div>
 		</header>
 		<article />
+		<hr class="opacity-50" />
 
 		<div class="flex justify-between items-center">
+			<h1 class="text-lg">
+				<strong>
+					<i class="fa-solid fa-bell mr-1" />
+					{alertTitle}
+				</strong>
+			</h1>
 			<h1 class="text-lg">
 				<strong>
 					<i class="fa-solid fa-calendar-days mr-1" />
@@ -55,7 +64,6 @@
 				</strong>
 			</h1>
 		</div>
-
 		<div class="flex justify-between items-center">
 			<h1 class="text-base">
 				Optimal Temperature exceed : <strong class="text-1xl md:text-1xl lg:text-2xl"

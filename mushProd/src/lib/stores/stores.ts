@@ -9,6 +9,7 @@ export const currentPageTitle = writable('');
 export const notifications = writable({
     id: '',
     date: '',
+    alertTitle: '',
     temperature: 0,
     humidity: 0,
     alertMessage: ''

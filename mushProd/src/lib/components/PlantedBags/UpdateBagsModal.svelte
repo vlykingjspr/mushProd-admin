@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { getModalStore } from '@skeletonlabs/skeleton';
+	import { getModalStore, getToastStore } from '@skeletonlabs/skeleton';
 	import { planted } from '$lib/stores/stores';
 	import { doc, updateDoc } from 'firebase/firestore'; // Import the necessary Firestore functions
 	import { db } from '$lib/firebase/firebase';
@@ -7,11 +7,13 @@
 
 	export let parent: any;
 	const modalStore = getModalStore();
+	const toastStore = getToastStore();
+
 	function updateToast() {
-		showUpdateToast('Bags Updated Successfully');
+		showUpdateToast(toastStore, 'Bags Updated Successfully');
 	}
 	function errorToast() {
-		showErrorToast('Failed to Update Bags');
+		showErrorToast(toastStore, 'Failed to Update Bags');
 	}
 	// Base Classes
 	const cBase = 'card p-4 w-modal shadow-xl space-y-4 ';
@@ -57,9 +59,11 @@
 		<header class={cHeader}>
 			<div class="flex items-center justify-center">Update Fruiting Bags</div>
 		</header>
+		<hr class="opacity-50" />
+
 		<div class="input-group input-group-divider grid-cols-[auto_1fr_auto]">
 			<div class="input-group-shim"><i class="fa-solid fa-calendar" /></div>
-			<h1 class="h3 p-2">{date}</h1>
+			<p class=" p-2">{date}</p>
 		</div>
 		<div class="input-group input-group-divider grid-cols-[auto_1fr_auto]">
 			<div class="input-group-shim"><i class="fa-solid fa-seedling" /></div>

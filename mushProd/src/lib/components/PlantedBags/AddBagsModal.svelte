@@ -4,19 +4,21 @@
 	import { Timestamp, addDoc, collection } from 'firebase/firestore';
 	import { db } from '$lib/firebase/firebase';
 	import { parse } from 'date-fns';
-	import { tick } from 'svelte';
+	import { onMount, tick } from 'svelte';
 
 	/** Exposes parent props to this component. */
 	export let parent: any;
 
 	// Local
 	const modalStore = getModalStore();
+	const toastStore = getToastStore();
 
 	function addedToast() {
-		showSuccessToast('Bag Recorded Successfully');
+		showSuccessToast(toastStore, 'Bag Recorded Successfully');
 	}
+
 	function errorToast() {
-		showErrorToast('Failed to Record Bags');
+		showErrorToast(toastStore, 'Failed to Record Bags');
 	}
 	// Base Classes
 	const cBase = 'card p-4 w-modal shadow-xl space-y-4 ';
@@ -24,7 +26,7 @@
 
 	let date: any;
 	let quantity: any;
-	let remarks: string;
+	let remarks: string = '';
 
 	let errorMessage: string = '';
 	let isDisable: boolean = false;
@@ -47,13 +49,12 @@
 		try {
 			// Add the data to Firestore
 			const docRef = await addDoc(userDocRef, data);
-			console.log('Document added with ID: ', docRef.id);
+			// console.log('Document added with ID: ', docRef.id);
 
 			addedToast();
-
 			modalStore.close();
 		} catch (error) {
-			console.error('Error adding document: ', error);
+			errorToast();
 		}
 	}
 </script>
@@ -68,6 +69,8 @@
 				Add Fruiting Bags
 			</div>
 		</header>
+		<hr class="opacity-50" />
+
 		<div class="input-group input-group-divider grid-cols-[auto_1fr_auto]">
 			<div class="input-group-shim"><i class="fa-solid fa-calendar" /></div>
 			<input type="date" placeholder="Date" bind:value={date} />

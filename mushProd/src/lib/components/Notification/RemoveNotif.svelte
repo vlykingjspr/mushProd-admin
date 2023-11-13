@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { getModalStore } from '@skeletonlabs/skeleton';
+	import { getModalStore, getToastStore } from '@skeletonlabs/skeleton';
 	import { notifications } from '$lib/stores/stores';
 	import { doc, deleteDoc, collection } from 'firebase/firestore';
 	import { db } from '$lib/firebase/firebase';
@@ -10,28 +10,33 @@
 
 	// Local
 	const modalStore = getModalStore();
+	const toastStore = getToastStore();
+
 	export let id: string;
 
 	let selectedRowData: any;
 	function removeToast() {
-		showErrorToast('Notification Removed Successfully');
+		showErrorToast(toastStore, 'Notification Removed Successfully');
+	}
+	function errorToast() {
+		showErrorToast(toastStore, 'Failed to Remove Notification');
 	}
 	// Handle Form Submission
 	notifications.subscribe((data) => {
 		selectedRowData = data;
 		id = selectedRowData.id;
 	});
-	console.log(id);
+
 	async function confirmRemove(): Promise<void> {
 		const userDocRef = doc(db, 'user', '123456');
 		const bagsRecordDocRef = doc(userDocRef, 'notifications', id);
 		try {
 			await deleteDoc(bagsRecordDocRef);
-			console.log('success');
-			modalStore.close();
 			removeToast();
+
+			modalStore.close();
 		} catch (error) {
-			console.error('Error deleting document:', error);
+			errorToast();
 		}
 	}
 
@@ -51,6 +56,8 @@
 				Please Confirm to Remove
 			</div>
 		</header>
+		<hr class="opacity-50" />
+
 		<div>
 			<h1>Are you sure you want to remove the fruiting bags?</h1>
 		</div>

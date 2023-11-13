@@ -8,34 +8,50 @@ export async function sendNotification(temperature: number, humidity: number) {
 
     let temp: number = temperature;
     let humd: number = humidity;
+    let alertTitleTemp;
+    let alertTitleHumd;
+    let alertTitle;
     let alertMessagetemp;
     let alertMessagehumid;
     let alertMessage = '';
     if (24 >= temperature) {
+        alertTitleTemp = 'Low Temperature'
         alertMessagetemp = 'Low temperature alert: The temperature has dropped to ' + temp + '°C, which is below the recommended threshold.'
     } else if (29 <= temperature) {
+        alertTitleTemp = 'High Temperature'
         alertMessagetemp = 'High temperature alert: The temperature has reached ' + temp + '°C, which is above the recommended threshold.'
     }
     if (85 >= humidity) {
+        alertTitleHumd = 'Low Humidity'
         alertMessagehumid = 'Low humidity alert: The humidity level has dropped to ' + humd + '%, which is below the recommended threshold.'
     } else if (95 <= humidity) {
+        alertTitleHumd = 'High Humidity'
         alertMessagehumid = 'High humidity alert: The humidity level has reached ' + humd + '%, which is above the recommended threshold.'
     }
 
     if (alertMessagetemp && alertMessagehumid) {
-        alertMessage = `${alertMessagetemp}\n${alertMessagehumid}`;
+        alertMessage = `${alertMessagetemp} & ${alertMessagehumid}`;
+
     } else if (alertMessagetemp) {
         alertMessage = alertMessagetemp;
     } else if (alertMessagehumid) {
         alertMessage = alertMessagehumid;
     }
+    if (alertTitleTemp && alertTitleHumd) {
+        alertTitle = `${alertTitleTemp}\n${alertTitleHumd}`;
 
+    } else if (alertTitleTemp) {
+        alertTitle = alertTitleTemp;
+    } else if (alertTitleHumd) {
+        alertTitle = alertTitleHumd;
+    }
     try {
         // Create a reference to the user's collection
         const userCollection = collection(db, 'user', '123456', 'notifications');
 
         // Generate an auto ID for the document
         const docRef = await addDoc(userCollection, {
+            alertTitle: alertTitle,
             alertMessage: alertMessage,
             date: new Date(),
             humidity: humidity,

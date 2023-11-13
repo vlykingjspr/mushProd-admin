@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Modal, ProgressRadial, getModalStore } from '@skeletonlabs/skeleton';
+	import { Modal, ProgressRadial, Toast, getModalStore } from '@skeletonlabs/skeleton';
 	import type { ModalSettings, ModalComponent } from '@skeletonlabs/skeleton';
 	import { fade } from 'svelte/transition';
 	import { Paginator } from '@skeletonlabs/skeleton';
@@ -62,6 +62,7 @@
 		notifications.set({
 			id: row.id,
 			date: row.date,
+			alertTitle: row.alertTitle,
 			temperature: row.temperature,
 			humidity: row.humidity,
 			alertMessage: row.alertMessage
@@ -80,6 +81,7 @@
 		notifications.set({
 			id: row.id,
 			date: row.date,
+			alertTitle: row.alertTitle,
 			temperature: row.temperature,
 			humidity: row.humidity,
 			alertMessage: row.alertMessage
@@ -108,12 +110,15 @@
 		<ProgressRadial value={undefined} />
 	</div>
 {:else}
+	<Toast />
+
 	<!-- Display the page content when isLoading is false -->
 	<div class=" m-5">
 		<table class="table table-hover">
 			<thead>
 				<tr
 					><th><i class="fa-solid fa-calendar-days mr-2" />Date</th>
+					<th><i class="fa-solid fa-bell mr-2" />Alert Title</th>
 					<th><i class="fa-solid fa-temperature-three-quarters mr-2" />Temperature</th>
 					<th> <i class="fa-solid fa-droplet mr-2" />Humidity</th>
 					<th> <i class="fa-solid fa-circle-exclamation mr-2" />Alert Message</th>
@@ -126,6 +131,7 @@
 				{#each paginatedSource as row (row.id)}
 					<tr class="" on:click={() => modalData(row)}>
 						<td>{row.date}</td>
+						<td>{row.alertTitle}</td>
 						<td>{row.temperature}</td>
 						<td>{row.humidity}</td>
 

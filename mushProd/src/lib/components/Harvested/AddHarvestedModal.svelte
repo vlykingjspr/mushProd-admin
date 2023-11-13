@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { getModalStore } from '@skeletonlabs/skeleton';
+	import { getModalStore, getToastStore } from '@skeletonlabs/skeleton';
 	import { collection, addDoc, Timestamp } from 'firebase/firestore';
 	import { showSuccessToast, showErrorToast } from '../Toast/toast';
 
@@ -11,12 +11,12 @@
 
 	// Local
 	const modalStore = getModalStore();
-
+	const toastStore = getToastStore();
 	function addedToast() {
-		showSuccessToast('Harvest Data Recorded Successfully');
+		showSuccessToast(toastStore, 'Harvest Data Recorded Successfully');
 	}
-	function errorToast() {
-		showErrorToast('Failed to Record Harvest Data');
+	function errorToast(error: any) {
+		showErrorToast(toastStore, `Failed to Record Harvest Data ${error}`);
 	}
 
 	// Base Classes
@@ -52,7 +52,7 @@
 			// Close the modal
 			modalStore.close();
 		} catch (error) {
-			// errorToast();
+			errorToast(error);
 		}
 	}
 </script>
@@ -67,6 +67,8 @@
 				Add Harvested Data
 			</div>
 		</header>
+		<hr class="opacity-50" />
+
 		<div class="input-group input-group-divider grid-cols-[auto_1fr_auto]">
 			<div class="input-group-shim"><i class="fa-solid fa-calendar" /></div>
 			<input type="date" placeholder="Date" bind:value={date_harvested} />

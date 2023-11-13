@@ -41,7 +41,9 @@
 				Record
 			</div>
 		</header>
-		<article />
+
+		<hr class="opacity-50" />
+
 		<div class="flex justify-between items-center">
 			<h1 class="text-lg">
 				<strong>

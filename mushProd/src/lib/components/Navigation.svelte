@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { getDrawerStore, type ModalSettings } from '@skeletonlabs/skeleton';
+	import { getDrawerStore, Toast, type ModalSettings } from '@skeletonlabs/skeleton';
 	import { currentPageTitle } from '$lib/stores/stores';
 	import { Avatar } from '@skeletonlabs/skeleton';
 	import { authHandlers } from '$lib/stores/Authstore';
@@ -26,8 +26,9 @@
 		const modal: ModalSettings = {
 			type: 'confirm',
 			// Data
-			title: '<i class="fa-solid fa-right-from-bracket"></i> Please Confirm',
-			body: 'Are you sure you wish to proceed?',
+			title:
+				'<i class="fa-solid fa-right-from-bracket"></i> Please Confirm<hr class="opacity-50" /> ',
+			body: ' Are you sure you wish to proceed?',
 
 			response: async (confirmed: boolean) => {
 				if (confirmed) {

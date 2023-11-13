@@ -77,7 +77,7 @@
 
 			if (24 >= temp && 85 >= humd && 29 <= temp && 95 <= humd) {
 				// uncomment to send notif
-				// sendNotification(temp, humd);
+				sendNotification(100, 100);
 
 				notificationSent = true;
 			}
