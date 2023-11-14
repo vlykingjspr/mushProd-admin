@@ -7,6 +7,8 @@
 	import { onMount } from 'svelte';
 	import { loading, setLoading } from '$lib/stores/stores';
 	import { fetchFarmData } from '$lib/firebase/staticData';
+	import { updateTab } from '../../routes/records/pageTab';
+
 	let farmData: any[] = [];
 	onMount(async () => {
 		farmData = await fetchFarmData();
@@ -40,6 +42,10 @@
 		};
 		modalStore.trigger(modal);
 	}
+	function updateTabs(tabNumber: number) {
+		updateTitle('Records');
+		updateTab(tabNumber);
+	}
 </script>
 
 <nav class="list-nav">
@@ -59,11 +65,9 @@
 					{farm.farm_name}
 				</strong>
 			</p>
-			<p class="mr-2 flex items-center">
-				<strong>
-					<i class="fa-solid fa-location-dot text-base mr-4" />
-					{farm.farm_address}
-				</strong>
+			<p class="mr-2 flex items-center text-xs">
+				<i class="fa-solid fa-location-dot text-base mr-4" />
+				{farm.farm_address}
 			</p>
 		{/each}
 	</div>
@@ -85,7 +89,7 @@
 		</li>
 
 		<li class="mt-8 pl-2">
-			<a class="mt-4 font-bold text-lg" href="/records" on:click={() => updateTitle('Records')}>
+			<a class="mt-4 font-bold text-lg" href="/records" on:click={() => updateTabs(0)}>
 				<i class="fa-solid fa-sheet-plastic fa-md" />
 				<span><h1 class="text-sm">RECORDS</h1></span></a
 			>

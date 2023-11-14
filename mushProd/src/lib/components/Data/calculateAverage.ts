@@ -1,7 +1,9 @@
+import { db } from '$lib/firebase/firebase';
 import { loading } from '$lib/stores/stores';
 import { format } from 'date-fns';
 
 import { getDatabase, limitToLast, onValue, query, ref } from 'firebase/database';
+import { Timestamp, addDoc, collection } from 'firebase/firestore';
 
 const currentDate = new Date();
 const formattedDate = format(currentDate, 'yyyy-MM-dd');
@@ -54,4 +56,45 @@ export function getHourlyAverages(): Promise<{ Hour: string, AverageHumidity: nu
             }
         });
     });
+}
+
+export async function getDailyAverage(): Promise<{ AverageHumidity: number; AverageTemperature: number; Date: Timestamp }> {
+    try {
+        const hourlyAverages = await getHourlyAverages();
+
+        // Extract hourly averages to calculate daily averages
+        const humidities = hourlyAverages.map((hourly) => hourly.AverageHumidity);
+        const temperatures = hourlyAverages.map((hourly) => hourly.AverageTemperature);
+
+        const dailyAverageHumidity = calculateAverage(humidities);
+        const dailyAverageTemperature = calculateAverage(temperatures);
+
+        const formattedDailyAverageHumidity = parseFloat(dailyAverageHumidity.toFixed(2));
+        const formattedDailyAverageTemperature = parseFloat(dailyAverageTemperature.toFixed(2));
+
+        const timestamp = new Timestamp(currentDate.getTime() / 1000, 0);
+
+        // Store data in Firestore
+
+        const userDocRef = collection(db, 'user', '123456', 'temp and humid');
+
+        await addDoc(userDocRef, {
+            'ave temp': formattedDailyAverageTemperature,
+            'ave humidity': formattedDailyAverageHumidity,
+            'date': timestamp,
+        });
+
+        return {
+            AverageHumidity: formattedDailyAverageHumidity,
+            AverageTemperature: formattedDailyAverageTemperature,
+            Date: timestamp,
+        };
+    } catch (error) {
+        console.error('Error:', error);
+        throw error;
+    }
+
+
+
+    return new Promise((resolve, reject) => { })
 }

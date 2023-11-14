@@ -4,11 +4,9 @@
 	import { Modal, ProgressRadial } from '@skeletonlabs/skeleton';
 	import { fade } from 'svelte/transition';
 	import { loading } from '$lib/stores/stores';
-
 	import { fetchFarmData } from '$lib/firebase/staticData';
 	import { onMount } from 'svelte';
 	import { dateFormat, updateTime } from '../../lib/components/Data/DateAndTime';
-
 	import { updateTab } from '../records/pageTab';
 
 	function updatePage(tabNumber: number) {}
@@ -41,6 +39,7 @@
 		updateTitle('Records');
 		updateTab(tabNumber);
 	}
+	import { getDailyAverage } from '$lib/components/Data/calculateAverage';
 </script>
 
 <Modal transitionIn={fade} transitionInParams={{ duration: 200 }} />
@@ -52,32 +51,37 @@
 	</div>
 {:else}
 	<div class=" ml-4">
-		<div class="flex items-center justify-end mr-2">
-			<div class="h4 mr-8">
-				<div class="flex items-center justify-center">
-					<i class="fa-solid fa-clock mr-2" />
-					{#if currentTime}
-						{currentTime}
-					{:else}
-						<ProgressRadial width="w-5" value={undefined} />
-					{/if}
-				</div>
-			</div>
-			<div class="h4">
-				<i class="fa-solid fa-calendar-days" />
-				{dateFormat()}
-			</div>
-		</div>
 		<h1 class="h1 mb-10">Welcome to MushProd</h1>
+		<button on:click={() => getDailyAverage()} class="grow btn btn-sm variant-filled-primary"
+			>sad</button
+		>
 	</div>
 	<div class="flex items-center justify-center">
-		<div class="w-full text-token grid grid-cols-1 md:grid-cols-2 gap-4 p-4">
-			<div class={cardStyle}>
+		<div class="w-full text-token grid grid-cols-2 md:grid-cols-3 gap-4 p-4">
+			<div class={`${cardStyle} md:col-span-2`}>
 				<div class={cardInsideStyle}>
 					{#each farmData as farm}
-						<h2 class={h2Style}>
-							{farm.farm_name}
-						</h2>
+						<div class="flex items-center">
+							<h2 class={h2Style}>
+								{farm.farm_name}
+							</h2>
+							<div class="flex items-center justify-end mr-2 ml-auto">
+								<div class="h4 mr-8">
+									<div class="flex items-center justify-center">
+										<i class="fa-solid fa-clock mr-2" />
+										{#if currentTime}
+											{currentTime}
+										{:else}
+											<ProgressRadial width="w-5" value={undefined} />
+										{/if}
+									</div>
+								</div>
+								<div class="h4">
+									<i class="fa-solid fa-calendar-days" />
+									{dateFormat()}
+								</div>
+							</div>
+						</div>
 						<hr class="opacity-50 mb-2" />
 						<p class="">
 							<i class="fa-solid fa-user text-base mr-2" />
@@ -149,6 +153,32 @@
 
 						<div class={valueStyle}>
 							<i class="fa-solid fa-clipboard fa-md" />
+						</div>
+					</a>
+				</div>
+			</div>
+			<div class={cardStyle}>
+				<div class={cardInsideStyle}>
+					<a href="/records" on:click={() => updateTabs(3)}>
+						<h2 class={h2Style}>Removed Bags</h2>
+
+						<hr class="opacity-50 mb-2" />
+
+						<div class={valueStyle}>
+							<i class="fa-solid fa-trash fa-md" />
+						</div>
+					</a>
+				</div>
+			</div>
+			<div class={cardStyle}>
+				<div class={cardInsideStyle}>
+					<a href="/records" on:click={() => updateTabs(4)}>
+						<h2 class={h2Style}>Temperature & Humidity</h2>
+
+						<hr class="opacity-50 mb-2" />
+
+						<div class={valueStyle}>
+							<i class="fa-solid fa-temperature-high fa-md" />
 						</div>
 					</a>
 				</div>

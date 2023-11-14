@@ -52,37 +52,39 @@
 		fetchData();
 	});
 
-	setLoading(true);
+	// setLoading(true);
 	// creating a current date format
 	const currentDate = new Date();
 	const formattedDate = format(currentDate, 'yyyy-MM-dd');
-
 	// getting data from firebase
 	const rdb = getDatabase();
 	// const dateRef = ref(rdb, `/BETAPEAK/2023-11-11`);
-	const dateRef = ref(rdb, `/BETAPEAK/${formattedDate}`);
+	const dateRef = ref(rdb, `BETAPEAK/${formattedDate}`);
 
 	const queryRef = query(dateRef, limitToLast(1));
-
 	const unsubscribe = onValue(queryRef, (snapshot) => {
-		if (snapshot.exists()) {
-			const data = snapshot.val();
+		try {
+			if (snapshot.exists()) {
+				const data = snapshot.val();
 
-			const lastEntryKey = Object.keys(data)[0];
-			const lastEntry = data[lastEntryKey];
-			humd = lastEntry.Humd;
-			temp = lastEntry.Temp;
-			time = lastEntry.Time;
+				const lastEntryKey = Object.keys(data)[0];
+				const lastEntry = data[lastEntryKey];
+				humd = lastEntry.Humd;
+				temp = lastEntry.Temp;
+				time = lastEntry.Time;
 
-			if (24 >= temp && 85 >= humd && 29 <= temp && 95 <= humd) {
-				// uncomment to send notif
-				sendNotification(100, 100);
+				if (24 >= temp && 85 >= humd && 29 <= temp && 95 <= humd) {
+					// uncomment to send notif
+					// sendNotification(100, 100);
 
-				notificationSent = true;
+					notificationSent = true;
+				}
+				setLoading(false);
+			} else {
+				console.log('it does not exist');
 			}
-			loading.set(false);
-		} else {
-			console.log('it does not exist');
+		} catch (error) {
+			console.log('Error fetching data: ', error);
 		}
 	});
 	onDestroy(() => {
@@ -135,10 +137,11 @@
 	// styles
 	const cardStyle = 'card card-hover overflow-hidden ';
 	const chartStyle = 'card card-hover bg-surface-100 overflow-hidden ';
-	const cardInsideStyle = 'p-4 space-y-4 ';
+	const cardInsideStyle = ' p-4 space-y-4 ';
+	const cardInsideStyle2 = ' p-4 space-y-6 ';
 	const h2Style = 'text-1xl md:text-2xl lg:text-2xl';
 	const h3Style = 'text-l md:text-1xl lg:text-1xl';
-	const valueStyle = 'flex justify-center items-center text-7xl md:text-4xl lg:text-8xl';
+	const valueStyle = 'flex justify-center items-center text-7xl md:text-4xl lg:text-6xl ';
 	const smallValueStyle = 'flex justify-center items-center text-5xl';
 	const smallerValueStyle = 'flex justify-center items-center text-2xl';
 
@@ -158,13 +161,12 @@
 		<ProgressRadial value={undefined} />
 	</div>
 {:else}
-	<div class="w-full text-token grid grid-cols-1 md:grid-cols-3 gap-4 p-4">
+	<div class="w-full text-token grid grid-cols-1 md:grid-cols-4 gap-4 p-4">
 		<!-- Temperature -->
-
 		<div class={cardStyle}>
-			<div class={cardInsideStyle}>
-				<div class="flex items-start">
-					<i class="fa-solid fa-temperature-three-quarters text-3xl mr-2" />
+			<div class={cardInsideStyle2}>
+				<div class="flex items-start mt-2">
+					<i class="fa-solid fa-temperature-three-quarters text-2xl mr-2" />
 					<h2 class={h2Style}>Temperature</h2>
 				</div>
 				<hr class="opacity-50" />
@@ -181,9 +183,9 @@
 		</div>
 		<!-- Humidity -->
 		<div class={cardStyle}>
-			<div class={cardInsideStyle}>
-				<div class="flex items-start">
-					<i class="fa-solid fa-droplet text-3xl mr-2" />
+			<div class={cardInsideStyle2}>
+				<div class="flex items-start mt-2">
+					<i class="fa-solid fa-droplet text-2xl mr-2" />
 					<h2 class={h2Style}>Humidity</h2>
 				</div>
 				<hr class="opacity-50" />
@@ -254,7 +256,61 @@
 				</a>
 			</div>
 		</div>
-		<div class={`md:col-span-2 `}>
+		<div class={cardStyle}>
+			<div class={cardInsideStyle}>
+				<a href="/records" on:click={() => updateTitle('Records')}>
+					<div>
+						<div class="flex items-start">
+							<i class="fa-solid fa-seedling fa-md text-base mr-2" />
+							<h3 class={h3Style}>Mushroom</h3>
+						</div>
+						<hr class="opacity-50" />
+
+						<div class="flex items-center justify-between">
+							<div>
+								{#if bagCount}
+									<strong><div class={smallerValueStyle}><h1>{bagCount} pcs.</h1></div></strong>
+								{:else}
+									<div class="flex justify-center items-center">
+										<ProgressRadial width="w-10" value={undefined} />
+									</div>
+								{/if}
+							</div>
+							<div class="flex justify-center align-center space-x-4 m-4">
+								<button class="grow btn btn-sm variant-filled-primary" on:click={showAddBagModal}
+									>Add</button
+								>
+							</div>
+						</div>
+					</div>
+					<div>
+						<div class="flex items-start">
+							<i class="fa-solid fa-trash fa-md text-base mr-2" />
+							<h3 class={h3Style}>Total Removed</h3>
+						</div>
+						<hr class="opacity-50" />
+						<div class="flex items-center justify-between">
+							<div>
+								{#if gramsCount}
+									<strong><div class={smallerValueStyle}><h1>{gramsCount} bags</h1></div></strong>
+								{:else}
+									<div class="flex justify-center items-center">
+										<ProgressRadial width="w-10" value={undefined} />
+									</div>
+								{/if}
+							</div>
+							<div class="flex justify-center align-center space-x-4 m-4">
+								<button
+									class="grow btn btn-sm variant-filled-primary"
+									on:click={showAddHarvestModal}>Remove Bags</button
+								>
+							</div>
+						</div>
+					</div>
+				</a>
+			</div>
+		</div>
+		<div class={`md:col-span-3 `}>
 			<div class={`p-4  ${cardStyle}`}>
 				<div class={`p-4 bg-surface-100  `}>
 					<Chart />
