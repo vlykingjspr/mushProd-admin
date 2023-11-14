@@ -59,8 +59,8 @@
 
 	// getting data from firebase
 	const rdb = getDatabase();
-	const dateRef = ref(rdb, `/BETAPEAK/2023-11-11`);
-	// const dateRef = ref(rdb, `/BETAPEAK/${formattedDate}`);
+	// const dateRef = ref(rdb, `/BETAPEAK/2023-11-11`);
+	const dateRef = ref(rdb, `/BETAPEAK/${formattedDate}`);
 
 	const queryRef = query(dateRef, limitToLast(1));
 

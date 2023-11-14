@@ -86,7 +86,7 @@
 
 		<li class="mt-8 pl-2">
 			<a class="mt-4 font-bold text-lg" href="/records" on:click={() => updateTitle('Records')}>
-				<i class="fa-solid fa-clipboard fa-md" />
+				<i class="fa-solid fa-sheet-plastic fa-md" />
 				<span><h1 class="text-sm">RECORDS</h1></span></a
 			>
 		</li>
