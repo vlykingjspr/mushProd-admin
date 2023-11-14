@@ -52,13 +52,13 @@
 {:else}
 	<div class=" ml-4">
 		<h1 class="h1 mb-10">Welcome to MushProd</h1>
-		<button on:click={() => getDailyAverage()} class="grow btn btn-sm variant-filled-primary"
-			>sad</button
-		>
+		<!-- <button on:click={() => getDailyAverage()} class="grow btn btn-sm variant-filled-primary"
+			>Add Temp
+		</button> -->
 	</div>
 	<div class="flex items-center justify-center">
-		<div class="w-full text-token grid grid-cols-2 md:grid-cols-3 gap-4 p-4">
-			<div class={`${cardStyle} md:col-span-2`}>
+		<div class="w-full text-token grid sm:grid-cols-1 md:grid-cols-3 gap-4 p-4">
+			<div class={`${cardStyle} sm:col-span-1 md:col-span-2`}>
 				<div class={cardInsideStyle}>
 					{#each farmData as farm}
 						<div class="flex items-center">
@@ -66,7 +66,7 @@
 								{farm.farm_name}
 							</h2>
 							<div class="flex items-center justify-end mr-2 ml-auto">
-								<div class="h4 mr-8">
+								<div class=" mr-8">
 									<div class="flex items-center justify-center">
 										<i class="fa-solid fa-clock mr-2" />
 										{#if currentTime}
@@ -76,7 +76,7 @@
 										{/if}
 									</div>
 								</div>
-								<div class="h4">
+								<div class="">
 									<i class="fa-solid fa-calendar-days" />
 									{dateFormat()}
 								</div>

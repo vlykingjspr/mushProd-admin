@@ -26,6 +26,12 @@ export const planted = writable({
     quantity: 0,
     remarks: '',
 });
+export const tempHumid = writable({
+    id: '',
+    date: '',
+    ave_temp: 0,
+    ave_humd: 0,
+});
 export const report = writable({
     // date: '',
 });
