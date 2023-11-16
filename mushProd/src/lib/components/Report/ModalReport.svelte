@@ -70,8 +70,8 @@
 	});
 </script>
 
-<!-- <div style="display: none;"> -->
-<div>
+<div style="display: none;">
+<!-- <div> -->
 	<div id="element">
 		<h1 class="report-heading flex justify-center items-center text-4xl">
 			MushProd: NodeMCU-Based and Yield Prediction System for Oyster Mushroom System Report
