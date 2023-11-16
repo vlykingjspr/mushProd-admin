@@ -23,7 +23,7 @@ export function getHourlyAverages(): Promise<{ Hour: string, AverageHumidity: nu
     return new Promise((resolve, reject) => {
         const rdb = getDatabase();
         // const dateRef = ref(rdb, `/BETAPEAK/${formattedDate}`);
-        const dateRef = ref(rdb, `/BETAPEAK/2023-11-14`);
+        const dateRef = ref(rdb, `/BETAPEAK/2023-11-15`);
         const queryRef = query(dateRef);
 
         const hourlyAverages: Record<string, { Humd: number; Temp: number }[]> = {};

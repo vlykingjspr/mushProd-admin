@@ -76,22 +76,22 @@
 			{/if}
 		</button>
 	</form>
-	<div class="option">
-		<p>Or</p>
+	<!-- <div class="option"> -->
+	<!-- <p>Or</p>
 		{#if register}
 			<div>
 				<p>Already have an account</p>
 				<!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
-				<p on:click={handleRegister} on:keydown={() => {}}>Login</p>
+	<!-- <p on:click={handleRegister} on:keydown={() => {}}>Login</p>
 			</div>
-		{:else}
-			<div>
-				<p>Don't have an account</p>
+		{:else} -->
+	<!-- <div> -->
+	<!-- <p>Don't have an account</p>
 				<!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
-				<p on:click={handleRegister} on:keydown={() => {}}>Register</p>
-			</div>
-		{/if}
-	</div>
+	<!-- <p on:click={handleRegister} on:keydown={() => {}}>Register</p> -->
+	<!-- </div> -->
+	<!-- {/if} -->
+	<!-- </div>  -->
 </div>
 
 <style>

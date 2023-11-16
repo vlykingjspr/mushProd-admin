@@ -4,10 +4,11 @@
 	import { fade } from 'svelte/transition';
 	import { Paginator } from '@skeletonlabs/skeleton';
 	// modals
-
+	import AddModal from '$lib/components/PlantedBags/AddBagsModal.svelte';
+	import UpdateModal from '$lib/components/PlantedBags/UpdateBagsModal.svelte';
 	import DeleteModal from '$lib/components/PlantedBags/RemoveBagsModal.svelte';
-	import ModalTempHumid from '$lib/components/TempHumid/ModalTempHumid.svelte';
-	import { tempHumid } from '$lib/stores/stores';
+	import ModalRecordPlanted from '$lib/components/PlantedBags/ModalRecordPlanted.svelte';
+	import { planted } from '$lib/stores/stores';
 
 	// toast
 	import { Toast, getToastStore } from '@skeletonlabs/skeleton';
@@ -18,11 +19,17 @@
 	import { db } from '$lib/firebase/firebase';
 	import { format } from 'date-fns';
 	import { onDestroy, onMount } from 'svelte';
+	import { allPlantedBags } from '../../../lib/firebase/allRecord';
 	let source: any = [];
 
 	let isLoading = true;
 	// Function to calculate the total number of bags
 	let searchQuery = '';
+
+	let bagCount: number;
+	async function fetchData() {
+		bagCount = await allPlantedBags();
+	}
 
 	const toastStore = getToastStore();
 	const t: ToastSettings = {
@@ -35,8 +42,8 @@
 	// Create a Firestore listener and initialize tableData
 	onMount(async () => {
 		const userDocRef = doc(db, 'user', '123456');
-		const bagsRecordCollectionRef = collection(userDocRef, 'temp and humid');
-		const q = query(bagsRecordCollectionRef, orderBy('date', 'desc'));
+		const bagsRecordCollectionRef = collection(userDocRef, 'bags record');
+		const q = query(bagsRecordCollectionRef, orderBy('date', 'asc'));
 
 		const unsubscribe = onSnapshot(q, (querySnapshot) => {
 			source = [];
@@ -48,13 +55,13 @@
 					// Convert Firestore Timestamp to JavaScript Date
 					data.date = format(data.date.toDate(), 'MMMM dd, yyyy');
 				}
-
 				// Add the ID to the data object
 				data.id = doc.id;
 				// tableData.push(data);
 				source.push(data);
 			});
 
+			fetchData();
 			isLoading = false;
 		});
 
@@ -79,14 +86,13 @@
 	//Modals for clicking data
 	const modalStore = getModalStore();
 	function modalData(row: any): void {
-		const c: ModalComponent = { ref: ModalTempHumid };
-		tempHumid.set({
+		const c: ModalComponent = { ref: ModalRecordPlanted };
+		planted.set({
 			id: row.id,
 			date: row.date,
-			ave_temp: row['ave temp'],
-			ave_humd: row['ave humidity']
+			quantity: row.quantity,
+			remarks: row.remarks
 		});
-
 		const modal: ModalSettings = {
 			type: 'component',
 			component: c,
@@ -95,14 +101,23 @@
 		};
 		modalStore.trigger(modal);
 	}
-
-	function showDeleteModal(row: any): void {
-		const c: ModalComponent = { ref: DeleteModal };
-		tempHumid.set({
+	function showAddModal(): void {
+		const c: ModalComponent = { ref: AddModal };
+		const modal: ModalSettings = {
+			type: 'component',
+			component: c,
+			title: '',
+			body: ''
+		};
+		modalStore.trigger(modal);
+	}
+	function showUpdateModal(row: any): void {
+		const c: ModalComponent = { ref: UpdateModal };
+		planted.set({
 			id: row.id,
 			date: row.date,
-			ave_temp: row['ave temp'],
-			ave_humd: row['ave humidity']
+			quantity: row.quantity,
+			remarks: row.remarks
 		});
 		const modal: ModalSettings = {
 			type: 'component',
@@ -111,6 +126,28 @@
 			body: ''
 		};
 		modalStore.trigger(modal);
+	}
+	function showDeleteModal(row: any): void {
+		const c: ModalComponent = { ref: DeleteModal };
+		planted.set({
+			id: row.id,
+			date: row.date,
+			quantity: row.quantity,
+			remarks: row.remarks
+		});
+		const modal: ModalSettings = {
+			type: 'component',
+			component: c,
+			title: '',
+			body: ''
+		};
+		modalStore.trigger(modal);
+	}
+	function truncateText(text: string, maxLength: number = 22): string {
+		if (text.length > maxLength) {
+			return `${text.slice(0, maxLength)}...`;
+		}
+		return text;
 	}
 
 	function rowMatchesSearch(row: any): boolean {
@@ -131,6 +168,15 @@
 				paginationSettings.page * paginationSettings.limit + paginationSettings.limit
 			);
 	}
+	const cardStyle = 'card card-hover overflow-hidden ';
+	const chartStyle = 'card card-hover bg-surface-100 overflow-hidden ';
+	const cardInsideStyle = ' p-4 space-y-4 ';
+	const cardInsideStyle2 = ' p-4 space-y-6 ';
+	const h2Style = 'text-1xl md:text-2xl lg:text-2xl';
+	const h3Style = 'text-l md:text-1xl lg:text-1xl';
+	const valueStyle = 'text-xs md:text-sm lg:text-md ';
+	const smallValueStyle = 'flex justify-center items-center text-5xl';
+	const smallerValueStyle = 'flex justify-center items-center text-2xl';
 </script>
 
 <Modal transitionIn={fade} transitionInParams={{ duration: 200 }} />
@@ -142,6 +188,41 @@
 	</div>
 {:else}
 	<Toast />
+	<div class="w-full text-token grid grid-cols-1 md:grid-cols-4 gap-4 p-4">
+		<div class={cardStyle}>
+			<div class={cardInsideStyle2}>
+				<div class="flex items-start mt-2">
+					<i class="fa-solid fa-temperature-three-quarters text-2xl mr-2" />
+					<h2 class={h2Style}>Batch Code</h2>
+				</div>
+				<hr class="opacity-50" />
+				<div class={valueStyle}>
+					<!-- {#if {true}} -->
+					<div class="flex items-center">
+						<i class="fa-solid fa-calendar-days mr-2" />
+						<h1>Date</h1>
+					</div>
+					<div class="flex items-center">
+						<i class="fa-solid fa-bag-shopping mr-2" />
+						<h1>Total Bags</h1>
+					</div>
+					<div class="flex items-center">
+						<i class="fa-solid fa-calendar-days mr-2" />
+						<h1>Total Harvest</h1>
+					</div>
+					<div class="flex items-center">
+						<i class="fa-solid fa-calendar-days mr-2" />
+						<h1>Total Bags</h1>
+					</div>
+					<!-- {:else}
+						<div class="flex justify-center items-center">
+							<ProgressRadial width="w-20" value={undefined} />
+						</div>
+					{/if} -->
+				</div>
+			</div>
+		</div>
+	</div>
 	<div class=" m-5">
 		<div class=" flex items-center justify-center">
 			<input
@@ -159,19 +240,37 @@
 			<thead>
 				<tr>
 					<th><i class="fa-solid fa-calendar-days mr-2" />Date</th>
-					<th><i class="fa-solid fa-temperature-high mr-2" />Temperature</th>
-					<th> <i class="fa-solid fa-pen-to-square mr-2" />Humidity</th>
-					<th />
+					<th><i class="fa-solid fa-bag-shopping mr-2" />Number of Bags</th>
+					<th> <i class="fa-solid fa-pen-to-square mr-2" />Remarks</th>
+					<th class="flex items-center justify-center"
+						><button
+							type="button"
+							class="btn btn-sm variant-filled-primary mr-2"
+							on:click={showAddModal}
+						>
+							<i class="fa-solid fa-plus" />
+							<span>Add</span>
+						</button></th
+					>
 				</tr>
 			</thead>
 			<tbody>
 				{#each paginatedSource as row (row.id)}
 					<tr class="" on:click={() => modalData(row)}>
 						<td>{row.date}</td>
-						<td>{row['ave temp']}</td>
-						<td>{row['ave humidity']}</td>
+						<td>{row.quantity}</td>
+						<td>{truncateText(row.remarks)}</td>
 						<td class="flex items-center justify-center">
-							<!-- <button
+							<button
+								type="button"
+								class="btn btn-sm variant-filled-tertiary mr-2"
+								on:click|stopPropagation={() => {
+									showUpdateModal(row);
+								}}
+							>
+								<i class="fa-solid fa-pen-to-square" />
+								<span>Update</span>
+							</button><button
 								type="button"
 								class="btn btn-sm variant-filled-error"
 								on:click|stopPropagation={() => {
@@ -180,7 +279,7 @@
 							>
 								<i class="fa-solid fa-trash" />
 								<span>Remove</span>
-							</button> -->
+							</button>
 						</td>
 					</tr>
 				{/each}
@@ -188,6 +287,17 @@
 			<tfoot>
 				<tr>
 					<th colspan="3">
+						<h1 class="mb-2">
+							Total Bags Planted: <span class="text-2xl">
+								{#if bagCount}
+									{bagCount} bags
+								{:else}
+									<div class="flex justify-center items-center">
+										<ProgressRadial width="w-10" value={undefined} />
+									</div>
+								{/if}
+							</span>
+						</h1>
 						<Paginator
 							bind:settings={paginationSettings}
 							showFirstLastButtons={false}

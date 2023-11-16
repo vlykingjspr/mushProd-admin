@@ -25,8 +25,8 @@
 	import Footer from '$lib/components/Footer.svelte';
 
 	import Authenticate from '$lib/components/Authenticate.svelte';
+
 	storePopup.set({ computePosition, autoUpdate, flip, shift, offset, arrow });
-	let loadingDelay: NodeJS.Timeout;
 
 	initializeStores();
 	const drawerStore = getDrawerStore();

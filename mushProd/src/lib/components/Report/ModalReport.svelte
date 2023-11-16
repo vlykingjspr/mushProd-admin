@@ -4,10 +4,55 @@
 	import { onMount } from 'svelte';
 	import { download } from './Download';
 	import { dateFormat } from '../Data/DateAndTime';
-
+	import { fetchFarmData } from '../../firebase/staticData';
+	import {
+		allPlantedBags,
+		allHarvestedGrams,
+		LastDateInBagsRecord,
+		LastDateInHarvest
+	} from '../../firebase/allRecord';
+	import { collection, doc, onSnapshot, orderBy, query } from 'firebase/firestore';
+	import { db } from '$lib/firebase/firebase';
+	import { format } from 'date-fns';
 	/** Exposes parent props to this component. */
 	export let parent: any;
+	let farmData: any[] = [];
+	let planted: any;
+	let harvest: any;
+	let lastDate: any;
+	let lastDateHarv: any;
+	let source: any = [];
+	onMount(async () => {
+		farmData = await fetchFarmData();
+		planted = await allPlantedBags();
+		harvest = await allHarvestedGrams();
+		lastDate = await LastDateInBagsRecord();
+		lastDateHarv = await LastDateInHarvest();
+		console.log(lastDateHarv);
+		const userDocRef = doc(db, 'user', '123456');
+		const bagsRecordCollectionRef = collection(userDocRef, 'temp and humid');
+		const q = query(bagsRecordCollectionRef, orderBy('date', 'desc'));
 
+		const unsubscribe = onSnapshot(q, (querySnapshot) => {
+			source = [];
+
+			querySnapshot.forEach((doc) => {
+				const data = doc.data();
+				// Ensure that the `date` field is a valid Firestore Timestamp
+				if (data.date && data.date.toDate) {
+					// Convert Firestore Timestamp to JavaScript Date
+					data.date = format(data.date.toDate(), 'MMMM dd, yyyy');
+				}
+
+				// Add the ID to the data object
+				data.id = doc.id;
+				// tableData.push(data);
+				source.push(data);
+			});
+		});
+
+		// Don't forget to unsubscribe when your component is no longer needed
+	});
 	// Local
 	const modalStore = getModalStore();
 
@@ -25,24 +70,24 @@
 	});
 </script>
 
-<div style="display: none;">
+<!-- <div style="display: none;"> -->
+<div>
 	<div id="element">
 		<h1 class="report-heading flex justify-center items-center text-4xl">
 			MushProd: NodeMCU-Based and Yield Prediction System for Oyster Mushroom System Report
 		</h1>
 		<div class="info">
-			<h2 class="section-heading">I. Farm Overview</h2>
-			<p class="section-content">Date of Report: {dateFormat()}</p>
-			<p class="section-content">Farmer Name: [Your Farm Name]</p>
-			<p class="section-content">Farm Location: [Location/Field]</p>
-			<p class="section-content">Device Code: [Unique System ID]</p>
+			{#each farmData as farm}
+				<h2 class="section-heading">I. Farm Overview</h2>
+				<p class="section-content">Date of Report: {dateFormat()}</p>
+				<p class="section-content">Farmer Name: {farm.farmer_name}</p>
+				<p class="section-content">Farm Location: {farm.farm_address}</p>
+				<p class="section-content">Device Code: {farm.device_code}</p>
+			{/each}
 		</div>
 		<div class="planted_bags">
 			<h2 class="section-heading">II. Planted Bags</h2>
-			<p class="section-content">
-				This section provides an analysis of the growing bags used in the mushroom cultivation
-				process.
-			</p>
+			<p class="section-content" />
 			<h4 class="subsubsection-heading">Planted Bag Record</h4>
 			<table class="table">
 				<tr>
@@ -51,9 +96,9 @@
 					<th>Remarks</th>
 				</tr>
 				<tr>
-					<td>[Total Bags Planted]</td>
-					<td>[Last Planting Date]</td>
-					<td>[Remarks]</td>
+					<td>{lastDate}</td>
+					<td>{planted}</td>
+					<td>N/A</td>
 				</tr>
 			</table>
 		</div>
@@ -73,29 +118,40 @@
 					<th>Remarks</th>
 				</tr>
 				<tr>
-					<td>[Total Bags Harvested]</td>
-					<td>[Last Harvest Date]</td>
-					<td>[Remarks]</td>
+					<td>{lastDateHarv}</td>
+					<td>{harvest}</td>
+					<td>N/A</td>
 				</tr>
 			</table>
 		</div>
-		<div class="mushroom_data">
+		<!-- <div class="mushroom_data">
 			<h2 class="section-heading">IV. Mushroom Data</h2>
 			<p class="section-content">
 				Explore insights into the mushroom cultivation process, including types of mushrooms grown
 				and their characteristics.
 			</p>
-		</div>
+		</div> -->
 		<div class="temp_humid">
-			<h2 class="section-heading">V. Temperature and Humidity Monitoring</h2>
-			<p class="section-content">
-				Get an overview of the temperature and humidity conditions monitored during the mushroom
-				cultivation period.
-			</p>
+			<h2 class="section-heading">IV. Temperature and Humidity Monitoring</h2>
+			<table class="table">
+				<tr>
+					<th>Date</th>
+					<th>Average Temperature </th>
+					<th>Average Humidity</th>
+				</tr>
+				{#each source as row}
+					<tr class="">
+						<td>{row.date}</td>
+						<td>{row['ave temp']}</td>
+						<td>{row['ave humidity']}</td>
+					</tr>
+				{/each}
+			</table>
+			<p class="section-content" />
 		</div>
 		<div class="yield">
 			<h2 class="section-heading">VI. Yield Prediction</h2>
-			<p class="section-content">
+			<!-- <p class="section-content">
 				This section provides predictions for mushroom yield based on the gathered data and
 				conditions.
 			</p>
@@ -111,7 +167,7 @@
 				Based on the gathered data and analysis, we provide yield projections for upcoming
 				cultivation cycles. These projections serve as a valuable guide for planning and optimizing
 				mushroom production.
-			</p>
+			</p> -->
 		</div>
 
 		<!-- Include relevant content for Yield Prediction -->

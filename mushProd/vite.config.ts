@@ -4,5 +4,27 @@ import { defineConfig } from 'vite';
 
 export default defineConfig({
 	plugins: [sveltekit(), purgeCss()],
+	server: {
+		fs: {
+			// Allow access to the directory containing firebase-messaging-sw.js
+			allow: ['D:/Documents/Files/SveltKit/Project 0/mushprod/public/firebase-messaging-sw.js'],
+		},
 
+	},
 });
+// export default defineConfig({
+// 	plugins: [sveltekit(), purgeCss()],
+// 	server: {
+// 		fs: {
+// 			allow: ['D:/Documents/Files/SveltKit/Project 0/mushprod/public']
+// 		},
+// 		proxy: {
+// 			// assuming your backend server is running on localhost:3000
+// 			'/home': {
+// 				target: 'http://localhost:3000',
+// 				changeOrigin: true,
+// 				rewrite: (path) => path.replace(/^\/home/, '')
+// 			}
+// 		}
+// 	},
+// });

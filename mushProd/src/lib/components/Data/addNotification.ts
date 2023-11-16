@@ -5,7 +5,6 @@ import { db } from '$lib/firebase/firebase';
 
 // Define a function to send a notification to Firestore
 export async function sendNotification(temperature: number, humidity: number) {
-
     let temp: number = temperature;
     let humd: number = humidity;
     let alertTitleTemp;
@@ -45,8 +44,9 @@ export async function sendNotification(temperature: number, humidity: number) {
     } else if (alertTitleHumd) {
         alertTitle = alertTitleHumd;
     }
+
     try {
-        // Create a reference to the user's collection
+        // const message = db.
         const userCollection = collection(db, 'user', '123456', 'notifications');
 
         // Generate an auto ID for the document
@@ -59,6 +59,15 @@ export async function sendNotification(temperature: number, humidity: number) {
         });
 
         console.log('Notification sent to Firestore with ID: ', docRef.id);
+
+        const payload = {
+            notification: {
+                title: alertTitle,
+                body: alertMessage,
+            },
+        };
+
+
     } catch (error) {
         console.error('Error sending notification to Firestore: ', error);
     }

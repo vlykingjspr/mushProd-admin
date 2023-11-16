@@ -58,8 +58,8 @@
 	const formattedDate = format(currentDate, 'yyyy-MM-dd');
 	// getting data from firebase
 	const rdb = getDatabase();
-	const dateRef = ref(rdb, `/BETAPEAK/2023-11-14`);
-	// const dateRef = ref(rdb, `BETAPEAK/${formattedDate}`);
+	// const dateRef = ref(rdb, `/BETAPEAK/2023-11-14`);
+	const dateRef = ref(rdb, `BETAPEAK/${formattedDate}`);
 
 	const queryRef = query(dateRef, limitToLast(1));
 	const unsubscribe = onValue(queryRef, (snapshot) => {
@@ -161,7 +161,7 @@
 		<ProgressRadial value={undefined} />
 	</div>
 {:else}
-	<div class="w-full text-token grid grid-cols-1 md:grid-cols-4 gap-4 p-4">
+	<div class="w-full text-token grid grid-cols-1 md:grid-cols-3 gap-4 p-4">
 		<!-- Temperature -->
 		<div class={cardStyle}>
 			<div class={cardInsideStyle2}>
@@ -256,7 +256,7 @@
 				</a>
 			</div>
 		</div>
-		<div class={cardStyle}>
+		<!-- <div class={cardStyle}>
 			<div class={cardInsideStyle}>
 				<a href="/records" on:click={() => updateTitle('Records')}>
 					<div>
@@ -309,8 +309,8 @@
 					</div>
 				</a>
 			</div>
-		</div>
-		<div class={`md:col-span-3 `}>
+		</div> -->
+		<div class={`md:col-span-2 `}>
 			<div class={`p-4  ${cardStyle}`}>
 				<div class={`p-4 bg-surface-100  `}>
 					<Chart />

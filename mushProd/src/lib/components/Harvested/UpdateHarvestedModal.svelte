@@ -39,7 +39,6 @@
 		const bagsRecordDocRef = doc(userDocRef, 'harvest record', id);
 
 		const updatedData = {
-			date_harvested: date_harvested,
 			grams: grams,
 			remarks: remarks
 		};

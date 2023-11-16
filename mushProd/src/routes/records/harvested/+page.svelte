@@ -160,7 +160,6 @@
 	<!-- Display the ProgressRadial when isLoading is true -->
 	<div class="flex justify-center items-center h-fit">
 		<ProgressRadial value={undefined} />
-		<div>sad</div>
 	</div>
 {:else}
 	<Toast />
