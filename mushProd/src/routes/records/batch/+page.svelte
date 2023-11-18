@@ -7,20 +7,30 @@
 	import AddModal from '$lib/components/PlantedBags/AddBagsModal.svelte';
 	import UpdateModal from '$lib/components/PlantedBags/UpdateBagsModal.svelte';
 	import DeleteModal from '$lib/components/PlantedBags/RemoveBagsModal.svelte';
-	import ModalRecordPlanted from '$lib/components/PlantedBags/ModalRecordPlanted.svelte';
-	import { planted } from '$lib/stores/stores';
+	import ModalBatch from '$lib/components/Batch/ModalBatch.svelte';
+	import { batch, planted } from '$lib/stores/stores';
 
 	// toast
 	import { Toast, getToastStore } from '@skeletonlabs/skeleton';
 	import type { ToastSettings, ToastStore } from '@skeletonlabs/skeleton';
 
 	// getting data
-	import { collection, getDocs, query, doc, onSnapshot, orderBy } from 'firebase/firestore';
+	import {
+		collection,
+		getDocs,
+		query,
+		doc,
+		onSnapshot,
+		orderBy,
+		type DocumentData
+	} from 'firebase/firestore';
 	import { db } from '$lib/firebase/firebase';
 	import { format } from 'date-fns';
 	import { onDestroy, onMount } from 'svelte';
 	import { allPlantedBags } from '../../../lib/firebase/allRecord';
+
 	let source: any = [];
+	let source2: any = [];
 
 	let isLoading = true;
 	// Function to calculate the total number of bags
@@ -42,27 +52,22 @@
 	// Create a Firestore listener and initialize tableData
 	onMount(async () => {
 		const userDocRef = doc(db, 'user', '123456');
-		const bagsRecordCollectionRef = collection(userDocRef, 'bags record');
-		const q = query(bagsRecordCollectionRef, orderBy('date', 'asc'));
 
-		const unsubscribe = onSnapshot(q, (querySnapshot) => {
-			source = [];
-
+		const batchRec = collection(userDocRef, 'batch');
+		const s = query(batchRec, orderBy('batch_planted', 'asc'));
+		const unsubscribe1 = onSnapshot(s, (querySnapshot) => {
 			querySnapshot.forEach((doc) => {
 				const data = doc.data();
 				// Ensure that the `date` field is a valid Firestore Timestamp
-				if (data.date && data.date.toDate) {
-					// Convert Firestore Timestamp to JavaScript Date
-					data.date = format(data.date.toDate(), 'MMMM dd, yyyy');
+				if (data.batch_planted && data.batch_planted.toDate) {
+					data.batch_planted = format(data.batch_planted.toDate(), 'MMMM dd, yyyy');
 				}
 				// Add the ID to the data object
 				data.id = doc.id;
-				// tableData.push(data);
-				source.push(data);
-			});
 
-			fetchData();
-			isLoading = false;
+				source2.push(data);
+				isLoading = false;
+			});
 		});
 
 		// Don't forget to unsubscribe when your component is no longer needed
@@ -86,12 +91,15 @@
 	//Modals for clicking data
 	const modalStore = getModalStore();
 	function modalData(row: any): void {
-		const c: ModalComponent = { ref: ModalRecordPlanted };
-		planted.set({
+		const c: ModalComponent = { ref: ModalBatch };
+
+		batch.set({
 			id: row.id,
-			date: row.date,
-			quantity: row.quantity,
-			remarks: row.remarks
+			batch_code: row.batch_code,
+			batch_total_removed: row.batch_total_removed,
+			batch_total_bags: row.batch_total_bags,
+			batch_planted: row.batch_planted,
+			batch_remarks: row.batch_remarks
 		});
 		const modal: ModalSettings = {
 			type: 'component',
@@ -172,7 +180,7 @@
 	const chartStyle = 'card card-hover bg-surface-100 overflow-hidden ';
 	const cardInsideStyle = ' p-4 space-y-4 ';
 	const cardInsideStyle2 = ' p-4 space-y-6 ';
-	const h2Style = 'text-1xl md:text-2xl lg:text-2xl';
+	const h2Style = 'text-lg md:text-2xl lg:text-1xl';
 	const h3Style = 'text-l md:text-1xl lg:text-1xl';
 	const valueStyle = 'text-xs md:text-sm lg:text-md ';
 	const smallValueStyle = 'flex justify-center items-center text-5xl';
@@ -188,124 +196,55 @@
 	</div>
 {:else}
 	<Toast />
-	<div class="w-full text-token grid grid-cols-1 md:grid-cols-4 gap-4 p-4">
-		<div class={cardStyle}>
-			<div class={cardInsideStyle2}>
-				<div class="flex items-start mt-2">
-					<i class="fa-solid fa-temperature-three-quarters text-2xl mr-2" />
-					<h2 class={h2Style}>Batch Code</h2>
-				</div>
-				<hr class="opacity-50" />
-				<div class={valueStyle}>
-					<!-- {#if {true}} -->
-					<div class="flex items-center">
-						<i class="fa-solid fa-calendar-days mr-2" />
-						<h1>Date</h1>
-					</div>
-					<div class="flex items-center">
-						<i class="fa-solid fa-bag-shopping mr-2" />
-						<h1>Total Bags</h1>
-					</div>
-					<div class="flex items-center">
-						<i class="fa-solid fa-calendar-days mr-2" />
-						<h1>Total Harvest</h1>
-					</div>
-					<div class="flex items-center">
-						<i class="fa-solid fa-calendar-days mr-2" />
-						<h1>Total Bags</h1>
-					</div>
-					<!-- {:else}
+
+	<div class="mr-5 mt-5 flex items-center justify-center">
+		<input
+			type="text"
+			bind:value={searchQuery}
+			placeholder="Search..."
+			class="input mb-2 mr-2 sm:w-36 ml-auto h-8"
+		/>
+		<button type="button" class="btn btn-sm variant-filled-tertiary h-8 mb-2" on:click={search}>
+			<i class="fa-solid fa-search" />
+			<span>Search</span>
+		</button>
+	</div>
+	<div class="w-full text-token grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pl-4 pr-4">
+		{#each source2 as row (row.id)}
+			<button on:click={() => modalData(row)}>
+				<div class={cardStyle}>
+					<div class={cardInsideStyle2}>
+						<div class="flex items-start">
+							<i class="fa-solid fa-temperature-three-quarters text-2xl mr-2" />
+							<h2 class={h2Style}>{row.batch_code}</h2>
+						</div>
+
+						<hr class="opacity-50" />
+						{row.id}
+						<div class={valueStyle}>
+							<!-- {#if {true}} -->
+							<div class="flex items-center">
+								<i class="fa-solid fa-calendar-days mr-2" />
+								<h1>{row.batch_planted}</h1>
+							</div>
+							<div class="flex items-center">
+								<i class="fa-solid fa-bag-shopping mr-2" />
+								<h1>Total Bags: {row.batch_total_bags}</h1>
+							</div>
+							<div class="flex items-center">
+								<i class="fa-solid fa-calendar-days mr-2" />
+								<h1>Total Bags Removed: {row.batch_total_removed}</h1>
+							</div>
+
+							<!-- {:else}
 						<div class="flex justify-center items-center">
 							<ProgressRadial width="w-20" value={undefined} />
 						</div>
 					{/if} -->
+						</div>
+					</div>
 				</div>
-			</div>
-		</div>
-	</div>
-	<div class=" m-5">
-		<div class=" flex items-center justify-center">
-			<input
-				type="text"
-				bind:value={searchQuery}
-				placeholder="Search..."
-				class="input mb-2 mr-2 sm:w-36 ml-auto h-8"
-			/>
-			<button type="button" class="btn btn-sm variant-filled-tertiary h-8 mb-2" on:click={search}>
-				<i class="fa-solid fa-search" />
-				<span>Search</span>
 			</button>
-		</div>
-		<table class="table table-hover">
-			<thead>
-				<tr>
-					<th><i class="fa-solid fa-calendar-days mr-2" />Date</th>
-					<th><i class="fa-solid fa-bag-shopping mr-2" />Number of Bags</th>
-					<th> <i class="fa-solid fa-pen-to-square mr-2" />Remarks</th>
-					<th class="flex items-center justify-center"
-						><button
-							type="button"
-							class="btn btn-sm variant-filled-primary mr-2"
-							on:click={showAddModal}
-						>
-							<i class="fa-solid fa-plus" />
-							<span>Add</span>
-						</button></th
-					>
-				</tr>
-			</thead>
-			<tbody>
-				{#each paginatedSource as row (row.id)}
-					<tr class="" on:click={() => modalData(row)}>
-						<td>{row.date}</td>
-						<td>{row.quantity}</td>
-						<td>{truncateText(row.remarks)}</td>
-						<td class="flex items-center justify-center">
-							<button
-								type="button"
-								class="btn btn-sm variant-filled-tertiary mr-2"
-								on:click|stopPropagation={() => {
-									showUpdateModal(row);
-								}}
-							>
-								<i class="fa-solid fa-pen-to-square" />
-								<span>Update</span>
-							</button><button
-								type="button"
-								class="btn btn-sm variant-filled-error"
-								on:click|stopPropagation={() => {
-									showDeleteModal(row);
-								}}
-							>
-								<i class="fa-solid fa-trash" />
-								<span>Remove</span>
-							</button>
-						</td>
-					</tr>
-				{/each}
-			</tbody>
-			<tfoot>
-				<tr>
-					<th colspan="3">
-						<h1 class="mb-2">
-							Total Bags Planted: <span class="text-2xl">
-								{#if bagCount}
-									{bagCount} bags
-								{:else}
-									<div class="flex justify-center items-center">
-										<ProgressRadial width="w-10" value={undefined} />
-									</div>
-								{/if}
-							</span>
-						</h1>
-						<Paginator
-							bind:settings={paginationSettings}
-							showFirstLastButtons={false}
-							showPreviousNextButtons={true}
-						/>
-					</th>
-				</tr>
-			</tfoot>
-		</table>
+		{/each}
 	</div>
 {/if}

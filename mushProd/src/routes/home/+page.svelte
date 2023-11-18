@@ -11,7 +11,7 @@
 	import { db } from '$lib/firebase/firebase';
 	import { getToken, onMessage } from 'firebase/messaging';
 	import { getMessaging } from 'firebase/messaging';
-
+	import { sendNotification } from '$lib/components/Data/addNotification';
 	import { getApp, getApps, initializeApp } from 'firebase/app';
 
 	const getMessage = async () => {
@@ -39,9 +39,9 @@
 
 		Notification.requestPermission().then((permission) => {
 			if (permission === 'granted') {
-				console.log('Notification permission granted.');
+				// console.log('Notification permission granted.');
 			} else {
-				console.log('Unable to get permission to notify.');
+				// console.log('Unable to get permission to notify.');
 			}
 		});
 		// Get the FCM token for the current user
@@ -54,7 +54,7 @@
 		})
 			.then((currentToken) => {
 				if (currentToken) {
-					console.log(currentToken);
+					// console.log(currentToken);
 					// subscribeToTopic(currentToken, "sad")
 				} else {
 					// Show permission request UI
@@ -70,24 +70,24 @@
 
 	let notification = { title: '', body: '' };
 
-	const sendNotification = async () => {
-		const registrationToken =
-			'fSJ_Sb21DpwDhvRtM89__C:APA91bH25MZA4a1yVg8p5L0A0XO9gPbdXizSU0zvcxmn8T0F0pnhxn5GuS0WvM0pjBw4e90Zbsg7Do3oEoA5ZuBI4L10D_-fJ8lRsErnpNfI51OFIXAJ-uNu0usFCqWyshePstWZrW7B'; // Replace with the actual device token
-		const response = await fetch('/firebaseAdmin/sendNotif', {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify({
-				registrationToken,
-				title: notification.title,
-				body: notification.body
-			})
-		});
+	// const sendNotification = async () => {
+	// 	const registrationToken =
+	// 		'fSJ_Sb21DpwDhvRtM89__C:APA91bH25MZA4a1yVg8p5L0A0XO9gPbdXizSU0zvcxmn8T0F0pnhxn5GuS0WvM0pjBw4e90Zbsg7Do3oEoA5ZuBI4L10D_-fJ8lRsErnpNfI51OFIXAJ-uNu0usFCqWyshePstWZrW7B'; // Replace with the actual device token
+	// 	const response = await fetch('/firebaseAdmin/sendNotif', {
+	// 		method: 'POST',
+	// 		headers: {
+	// 			'Content-Type': 'application/json'
+	// 		},
+	// 		body: JSON.stringify({
+	// 			registrationToken,
+	// 			title: notification.title,
+	// 			body: notification.body
+	// 		})
+	// 	});
 
-		const result = await response.json();
-		console.log(result);
-	};
+	// 	const result = await response.json();
+	// 	console.log(result);
+	// };
 
 	function updatePage(tabNumber: number) {}
 	let farmData: any[] = [];
@@ -135,9 +135,7 @@
 {:else}
 	<div class=" ml-4">
 		<h1 class="h1 mb-10">Welcome to MushProd</h1>
-		<!-- <button on:click={() => getDailyAverage()} class="grow btn btn-sm variant-filled-primary"
-			>Add Temp
-		</button> -->
+
 		<!-- <button on:click={() => handleButtonClick()} class="grow btn btn-sm variant-filled-primary"
 			>Add Temp
 		</button> -->
@@ -149,7 +147,7 @@
 	</div>
 	<div class="flex items-center justify-center">
 		<div class="w-full text-token grid sm:grid-cols-1 md:grid-cols-3 gap-4 p-4">
-			<div class={`${cardStyle} sm:col-span-1 md:col-span-1`}>
+			<div class={`${cardStyle} sm:col-span-1 md:col-span-3 lg:col-span-1`}>
 				<div class={cardInsideStyle}>
 					{#each farmData as farm}
 						<div class="flex items-center">
@@ -188,6 +186,7 @@
 					{/each}
 				</div>
 			</div>
+
 			<div class={cardStyle}>
 				<div class={cardInsideStyle}>
 					<a href="/dashboard" on:click={() => updateTitle('Dashboard')}>

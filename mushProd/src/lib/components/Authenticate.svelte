@@ -184,30 +184,7 @@
 		flex-direction: column;
 		gap: 4px;
 	}
-	.option > p {
-		position: relative;
-		text-align: center;
-		width: fit-content;
-		margin: 0 auto;
-		padding: 0 8px;
-	}
-	.option > p::after,
-	.option > p::before {
-		position: absolute;
-		content: '';
-		top: 50%;
-		transform: translateY(-50%);
-		width: 100vh;
-		height: 1.5px;
-		background: white;
-	}
 
-	.option > p::after {
-		right: 100%;
-	}
-	.option > p::before {
-		left: 100%;
-	}
 	.option div {
 		display: flex;
 		align-items: center;

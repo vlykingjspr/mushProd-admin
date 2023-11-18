@@ -60,6 +60,22 @@ export async function sendNotification(temperature: number, humidity: number) {
 
         console.log('Notification sent to Firestore with ID: ', docRef.id);
 
+        Notification.requestPermission().then((perm: NotificationPermission) => {
+            if (perm === 'granted') {
+
+                const notif = new Notification('Example of Notification', {
+                    body: 'This is more text',
+                    data: { hello: "world" }
+                });
+
+                notif.addEventListener("error", (e: Event) => {
+                    alert('error');
+                });
+
+            }
+        });
+
+
         const payload = {
             notification: {
                 title: alertTitle,

@@ -19,6 +19,7 @@
 	let tableData: any[] = [];
 	let isLoading = true;
 	let unsubscribe: any;
+
 	onMount(async () => {
 		const userDocRef = doc(db, 'user', '123456');
 		const bagsRecordCollectionRef = collection(userDocRef, 'notifications');
@@ -34,6 +35,8 @@
 				// Add the ID to the data object
 				data.id = doc.id;
 				source.push(data);
+				console.log(source);
+
 				isLoading = false;
 			});
 		});

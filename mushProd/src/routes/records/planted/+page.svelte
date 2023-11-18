@@ -18,8 +18,10 @@
 	import { collection, getDocs, query, doc, onSnapshot, orderBy } from 'firebase/firestore';
 	import { db } from '$lib/firebase/firebase';
 	import { format } from 'date-fns';
-	import { onDestroy, onMount } from 'svelte';
+	import { onMount } from 'svelte';
 	import { allPlantedBags } from '../../../lib/firebase/allRecord';
+
+	// Now you can safely access data.source1
 	let source: any = [];
 
 	let isLoading = true;
@@ -44,15 +46,12 @@
 		const userDocRef = doc(db, 'user', '123456');
 		const bagsRecordCollectionRef = collection(userDocRef, 'bags record');
 		const q = query(bagsRecordCollectionRef, orderBy('date', 'asc'));
-
 		const unsubscribe = onSnapshot(q, (querySnapshot) => {
 			source = [];
-
 			querySnapshot.forEach((doc) => {
 				const data = doc.data();
-				// Ensure that the `date` field is a valid Firestore Timestamp
+
 				if (data.date && data.date.toDate) {
-					// Convert Firestore Timestamp to JavaScript Date
 					data.date = format(data.date.toDate(), 'MMMM dd, yyyy');
 				}
 				// Add the ID to the data object
@@ -60,12 +59,9 @@
 				// tableData.push(data);
 				source.push(data);
 			});
-
 			fetchData();
 			isLoading = false;
 		});
-
-		// Don't forget to unsubscribe when your component is no longer needed
 	});
 
 	$: {

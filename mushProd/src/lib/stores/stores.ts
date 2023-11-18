@@ -35,3 +35,11 @@ export const tempHumid = writable({
 export const report = writable({
     // date: '',
 });
+export const batch = writable({
+    id: '',
+    batch_code: '',
+    batch_planted: '',
+    batch_remarks: '',
+    batch_total_bags: 0,
+    batch_total_removed: 0,
+})
