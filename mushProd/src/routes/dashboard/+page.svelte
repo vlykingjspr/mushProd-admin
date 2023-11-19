@@ -83,8 +83,8 @@
 	const formattedDate = format(currentDate, 'yyyy-MM-dd');
 	// getting data from firebase
 	const rdb = getDatabase();
-	// const dateRef = ref(rdb, `/BETAPEAK/2023-11-14`);
-	const dateRef = ref(rdb, `BETAPEAK/${formattedDate}`);
+	const dateRef = ref(rdb, `/BETAPEAK/2023-11-14`);
+	// const dateRef = ref(rdb, `BETAPEAK/${formattedDate}`);
 
 	const queryRef = query(dateRef, limitToLast(1));
 	const unsubscribe = onValue(queryRef, (snapshot) => {

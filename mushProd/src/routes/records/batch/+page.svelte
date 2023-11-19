@@ -64,7 +64,6 @@
 				}
 				// Add the ID to the data object
 				data.id = doc.id;
-
 				source2.push(data);
 				isLoading = false;
 			});
@@ -134,6 +133,7 @@
 		planted.set({
 			id: row.id,
 			date: row.date,
+			removed: row.remove,
 			quantity: row.quantity,
 			remarks: row.remarks
 		});
@@ -149,6 +149,7 @@
 		const c: ModalComponent = { ref: DeleteModal };
 		planted.set({
 			id: row.id,
+			removed: row.remove,
 			date: row.date,
 			quantity: row.quantity,
 			remarks: row.remarks
@@ -217,6 +218,15 @@
 		<button type="button" class="btn btn-sm variant-filled-tertiary h-8 mb-2" on:click={search}>
 			<i class="fa-solid fa-search" />
 			<span>Search</span>
+		</button>
+
+		<button
+			type="button"
+			class="btn btn-sm variant-filled-primary ml-2 mb-2"
+			on:click={showAddModal}
+		>
+			<i class="fa-solid fa-plus" />
+			<span>Add</span>
 		</button>
 	</div>
 	<div class="w-full text-token grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pl-4 pr-4">

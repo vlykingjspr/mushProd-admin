@@ -3,7 +3,7 @@
 	import { showSuccessToast, showErrorToast } from '../Toast/toast';
 	import { Timestamp, addDoc, collection } from 'firebase/firestore';
 	import { db } from '$lib/firebase/firebase';
-	import { parse } from 'date-fns';
+	import { addMinutes, format, parse } from 'date-fns';
 	import { onMount, tick } from 'svelte';
 
 	/** Exposes parent props to this component. */
@@ -24,33 +24,57 @@
 	const cBase = 'card p-4 w-modal shadow-xl space-y-4 ';
 	const cHeader = 'text-2xl font-bold';
 
-	let date: any;
-	let quantity: any;
-	let remarks: string = '';
-
+	let batch_planted: any;
+	let batch_total_bags: number;
+	let batch_total_removed: number;
+	let batch_remarks: string = '';
+	let batch_harvest: [];
+	let batch_code: string;
 	let errorMessage: string = '';
 	let isDisable: boolean = false;
 
+	function generateBatchCode(date: Date): string {
+		const day = format(date, 'dd');
+		const month = format(date, 'MMM').toUpperCase(); // Format month as three-letter abbreviation in uppercase
+
+		const batchCode = `#OM${day}${month}`;
+		return batchCode;
+	}
+
 	async function addData(): Promise<void> {
-		if (!date || !quantity) {
+		if (!batch_planted || !batch_total_bags) {
 			errorMessage = 'Date and grams are required.';
 
 			return;
 		}
-		const formattedDate = parse(date, 'yyyy-MM-dd', new Date());
-		date = Timestamp.fromDate(formattedDate);
+
+		const formattedDate = parse(batch_planted, 'yyyy-MM-dd', new Date());
+		const code = generateBatchCode(formattedDate);
+
+		// Get the current time
+		const currentTime = new Date();
+
+		// Set the time of the parsed date to the current time
+		const combinedDateTime = addMinutes(
+			formattedDate,
+			currentTime.getHours() * 60 + currentTime.getMinutes()
+		);
+
 		const data = {
-			date,
-			quantity,
-			remarks
+			batch_code: code,
+			batch_planted: Timestamp.fromDate(combinedDateTime),
+			batch_total_bags,
+			batch_remarks,
+			batch_total_removed: 0
 		};
 
-		const userDocRef = collection(db, 'user', '123456', 'bags record');
+		const userDocRef = collection(db, 'user', '123456', 'batch');
 		try {
 			// Add the data to Firestore
 			const docRef = await addDoc(userDocRef, data);
+			// Now, add the subcollection (batch_harvest) to the main batch document
+			const batchHarvestRef = collection(docRef, 'batch_harvest');
 			// console.log('Document added with ID: ', docRef.id);
-
 			addedToast();
 			modalStore.close();
 		} catch (error) {
@@ -73,15 +97,15 @@
 
 		<div class="input-group input-group-divider grid-cols-[auto_1fr_auto]">
 			<div class="input-group-shim"><i class="fa-solid fa-calendar" /></div>
-			<input type="date" placeholder="Date" bind:value={date} />
+			<input type="date" placeholder="Date" bind:value={batch_planted} />
 		</div>
 		<div class="input-group input-group-divider grid-cols-[auto_1fr_auto]">
 			<div class="input-group-shim"><i class="fa-solid fa-seedling" /></div>
-			<input type="number" placeholder="Number of Bags" bind:value={quantity} />
+			<input type="number" placeholder="Number of Bags" bind:value={batch_total_bags} />
 		</div>
 		<div class="input-group input-group-divider grid-cols-[auto_1fr_auto]">
 			<div class="input-group-shim"><i class="fa-solid fa-calendar" /></div>
-			<textarea class="textarea" rows="3" placeholder="Remarks" bind:value={remarks} />
+			<textarea class="textarea" rows="3" placeholder="Batch Remarks" bind:value={batch_remarks} />
 		</div>
 		{#if errorMessage}
 			<p class="text-red-500">{errorMessage}</p>

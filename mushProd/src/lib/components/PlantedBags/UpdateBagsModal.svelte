@@ -19,30 +19,23 @@
 	const cBase = 'card p-4 w-modal shadow-xl space-y-4 ';
 	const cHeader = 'text-2xl font-bold';
 
-	let date: Timestamp;
 	let id: string;
-	let quantity: number;
 	let remarks: string;
-
 	let selectedRowData: any;
 	planted.subscribe((data) => {
 		selectedRowData = data;
 		id = selectedRowData.id;
-		date = selectedRowData.date;
-		quantity = selectedRowData.quantity;
 		remarks = selectedRowData.remarks;
 	});
 	// Function to update data in Firebase
 	async function updateData() {
 		const userDocRef = doc(db, 'user', '123456');
-		const bagsRecordDocRef = doc(userDocRef, 'bags record', id);
-
+		const bagsRecordDocRef = doc(userDocRef, 'batch', id);
+		console.log(id);
 		// Create an object with the updated data
 		const updatedData = {
-			quantity: quantity,
-			remarks: remarks
+			batch_remarks: remarks
 		};
-
 		try {
 			await updateDoc(bagsRecordDocRef, updatedData);
 			updateToast();
@@ -56,18 +49,10 @@
 {#if $modalStore[0]}
 	<div class="modal-example-form {cBase}">
 		<header class={cHeader}>
-			<div class="flex items-center justify-center">Update Fruiting Bags</div>
+			<div class="flex items-center justify-center">Update Batched Fruiting Bags Remarks</div>
 		</header>
 		<hr class="opacity-50" />
 
-		<div class="input-group input-group-divider grid-cols-[auto_1fr_auto]">
-			<div class="input-group-shim"><i class="fa-solid fa-calendar" /></div>
-			<p class=" p-2">{date}</p>
-		</div>
-		<div class="input-group input-group-divider grid-cols-[auto_1fr_auto]">
-			<div class="input-group-shim"><i class="fa-solid fa-seedling" /></div>
-			<input type="number" placeholder="Number of Bags" bind:value={quantity} />
-		</div>
 		<div class="input-group input-group-divider grid-cols-[auto_1fr_auto]">
 			<div class="input-group-shim"><i class="fa-solid fa-calendar" /></div>
 			<textarea class="textarea" rows="3" placeholder="Remarks" bind:value={remarks} />

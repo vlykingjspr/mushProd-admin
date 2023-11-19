@@ -25,6 +25,7 @@ export const planted = writable({
     id: '',
     date: '',
     quantity: 0,
+    removed: 0,
     remarks: '',
 });
 export const tempHumid = writable({

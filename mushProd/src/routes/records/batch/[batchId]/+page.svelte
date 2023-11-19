@@ -5,10 +5,13 @@
 	import { fade } from 'svelte/transition';
 	import { Paginator } from '@skeletonlabs/skeleton';
 	// modals
+
 	import AddModal from '$lib/components/Harvested/AddHarvestedModal.svelte';
 	import UpdateModal from '$lib/components/Harvested/UpdateHarvestedModal.svelte';
 	import DeleteModal from '$lib/components/Harvested/RemoveHarvestedModal.svelte';
-	import ModalRecordPlanted from '$lib/components/Harvested/ModalHarvested.svelte';
+	import ShowModal from '$lib/components/Harvested/ModalHarvested.svelte';
+	import DeletePlantedModal from '$lib/components/PlantedBags/RemoveBagsModal.svelte';
+	import UpdatePlantedModal from '$lib/components/PlantedBags/UpdateBagsModal.svelte';
 	import { harvested, planted } from '$lib/stores/stores';
 
 	// toast
@@ -16,13 +19,14 @@
 	import type { ToastSettings, ToastStore } from '@skeletonlabs/skeleton';
 
 	// getting data
-	import { collection, getDocs, query, doc, onSnapshot, orderBy } from 'firebase/firestore';
+	import { collection, getDocs, query, doc, onSnapshot, orderBy, getDoc } from 'firebase/firestore';
 	import { db } from '$lib/firebase/firebase';
 	import { format } from 'date-fns';
 	import { onMount } from 'svelte';
 	import { batch } from '$lib/stores/stores';
 
 	let source: any = [];
+	let source2: any = [];
 
 	let isLoading = true;
 	// Function to calculate the total number of bags
@@ -36,50 +40,90 @@
 	let batch_total_bags: number;
 	let batch_total_removed: number;
 	let batch_remarks: string;
-
+	let batch_record: boolean;
+	let isBatchHarvestExisting: boolean;
 	batch.subscribe((data) => {
 		// Log the data for debugging
 		id = data.id;
-		batch_code = data.batch_code;
-		batch_planted = data.batch_planted;
-		batch_total_bags = data.batch_total_bags;
-		batch_total_removed = data.batch_total_removed;
-		batch_remarks = data.batch_remarks;
 	});
 
 	const toastStore = getToastStore();
 	const t: ToastSettings = {
-		message: 'This message will auto-hide after 10 seconds.',
+		message: '',
 		timeout: 10000
 	};
 	function updated() {
 		toastStore.trigger(t);
 	}
 	// Create a Firestore listener and initialize tableData
-	onMount(async () => {
-		const userDocRef = doc(db, 'user', '123456');
-		const batchDocRef = doc(userDocRef, 'batch', id);
+	const userDocRef = doc(db, 'user', '123456');
 
+	onMount(async () => {
+		const batchDocRef = doc(userDocRef, 'batch', id);
 		const batchHarvestRef = collection(batchDocRef, 'batch_harvest');
 
-		const s = query(batchHarvestRef, orderBy('date', 'asc'));
+		const checkBatchHarvestExistence = async () => {
+			try {
+				// Try to get the document
+				const batchDoc = await getDoc(batchDocRef);
 
-		const unsubscribe1 = onSnapshot(s, (querySnapshot) => {
-			source.length = 0; // Clear the array before pushing new data
-			querySnapshot.forEach((doc) => {
-				const data = doc.data();
-				// Ensure that the `date` field is a valid Firestore Timestamp
-				if (data.date && data.date.toDate) {
-					data.date = format(data.date.toDate(), 'MMMM dd, yyyy');
+				// Check if the batch document exists
+				if (batchDoc.exists()) {
+					// Check if the batch_harvest subcollection exists
+					const batchHarvestSnapshot = await getDocs(batchHarvestRef);
+					return !batchHarvestSnapshot.empty; // Return true if subcollection exists
+				} else {
+					return false; // Return false if the batch document doesn't exist
 				}
-				// Add the ID to the data object
-				data.id = doc.id;
+			} catch (error) {
+				console.error('Error checking batch_harvest existence:', error);
+				return false;
+			}
+		};
 
-				source.push(data);
+		isBatchHarvestExisting = await checkBatchHarvestExistence();
 
-				isLoading = false;
+		try {
+			const batchRec = doc(userDocRef, 'batch', id);
+			const unsubscribeRec = onSnapshot(batchRec, (docSnapshot) => {
+				if (docSnapshot.exists()) {
+					const data = docSnapshot.data();
+					// Ensure that the `batch_planted` field is a valid Firestore Timestamp
+					if (data.batch_planted && data.batch_planted.toDate) {
+						data.date = format(data.batch_planted.toDate(), 'MMMM dd, yyyy');
+					}
+					// Add the ID to the data object
+					data.id = docSnapshot.id;
+					// Update the relevant state for batchRec
+					source2 = [data];
+				}
 			});
-		});
+
+			if (isBatchHarvestExisting) {
+				const batchDocRef = doc(userDocRef, 'batch', id);
+				const batchHarvestRef = collection(batchDocRef, 'batch_harvest');
+				const s = query(batchHarvestRef, orderBy('date', 'asc'));
+				const unsubscribe1 = onSnapshot(s, (querySnapshot) => {
+					source.length = 0; // Clear the array before pushing new data
+					querySnapshot.forEach((doc) => {
+						const data = doc.data();
+						// Ensure that the `date` field is a valid Firestore Timestamp
+						if (data.date && data.date.toDate) {
+							data.date = format(data.date.toDate(), 'MMMM dd, yyyy');
+						}
+						// Add the ID to the data object
+						data.id = doc.id;
+						source.push(data);
+
+						isLoading = false;
+					});
+				});
+			} else {
+				isLoading = false;
+			}
+		} catch (error) {
+			error;
+		}
 	});
 
 	$: {
@@ -99,12 +143,13 @@
 
 	//Modals for clicking data
 	const modalStore = getModalStore();
-	function modalData(row: any): void {
-		const c: ModalComponent = { ref: ModalRecordPlanted };
-		planted.set({
+	function showModal(row: any): void {
+		const c: ModalComponent = { ref: ShowModal };
+		harvested.set({
+			batch_id: id,
 			id: row.id,
 			date: row.date,
-			quantity: row.quantity,
+			grams: row.grams,
 			remarks: row.remarks
 		});
 		const modal: ModalSettings = {
@@ -150,7 +195,7 @@
 		};
 		modalStore.trigger(modal);
 	}
-	function showDeleteModal(row: any): void {
+	function showRemoveModal(row: any): void {
 		const c: ModalComponent = { ref: DeleteModal };
 		harvested.set({
 			batch_id: id,
@@ -167,13 +212,47 @@
 		};
 		modalStore.trigger(modal);
 	}
+	function showRemovePlanted(row: any): void {
+		const c: ModalComponent = { ref: DeletePlantedModal };
+		planted.set({
+			id: id,
+			date: '',
+			quantity: row.batch_total_bags,
+			removed: row.batch_total_removed,
+			remarks: ''
+		});
+		const modal: ModalSettings = {
+			type: 'component',
+			component: c,
+			title: '',
+			body: ''
+		};
+		modalStore.trigger(modal);
+	}
+	function showUpdatePlanted(row: any): void {
+		const c: ModalComponent = { ref: UpdatePlantedModal };
+		planted.set({
+			id: id,
+			date: '',
+			quantity: row.batch_total_bags,
+			removed: row.batch_total_removed,
+			remarks: row.batch_remarks
+		});
+		const modal: ModalSettings = {
+			type: 'component',
+			component: c,
+			title: '',
+			body: ''
+		};
+		modalStore.trigger(modal);
+	}
+	//other Functions
 	function truncateRemarks(remarks: string, maxLength: number = 22): string {
 		if (remarks.length > maxLength) {
 			return `${remarks.slice(0, maxLength)}...`;
 		}
 		return remarks;
 	}
-
 	function rowMatchesSearch(row: any): boolean {
 		const searchTerms = searchQuery.toLowerCase().split(' ');
 
@@ -209,7 +288,9 @@
 				<i class="fa-solid fa-arrow-left" /></a
 			>
 		</div>
-		<div class="text-2xl"><i class="fa-solid fa-qrcode m-2" />{batch_code}</div>
+		{#each source2 as row (row.id)}
+			<div class="text-2xl"><i class="fa-solid fa-qrcode m-2" />{row.batch_code}</div>
+		{/each}
 		<table class="table table-hover">
 			<thead>
 				<tr>
@@ -217,42 +298,43 @@
 					<th><i class="fa-solid fa-bag-shopping mr-2" />Number of Bags</th>
 					<th><i class="fa-solid fa-circle-xmark mr-2" />Number of Bags Removed</th>
 					<th> <i class="fa-solid fa-pen-to-square mr-2" />Remarks</th>
-					<th class="flex items-center justify-center" />
 				</tr>
 			</thead>
 			<tbody>
 				<tr class="">
-					<td>{batch_planted}</td>
-					<td>{batch_total_bags}</td>
-					<td>{batch_total_removed}</td>
-					<td>{truncateRemarks(batch_remarks)}</td>
-					<td class="flex items-center justify-center">
-						<button
-							type="button"
-							class="btn btn-sm variant-filled-tertiary mr-2"
-							on:click|stopPropagation={() => {
-								// showUpdateModal();
-							}}
+					{#each source2 as row (row.id)}
+						<td>{row.date}</td>
+						<td class="flex items-center justify-between"
+							>{row.batch_total_bags}
+							<button
+								type="button"
+								class="btn btn-sm variant-filled-error"
+								on:click|stopPropagation={() => {
+									showRemovePlanted(row);
+								}}
+							>
+								<i class="fa-solid fa-trash" />
+							</button></td
 						>
-							<i class="fa-solid fa-pen-to-square" />
-							<span>Update</span>
-						</button><button
-							type="button"
-							class="btn btn-sm variant-filled-error"
-							on:click|stopPropagation={() => {
-								// showDeleteModal(row);
-							}}
+						<td>{row.batch_total_removed}</td>
+						<td class="flex items-center justify-between"
+							>{truncateRemarks(row.batch_remarks)}
+							<button
+								type="button"
+								class="btn btn-sm variant-filled-tertiary ml-2"
+								on:click|stopPropagation={() => {
+									showUpdatePlanted(row);
+								}}
+							>
+								<i class="fa-solid fa-pen-to-square" />
+							</button></td
 						>
-							<i class="fa-solid fa-trash" />
-							<span>Remove</span>
-						</button>
-					</td>
+					{/each}
 				</tr>
 			</tbody>
 		</table>
 	</div>
 	<hr class="opacity-50" />
-
 	<div class=" m-5">
 		<div class=" flex items-center justify-center">
 			<div class="text-2xl"><i class="fa-solid fa-jar-wheat fa-md m-2" />Harvest Record</div>
@@ -285,50 +367,61 @@
 					</th>
 				</tr>
 			</thead>
-			<tbody>
-				{#each paginatedSource as row (row.id)}
-					<tr class="" on:click={() => modalData(row)}>
-						<td>{row.date}</td>
-						<td>{row.grams}</td>
-						<td>{truncateRemarks(row.remarks)}</td>
-						<td class="flex items-center justify-center">
-							<button
-								type="button"
-								class="btn btn-sm variant-filled-tertiary mr-2"
-								on:click|stopPropagation={() => {
-									showUpdateModal(row);
-								}}
-							>
-								<i class="fa-solid fa-pen-to-square" />
-								<span>Update</span>
-							</button><button
-								type="button"
-								class="btn btn-sm variant-filled-error"
-								on:click|stopPropagation={() => {
-									showDeleteModal(row);
-								}}
-							>
-								<i class="fa-solid fa-trash" />
-								<span>Remove</span>
-							</button>
+			{#if isBatchHarvestExisting}
+				<tbody>
+					{#each paginatedSource as row (row.id)}
+						<tr class="" on:click={() => showModal(row)}>
+							<td>{row.date}</td>
+							<td>{row.grams}</td>
+							<td>{truncateRemarks(row.remarks)}</td>
+							<td class="flex items-center justify-center">
+								<button
+									type="button"
+									class="btn btn-sm variant-filled-tertiary mr-2"
+									on:click|stopPropagation={() => {
+										showUpdateModal(row);
+									}}
+								>
+									<i class="fa-solid fa-pen-to-square" />
+									<span>Update</span>
+								</button><button
+									type="button"
+									class="btn btn-sm variant-filled-error"
+									on:click|stopPropagation={() => {
+										showRemoveModal(row);
+									}}
+								>
+									<i class="fa-solid fa-trash" />
+									<span>Remove</span>
+								</button>
+							</td>
+						</tr>
+					{/each}
+				</tbody>
+				<tfoot>
+					<tr>
+						<th colspan="3">
+							<h1 class="mb-2">
+								Total Bags Planted: <span class="text-2xl" />
+							</h1>
+							<Paginator
+								bind:settings={paginationSettings}
+								showFirstLastButtons={false}
+								showPreviousNextButtons={true}
+							/>
+						</th>
+					</tr>
+				</tfoot>
+			{:else}
+				<tbody>
+					<tr>
+						<td class="flex justify-center items-center m-2">
+							<h1 class="h4 text-center">No Harvest Yet!</h1>
 						</td>
 					</tr>
-				{/each}
-			</tbody>
-			<tfoot>
-				<tr>
-					<th colspan="3">
-						<h1 class="mb-2">
-							Total Bags Planted: <span class="text-2xl" />
-						</h1>
-						<Paginator
-							bind:settings={paginationSettings}
-							showFirstLastButtons={false}
-							showPreviousNextButtons={true}
-						/>
-					</th>
-				</tr>
-			</tfoot>
+				</tbody>
+				<tfoot />
+			{/if}
 		</table>
 	</div>
 {/if}
