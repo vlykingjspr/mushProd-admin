@@ -35,7 +35,6 @@
 				// Add the ID to the data object
 				data.id = doc.id;
 				source.push(data);
-				console.log(source);
 
 				isLoading = false;
 			});

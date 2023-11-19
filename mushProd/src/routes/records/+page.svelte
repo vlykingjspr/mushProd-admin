@@ -8,7 +8,7 @@
 	import { tabNum, updateTab } from './pageTab';
 </script>
 
-<TabGroup>
+<!-- <TabGroup>
 	<Tab bind:group={$tabNum} name="tab1" value={0}>
 		<i class="fa-solid fa-seedling fa-md pr-1" /><span>Batch</span>
 	</Tab>
@@ -25,7 +25,7 @@
 		<i class="fa-solid fa-temperature-high fa-md pr-1" /><span>Temperature & Humidity</span></Tab
 	>
 	<!-- Tab Panels --->
-	<svelte:fragment slot="panel">
+<!-- <svelte:fragment slot="panel">
 		{#if $tabNum === 0}
 			<Batch />
 		{:else if $tabNum === 1}
@@ -36,4 +36,4 @@
 			<Planted />
 		{/if}
 	</svelte:fragment>
-</TabGroup>
+</TabGroup> -->

@@ -4,7 +4,8 @@
 	import { showSuccessToast, showErrorToast } from '../Toast/toast';
 
 	import { db } from '$lib/firebase/firebase';
-	import { parse } from 'date-fns';
+	import { parse, format, addMinutes } from 'date-fns';
+	import { harvested } from '$lib/stores/stores';
 
 	/** Exposes parent props to this component. */
 	export let parent: any;
@@ -23,28 +24,44 @@
 	const cBase = 'card p-4 w-modal shadow-xl space-y-4 ';
 	const cHeader = 'text-2xl font-bold';
 
-	let date_harvested: any;
+	let date: any;
 	let grams: number;
 	let remarks: string = '';
+	let batch_id: string = '';
 	let errorMessage: string = '';
 	let isDisable: boolean = false;
 	// Handle Form Submission
+	let selectedRowData: any;
+	harvested.subscribe((data) => {
+		selectedRowData = data;
+		batch_id = selectedRowData.batch_id;
+		grams = selectedRowData.grams;
+		remarks = selectedRowData.remarks;
+	});
 	async function addData(): Promise<void> {
-		if (!date_harvested || !grams) {
+		if (!date || !grams) {
 			errorMessage = 'Date and quantity are required.';
 
 			return;
 		}
 
-		const formattedDate = parse(date_harvested, 'yyyy-MM-dd', new Date());
-		date_harvested = Timestamp.fromDate(formattedDate);
+		const formattedDate = parse(date, 'yyyy-MM-dd', new Date());
+		// Get the current time
+		const currentTime = new Date();
+
+		// Set the time of the parsed date to the current time
+		const combinedDateTime = addMinutes(
+			formattedDate,
+			currentTime.getHours() * 60 + currentTime.getMinutes()
+		);
+
 		const data = {
-			date_harvested,
+			date: Timestamp.fromDate(combinedDateTime),
 			grams,
 			remarks
 		};
 
-		const userDocRef = collection(db, 'user', '123456', 'harvest record');
+		const userDocRef = collection(db, 'user', '123456', 'batch', batch_id, 'batch_harvest');
 		try {
 			// Add the data to Firestore
 			const docRef = await addDoc(userDocRef, data);
@@ -65,13 +82,14 @@
 			<div class="flex items-center justify-center">
 				<i class="fa-solid fa-plus mr-2" />
 				Add Harvested Data
+				<br />
 			</div>
 		</header>
 		<hr class="opacity-50" />
 
 		<div class="input-group input-group-divider grid-cols-[auto_1fr_auto]">
 			<div class="input-group-shim"><i class="fa-solid fa-calendar" /></div>
-			<input type="date" placeholder="Date" bind:value={date_harvested} />
+			<input type="date" placeholder="Date" bind:value={date} />
 		</div>
 		<div class="input-group input-group-divider grid-cols-[auto_1fr_auto]">
 			<div class="input-group-shim"><i class="fa-solid fa-weight-scale" /></div>

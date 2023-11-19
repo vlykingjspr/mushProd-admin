@@ -29,20 +29,23 @@
 	let id: string;
 	let grams: string;
 	let remarks: string;
-
+	let batch_id: string;
 	let selectedRowData: any;
 	harvested.subscribe((data) => {
 		selectedRowData = data;
+		batch_id = selectedRowData.batch_id;
 		id = selectedRowData.id;
 		date_harvested = selectedRowData.date_harvested;
 		grams = selectedRowData.grams;
 		remarks = selectedRowData.remarks;
 	});
+
 	async function confirmRemove(): Promise<void> {
 		const userDocRef = doc(db, 'user', '123456');
-		const bagsRecordDocRef = doc(userDocRef, 'harvest record', id);
+		const batchDocRef = doc(userDocRef, 'batch', batch_id, 'batch_harvest', id);
+
 		try {
-			await deleteDoc(bagsRecordDocRef);
+			await deleteDoc(batchDocRef);
 			modalStore.close();
 			removeToast();
 		} catch (error) {

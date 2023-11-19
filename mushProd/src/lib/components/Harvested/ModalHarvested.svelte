@@ -4,7 +4,7 @@
 
 	/** Exposes parent props to this component. */
 	export let parent: any;
-	export let date_harvested: string;
+	export let date: string;
 	export let id: string;
 	export let grams: number;
 	export let remarks: string;
@@ -25,7 +25,7 @@
 	harvested.subscribe((data) => {
 		selectedRowData = data;
 		id = selectedRowData.id;
-		date_harvested = selectedRowData.date_harvested;
+		date = selectedRowData.date;
 		grams = selectedRowData.grams;
 		remarks = selectedRowData.remarks;
 	});
@@ -48,7 +48,7 @@
 			<h1 class="text-lg">
 				<strong>
 					<i class="fa-solid fa-calendar-days mr-1" />
-					{date_harvested}
+					{date}
 				</strong>
 			</h1>
 		</div>

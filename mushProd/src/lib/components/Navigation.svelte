@@ -89,7 +89,7 @@
 		</li>
 
 		<li class="mt-8 pl-2">
-			<a class="mt-4 font-bold text-lg" href="/records" on:click={() => updateTabs(0)}>
+			<a class="mt-4 font-bold text-lg" href="/records/batch" on:click={() => updateTabs(0)}>
 				<i class="fa-solid fa-sheet-plastic fa-md" />
 				<span><h1 class="text-sm">RECORDS</h1></span></a
 			>

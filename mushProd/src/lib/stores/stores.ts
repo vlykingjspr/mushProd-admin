@@ -15,8 +15,9 @@ export const notifications = writable({
     alertMessage: ''
 });
 export const harvested = writable({
+    batch_id: '',
     id: '',
-    date_harvested: '',
+    date: '',
     grams: 0,
     remarks: '',
 });

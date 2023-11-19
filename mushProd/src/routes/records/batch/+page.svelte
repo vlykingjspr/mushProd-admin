@@ -90,6 +90,16 @@
 
 	//Modals for clicking data
 	const modalStore = getModalStore();
+	function batch_details(row: any): void {
+		batch.set({
+			id: row.id,
+			batch_code: row.batch_code,
+			batch_total_removed: row.batch_total_removed,
+			batch_total_bags: row.batch_total_bags,
+			batch_planted: row.batch_planted,
+			batch_remarks: row.batch_remarks
+		});
+	}
 	function modalData(row: any): void {
 		const c: ModalComponent = { ref: ModalBatch };
 
@@ -211,16 +221,17 @@
 	</div>
 	<div class="w-full text-token grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pl-4 pr-4">
 		{#each source2 as row (row.id)}
-			<button on:click={() => modalData(row)}>
+			<!-- <button on:click={() => modalData(row)}> -->
+			<a href="/records/batch/{row.id}" on:click={() => batch_details(row)}>
 				<div class={cardStyle}>
 					<div class={cardInsideStyle2}>
-						<div class="flex items-start">
-							<i class="fa-solid fa-temperature-three-quarters text-2xl mr-2" />
+						<div class="flex items-center">
+							<i class=" text-2xl fa-solid fa-qrcode m-2" />
 							<h2 class={h2Style}>{row.batch_code}</h2>
 						</div>
 
 						<hr class="opacity-50" />
-						{row.id}
+
 						<div class={valueStyle}>
 							<!-- {#if {true}} -->
 							<div class="flex items-center">
@@ -244,7 +255,8 @@
 						</div>
 					</div>
 				</div>
-			</button>
+			</a>
+			<!-- </button> -->
 		{/each}
 	</div>
 {/if}

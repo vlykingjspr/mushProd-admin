@@ -14,8 +14,6 @@
 
 	batch.subscribe((data) => {
 		// Log the data for debugging
-		console.log('Subscribed batch data: ', data);
-
 		id = data.id;
 		batch_code = data.batch_code;
 		batch_planted = data.batch_planted;

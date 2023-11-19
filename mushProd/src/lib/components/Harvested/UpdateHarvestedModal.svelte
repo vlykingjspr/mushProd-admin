@@ -1,9 +1,10 @@
 <script lang="ts">
 	import { getModalStore, getToastStore } from '@skeletonlabs/skeleton';
 	import { harvested } from '$lib/stores/stores';
-	import { doc, updateDoc } from 'firebase/firestore';
+	import { collection, doc, updateDoc } from 'firebase/firestore';
 	import { db } from '$lib/firebase/firebase';
 	import { showErrorToast, showUpdateToast } from '../Toast/toast';
+	import { data } from '../Charts/data';
 
 	export let parent: any;
 
@@ -21,22 +22,24 @@
 	const cBase = 'card p-4 w-modal shadow-xl space-y-4 ';
 	const cHeader = 'text-2xl font-bold';
 
-	let date_harvested: string;
+	let date: string;
 	let id: string;
 	let grams: number;
 	let remarks: string;
-
+	let batch_id: string;
 	let selectedRowData: any;
 	harvested.subscribe((data) => {
 		selectedRowData = data;
+		batch_id = selectedRowData.batch_id;
 		id = selectedRowData.id;
-		date_harvested = selectedRowData.date_harvested;
+		date = selectedRowData.date;
 		grams = selectedRowData.grams;
 		remarks = selectedRowData.remarks;
 	});
+
 	async function updateData() {
 		const userDocRef = doc(db, 'user', '123456');
-		const bagsRecordDocRef = doc(userDocRef, 'harvest record', id);
+		const batchDocRef = doc(userDocRef, 'batch', batch_id, 'batch_harvest', id);
 
 		const updatedData = {
 			grams: grams,
@@ -44,7 +47,7 @@
 		};
 
 		try {
-			await updateDoc(bagsRecordDocRef, updatedData);
+			await updateDoc(batchDocRef, updatedData);
 			modalStore.close();
 			updatedToast();
 		} catch (error) {
@@ -65,7 +68,7 @@
 
 		<div class="input-group input-group-divider grid-cols-[auto_1fr_auto]">
 			<div class="input-group-shim"><i class="fa-solid fa-calendar" /></div>
-			<p class=" p-2">{date_harvested}</p>
+			<p class=" p-2">{date}</p>
 		</div>
 		<div class="input-group input-group-divider grid-cols-[auto_1fr_auto]">
 			<div class="input-group-shim"><i class="fa-solid fa-seedling" /></div>
