@@ -13,7 +13,7 @@
 	import { getMessaging } from 'firebase/messaging';
 	import { sendNotification } from '$lib/components/Data/addNotification';
 	import { getApp, getApps, initializeApp } from 'firebase/app';
-
+	// import { sendNotif1 } from './sendNotif';
 	const getMessage = async () => {
 		const firebaseConfig = {
 			apiKey: import.meta.env.VITE_APIKEY,

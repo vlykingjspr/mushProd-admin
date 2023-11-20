@@ -1,7 +1,7 @@
+import * as admin from 'firebase-admin'
+// var admin = require("firebase-admin");
+import serviceAccount from "./betapeak-1b551-firebase-adminsdk-ns0d3-3f611f58e0.json"
 
-var admin = require("firebase-admin");
-
-var serviceAccount = require("./betapeak-1b551-firebase-adminsdk-ns0d3-3f611f58e0.json");
 
 
 admin.initializeApp({
@@ -13,8 +13,8 @@ admin.initializeApp({
 /**
  * @param {any} _request
  */
-export async function post(_request: any) {
-  const registrationToken = ['fSJ_Sb21DpwDhvRtM89__C:APA91bH25MZA4a1yVg8p5L0A0XO9gPbdXizSU0zvcxmn8T0F0pnhxn5GuS0WvM0pjBw4e90Zbsg7Do3oEoA5ZuBI4L10D_-fJ8lRsErnpNfI51OFIXAJ-uNu0usFCqWyshePstWZrW7B',];
+export async function sendNotif1() {
+  const registrationToken = 'fSJ_Sb21DpwDhvRtM89__C:APA91bH25MZA4a1yVg8p5L0A0XO9gPbdXizSU0zvcxmn8T0F0pnhxn5GuS0WvM0pjBw4e90Zbsg7Do3oEoA5ZuBI4L10D_-fJ8lRsErnpNfI51OFIXAJ-uNu0usFCqWyshePstWZrW7B';
 
 
   const message = {

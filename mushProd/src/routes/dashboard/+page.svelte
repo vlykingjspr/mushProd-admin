@@ -50,6 +50,7 @@
 	}
 
 	const url = 'https://mushprod-api-d34b935be1f6.herokuapp.com/predict';
+
 	const input_data = {
 		bags: 50,
 		temp: 23.5,

@@ -38,6 +38,14 @@
 
 	const nonAuthRoutes = ['/'];
 	let users: boolean = false;
+	let humd: number;
+	let temp: number;
+	let time: any;
+	const currentDate = new Date();
+	const formattedDate = format(currentDate, 'yyyy-MM-dd');
+	const rdb = getDatabase();
+	// const dateRef = ref(rdb, `/BETAPEAK/2023-11-14`);
+	const dateRef = ref(rdb, `BETAPEAK/${formattedDate}`);
 	onMount(() => {
 		setLoading(false);
 		const unsubscribe = auth.onAuthStateChanged(async (user) => {
@@ -66,46 +74,33 @@
 				const docSnap = await getDoc(docRef);
 			}
 		});
-		return unsubscribe;
-	});
 
-	let humd: number;
-	let temp: number;
-	let time: any;
-	const currentDate = new Date();
-	const formattedDate = format(currentDate, 'yyyy-MM-dd');
-	const rdb = getDatabase();
-	// const dateRef = ref(rdb, `/BETAPEAK/2023-11-14`);
-	const dateRef = ref(rdb, `BETAPEAK/${formattedDate}`);
+		const queryRef = query(dateRef, limitToLast(1));
+		const unsubscribe1 = onValue(queryRef, (snapshot) => {
+			try {
+				if (snapshot.exists()) {
+					const data = snapshot.val();
+					const lastEntryKey = Object.keys(data)[0];
+					const lastEntry = data[lastEntryKey];
+					humd = lastEntry.Humd;
+					temp = lastEntry.Temp;
+					time = lastEntry.Time;
 
-	const queryRef = query(dateRef, limitToLast(1));
-	const unsubscribe = onValue(queryRef, (snapshot) => {
-		try {
-			if (snapshot.exists()) {
-				const data = snapshot.val();
-
-				const lastEntryKey = Object.keys(data)[0];
-				const lastEntry = data[lastEntryKey];
-				humd = lastEntry.Humd;
-				temp = lastEntry.Temp;
-				time = lastEntry.Time;
-
-				if (24 >= temp && 85 >= humd && 29 <= temp && 95 <= humd) {
-					// if (true) {
-					// uncomment to send notif
-					sendNotification(temp, humd);
+					if (24 >= temp && 85 >= humd && 29 <= temp && 95 <= humd) {
+						// if (true) {
+						// uncomment to send notif
+						sendNotification(temp, humd);
+					}
+					setLoading(false);
+				} else {
+					console.log('it does not exist');
 				}
-				setLoading(false);
-			} else {
-				console.log('it does not exist');
+			} catch (error) {
+				console.log('Error fetching data: ', error);
 			}
-		} catch (error) {
-			console.log('Error fetching data: ', error);
-		}
-	});
-	onDestroy(() => {
-		// Unsubscribe from Firebase when the component is destroyed
-		unsubscribe();
+		});
+
+		return unsubscribe;
 	});
 </script>
 
