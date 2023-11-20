@@ -1,4 +1,4 @@
-import { getDocs, collection, doc, query, Timestamp, orderBy, limit, DocumentSnapshot, getDoc } from 'firebase/firestore';
+import { getDocs, collection, doc, query, Timestamp, orderBy, limit, DocumentSnapshot, getDoc, onSnapshot } from 'firebase/firestore';
 import { db } from './firebase';
 import { format, toDate } from 'date-fns';
 
@@ -126,4 +126,85 @@ export async function LastDateInHarvest(): Promise<string | null> {
         console.error('Error fetching data:', error);
         return null;
     }
+}
+
+export async function getYield(bags: number, temp: number, hum: number) {
+
+    const url = 'https://mushprod-api-d34b935be1f6.herokuapp.com/predict';
+
+    const input_data = {
+        bags: bags,
+        temp: temp,
+        hum: hum
+    };
+
+    return new Promise(async (resolve, reject) => {
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(input_data)
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error('HTTP error! Status:' + response.status);
+                }
+                return response.json();
+            })
+            .then((data) => {
+                // console.log('Predicted Weight: ', data.predicted_weight, data.unit);
+                resolve(data.predicted_weight);
+            })
+            .catch((error) => console.log('Error in fetching data:', error));
+    });
+}
+
+export async function getAllAveTempHumd() {
+    return new Promise((resolve, reject) => {
+        const userDocRef = doc(db, 'user', '123456');
+        const bagsRecordCollectionRef = collection(userDocRef, 'temp and humid');
+        const q = query(bagsRecordCollectionRef, orderBy('date', 'desc'));
+
+        const unsubscribe = onSnapshot(q, (querySnapshot) => {
+            let totalTemp = 0;
+            let totalHumidity = 0;
+            let totalDocuments = 0;
+
+            querySnapshot.forEach((doc) => {
+                const data = doc.data();
+
+                // Ensure that the `date` field is a valid Firestore Timestamp
+                if (data.date && data.date.toDate) {
+                    // Convert Firestore Timestamp to JavaScript Date
+                    data.date = format(data.date.toDate(), 'MMMM dd, yyyy');
+                }
+
+                // Add the ID to the data object
+                data.id = doc.id;
+
+                // Sum up temperature and humidity
+                totalTemp += data[`ave temp`] || 0;
+                totalHumidity += data[`ave humidity`] || 0;
+
+                // Increment the total number of documents
+                totalDocuments++;
+            });
+
+            // Calculate average temperature and average humidity
+            const aveTemp = totalTemp / totalDocuments;
+            const aveHumidity = totalHumidity / totalDocuments;
+
+            // Resolve the promise with the averages
+            resolve({
+                aveTemp,
+                aveHumidity,
+            });
+
+        }, (error) => {
+            // Reject the promise with the error
+            reject(error);
+        });
+    });
+
 }

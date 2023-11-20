@@ -17,7 +17,7 @@
 	import { format } from 'date-fns';
 
 	// getting data
-	import { getHarvestData, getTempHumidAve } from './getData';
+	import { getAnalysis, getHarvestData, getTempHumidAve } from './getData';
 	import { remove } from 'firebase/database';
 
 	export let parent: any;
@@ -30,6 +30,7 @@
 	let source: any = [];
 	let tempHumidAve: any = [];
 	let harvestData: any = [];
+	let analysisData: any = [];
 	onMount(async () => {
 		farmData = await fetchFarmData();
 		removed = await allRemovedBags();
@@ -39,8 +40,7 @@
 		lastDateHarv = await LastDateInHarvest();
 		tempHumidAve = await getTempHumidAve();
 		harvestData = await getHarvestData();
-		console.log(harvestData);
-		console.log(lastDateHarv);
+		analysisData = await getAnalysis();
 		const userDocRef = doc(db, 'user', '123456');
 		const bagsRecordCollectionRef = collection(userDocRef, 'temp and humid');
 		const q = query(bagsRecordCollectionRef, orderBy('date', 'desc'));
@@ -103,15 +103,25 @@
 			<h4 class="subsubsection-heading">Planted Bag Record</h4>
 			<table class="table">
 				<tr>
-					<th>Total Bags Planted</th>
-					<th>Last Planted Date</th>
-					<th>Remarks</th>
+					<th class="text-xs">Batch Code </th>
+					<th class="text-xs">Growth Duration</th>
+					<th class="text-xs">Total Bags Planted</th>
+					<th class="text-xs">Average Temperature</th>
+					<th class="text-xs">Average Humidity</th>
+					<th class="text-xs">Grams</th>
+					<th class="text-xs">Gains</th>
 				</tr>
-				<tr>
-					<td>{lastDate}</td>
-					<td>{planted}</td>
-					<td>N/A</td>
-				</tr>
+				{#each analysisData as row}
+					<tr>
+						<td>{row.batchCode}</td>
+						<td>{row.growthDuration}</td>
+						<td>{row.totalBags}</td>
+						<td>{row.averageTemperature}</td>
+						<td>{row.averageHumidity}</td>
+						<td>{row.totalGrams}</td>
+						<td>Losing</td>
+					</tr>
+				{/each}
 			</table>
 		</div>
 		<div class="harvested_grams">

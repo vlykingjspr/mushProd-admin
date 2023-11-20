@@ -3,7 +3,9 @@
 	import {
 		allPlantedBags,
 		allHarvestedGrams,
-		LastDateInBagsRecord
+		LastDateInBagsRecord,
+		getYield,
+		getAllAveTempHumd
 	} from '../../lib/firebase/allRecord';
 	// chart
 	import Chart from '../../lib/components/Charts/Chart.svelte';
@@ -36,42 +38,28 @@
 	let bagCount: number;
 	let gramsCount: number;
 	let lastDatePlanted: any;
-
-	let HourAverage: any;
+	let yield_pred: any;
+	let aveTemp1: any;
+	let aveTempHumd: any;
+	let aveHumd1: any;
 	// getting all data of added bags and grams
 	async function fetchData() {
 		bagCount = await allPlantedBags();
 		gramsCount = await allHarvestedGrams();
 		lastDatePlanted = await LastDateInBagsRecord();
+		aveTempHumd = await getAllAveTempHumd();
+
+		getYield(bagCount, aveTempHumd.aveTemp, aveTempHumd.aveHumidity)
+			.then((predictedWeight) => {
+				yield_pred = predictedWeight;
+			})
+			.catch((error) => {
+				console.error('Error in fetching data:', error);
+			});
 		loading.set(false);
 	}
 
-	const url = 'https://mushprod-api-d34b935be1f6.herokuapp.com/predict';
-
-	const input_data = {
-		bags: 50,
-		temp: 23.5,
-		hum: 60
-	};
-	onMount(() => {
-		fetch(url, {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify(input_data)
-		})
-			.then((response) => {
-				if (!response.ok) {
-					throw new Error('HTTP error! Status:' + response.status);
-				}
-				return response.json();
-			})
-			.then((data) => {
-				// console.log('Predicted Weight: ', data.predicted_weight, data.unit);
-			})
-			.catch((error) => console.log('Error in fetching data:', error));
-	});
+	onMount(() => {});
 	fetchData();
 	// setLoading(true);
 	// creating a current date format
@@ -79,8 +67,8 @@
 	const formattedDate = format(currentDate, 'yyyy-MM-dd');
 	// getting data from firebase
 	const rdb = getDatabase();
-	// const dateRef = ref(rdb, `/BETAPEAK/2023-11-14`);
-	const dateRef = ref(rdb, `BETAPEAK/${formattedDate}`);
+	const dateRef = ref(rdb, `/BETAPEAK/2023-11-18`);
+	// const dateRef = ref(rdb, `BETAPEAK/${formattedDate}`);
 
 	const queryRef = query(dateRef, limitToLast(1));
 	const unsubscribe = onValue(queryRef, (snapshot) => {
@@ -159,14 +147,6 @@
 	const valueStyle = 'flex justify-center items-center text-7xl md:text-4xl lg:text-6xl ';
 	const smallValueStyle = 'flex justify-center items-center text-5xl';
 	const smallerValueStyle = 'flex justify-center items-center text-2xl';
-
-	// Function to generate a random number
-	function getRandomNumber() {
-		const randomNumber = Math.floor(Math.random() * 100) + 1;
-		return randomNumber;
-	}
-	const val1 = getRandomNumber();
-	const val2 = val1 + 5;
 </script>
 
 <Modal transitionIn={fade} transitionInParams={{ duration: 200 }} />
@@ -334,13 +314,13 @@
 					<div class={smallValueStyle}>
 						<h1 class={smallerValueStyle}>
 							<strong>
-								<!-- {#if lastDatePlanted} -->
-								{lastDatePlanted}
-								<!-- {:else}
+								{#if lastDatePlanted}
+									{lastDatePlanted}
+								{:else}
 									<div class="flex justify-center items-center">
 										<ProgressRadial width="w-10" value={undefined} />
 									</div>
-								{/if} -->
+								{/if}
 							</strong>
 						</h1>
 					</div>
@@ -355,7 +335,15 @@
 					<hr class="opacity-50" />
 					<div class="">
 						<div class={smallerValueStyle}>
-							<strong> <h1>{val1}g - {val2}g</h1> </strong>
+							<strong>
+								{#if yield_pred}
+									<h1>{yield_pred.toFixed(2)} grams</h1>
+								{:else}
+									<div class="flex justify-center items-center">
+										<ProgressRadial width="w-10" value={undefined} />
+									</div>
+								{/if}
+							</strong>
 						</div>
 						<div class="flex justify-center align-center space-x-4 m-4">
 							<button class="grow btn btn-sm variant-filled-primary" on:click={showReportModal}
