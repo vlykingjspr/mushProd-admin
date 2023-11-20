@@ -41,7 +41,7 @@
 			if (permission === 'granted') {
 				// console.log('Notification permission granted.');
 			} else {
-				// console.log('Unable to get permission to notify.');
+				console.log('Unable to get permission to notify.');
 			}
 		});
 		// Get the FCM token for the current user
@@ -55,7 +55,6 @@
 			.then((currentToken) => {
 				if (currentToken) {
 					// console.log(currentToken);
-					// subscribeToTopic(currentToken, "sad")
 				} else {
 					// Show permission request UI
 					console.log('No registration token available. Request permission to generate one.');
