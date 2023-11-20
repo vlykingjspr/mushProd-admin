@@ -12,7 +12,8 @@
     "lint": "prettier --plugin-search-dir . --check . && eslint .",
     "format": "prettier --plugin-search-dir . --write .",
     "test:integration": "playwright test",
-    "test:unit": "vitest"
+    "test:unit": "vitest",
+    "start-ts": "ts-node src/dailyAve.ts"
   },
   "devDependencies": {
     "@playwright/test": "^1.28.1",
@@ -24,6 +25,7 @@
     "@tailwindcss/typography": "0.5.10",
     "@types/jest": "^29.5.8",
     "@types/node": "^20.8.7",
+    "@types/node-cron": "^3.0.11",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",
     "autoprefixer": "10.4.16",
@@ -58,6 +60,7 @@
     "firebase-admin": "^11.11.0",
     "jspdf": "^2.5.1",
     "jspdf-autotable": "^3.7.1",
+    "node-cron": "^3.0.3",
     "svelte-chartjs": "^3.1.2",
     "tsconfig-paths": "^4.2.0"
   }

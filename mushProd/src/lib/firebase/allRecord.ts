@@ -19,6 +19,23 @@ export async function allPlantedBags(): Promise<number> {
 
     return totalBags;
 }
+export async function allRemovedBags(): Promise<number> {
+    const userDocRef = doc(db, 'user', '123456');
+    const batchCollectionRef = collection(userDocRef, 'batch');
+    const q = query(batchCollectionRef);
+    const querySnapshot = await getDocs(q);
+
+    let totalRemoved = 0;
+
+    querySnapshot.forEach((doc) => {
+        const data = doc.data();
+        if (data.batch_total_removed) {
+            totalRemoved += data.batch_total_removed;
+        }
+    });
+
+    return totalRemoved;
+}
 export async function allHarvestedGrams(): Promise<number> {
     const userDocRef = doc(db, 'user', '123456');
     const batchCollectionRef = collection(userDocRef, 'batch');

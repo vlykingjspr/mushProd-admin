@@ -20,14 +20,14 @@
 	} from '@skeletonlabs/skeleton';
 	import { computePosition, autoUpdate, flip, shift, offset, arrow } from '@floating-ui/dom';
 	//page title and nav bar
-
+	import { getDailyAverage } from '$lib/components/Data/calculateAverage';
 	import Navigation from '$lib/components/Navigation.svelte';
 	import PageTitle from '$lib/components/PageTitle.svelte';
 	import Footer from '$lib/components/Footer.svelte';
 	import { sendNotification } from '$lib/components/Data/addNotification';
 	import Authenticate from '$lib/components/Authenticate.svelte';
 	import { format } from 'date-fns';
-
+	import { dateFormat, updateTime } from '$lib/components/Data/DateAndTime';
 	storePopup.set({ computePosition, autoUpdate, flip, shift, offset, arrow });
 
 	initializeStores();
@@ -41,14 +41,56 @@
 	let humd: number;
 	let temp: number;
 	let time: any;
-	let notifSend: boolean = false;
+
 	let lastNotificationTime: any = null;
 	const currentDate = new Date();
+
 	const formattedDate = format(currentDate, 'yyyy-MM-dd');
 	const rdb = getDatabase();
 	// const dateRef = ref(rdb, `/BETAPEAK/2023-11-14`);
 	const dateRef = ref(rdb, `BETAPEAK/${formattedDate}`);
+	let currentTime: any;
+	let executedToday = false;
+	let timeoutId: NodeJS.Timeout | null = null;
+
+	function executeAtSpecificTime(hour: number, minute: number, second: number) {
+		// Calculate the time until the specified
+		const now = new Date();
+		const targetTime = new Date(now);
+		targetTime.setHours(hour, minute, second, 0);
+		let timeUntilTargetTime = targetTime.getTime() - now.getTime();
+
+		if (timeUntilTargetTime <= 0) {
+			targetTime.setDate(targetTime.getDate() + 1);
+			timeUntilTargetTime = targetTime.getTime() - now.getTime();
+			executedToday = false;
+		}
+
+		timeoutId = setTimeout(() => {
+			if (!executedToday) {
+				getDailyAverage();
+				executedToday = true;
+				console.log('sd');
+				// You can add additional code here if needed
+			}
+
+			// Call the function recursively to schedule the next day's execution at the same time
+			executeAtSpecificTime(hour, minute, second);
+		}, timeUntilTargetTime);
+
+		return timeoutId;
+	}
+
+	// Example usage:
+	function myDailyTask() {
+		console.log('Executing at a specific time each day...');
+		// Put your daily task code here
+	}
+
+	// Schedule the function to execute at 3:30 PM (15:30) each day
+
 	onMount(() => {
+		timeoutId = executeAtSpecificTime(20, 10, 1);
 		setLoading(false);
 		const unsubscribe = auth.onAuthStateChanged(async (user) => {
 			const currentPath = window.location.pathname;
@@ -104,9 +146,6 @@
 
 							// Update the last notification time
 							lastNotificationTime = currentTime;
-
-							// Set a flag to indicate that the notification has been sent
-							notifSend = true;
 						}
 					}
 					setLoading(false);
@@ -161,6 +200,7 @@
 					<i class="fa-brands fa-envira fa-lg" />
 					<h1>MushProd</h1>
 					<br />
+
 					{temp}
 					{humd}
 				</div>

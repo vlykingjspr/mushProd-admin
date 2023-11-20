@@ -24,9 +24,6 @@
 	import { currentPageTitle, setLoading, report } from '$lib/stores/stores';
 	import { format } from 'date-fns';
 
-	// notif
-	import { sendNotification } from '$lib/components/Data/addNotification';
-
 	//getting data
 	import { getDatabase, ref, get, query, limitToLast, onValue } from 'firebase/database';
 
@@ -39,7 +36,7 @@
 	let bagCount: number;
 	let gramsCount: number;
 	let lastDatePlanted: any;
-	let notificationSent = false;
+
 	let HourAverage: any;
 	// getting all data of added bags and grams
 	async function fetchData() {
@@ -71,7 +68,7 @@
 				return response.json();
 			})
 			.then((data) => {
-				console.log('Predicted Weight: ', data.predicted_weight, data.unit);
+				// console.log('Predicted Weight: ', data.predicted_weight, data.unit);
 			})
 			.catch((error) => console.log('Error in fetching data:', error));
 	});
@@ -82,8 +79,8 @@
 	const formattedDate = format(currentDate, 'yyyy-MM-dd');
 	// getting data from firebase
 	const rdb = getDatabase();
-	const dateRef = ref(rdb, `/BETAPEAK/2023-11-14`);
-	// const dateRef = ref(rdb, `BETAPEAK/${formattedDate}`);
+	// const dateRef = ref(rdb, `/BETAPEAK/2023-11-14`);
+	const dateRef = ref(rdb, `BETAPEAK/${formattedDate}`);
 
 	const queryRef = query(dateRef, limitToLast(1));
 	const unsubscribe = onValue(queryRef, (snapshot) => {
@@ -97,12 +94,6 @@
 				temp = lastEntry.Temp;
 				time = lastEntry.Time;
 
-				if (24 >= temp && 85 >= humd && 29 <= temp && 95 <= humd) {
-					// uncomment to send notif
-					// sendNotification(100, 100);
-
-					notificationSent = true;
-				}
 				setLoading(false);
 			} else {
 				console.log('it does not exist');
@@ -236,7 +227,7 @@
 						</div>
 						<hr class="opacity-50" />
 
-						<div class="flex items-center justify-between">
+						<div class="flex items-center justify-between mb-5">
 							<div>
 								{#if bagCount}
 									<strong><div class={smallerValueStyle}><h1>{bagCount} bags</h1></div></strong>
@@ -245,11 +236,6 @@
 										<ProgressRadial width="w-10" value={undefined} />
 									</div>
 								{/if}
-							</div>
-							<div class="flex justify-center align-center space-x-4 m-4">
-								<button class="grow btn btn-sm variant-filled-primary" on:click={showAddBagModal}
-									>Add Bags</button
-								>
 							</div>
 						</div>
 					</div>
@@ -269,12 +255,7 @@
 									</div>
 								{/if}
 							</div>
-							<div class="flex justify-center align-center space-x-4 m-4">
-								<button
-									class="grow btn btn-sm variant-filled-primary"
-									on:click={showAddHarvestModal}>Add Harvest</button
-								>
-							</div>
+							<div class="flex justify-center align-center space-x-4 m-4" />
 						</div>
 					</div>
 				</a>

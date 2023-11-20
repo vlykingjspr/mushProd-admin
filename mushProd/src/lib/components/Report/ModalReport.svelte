@@ -9,25 +9,37 @@
 		allPlantedBags,
 		allHarvestedGrams,
 		LastDateInBagsRecord,
-		LastDateInHarvest
+		LastDateInHarvest,
+		allRemovedBags
 	} from '../../firebase/allRecord';
 	import { collection, doc, onSnapshot, orderBy, query } from 'firebase/firestore';
 	import { db } from '$lib/firebase/firebase';
 	import { format } from 'date-fns';
-	/** Exposes parent props to this component. */
+
+	// getting data
+	import { getHarvestData, getTempHumidAve } from './getData';
+	import { remove } from 'firebase/database';
+
 	export let parent: any;
 	let farmData: any[] = [];
 	let planted: any;
 	let harvest: any;
+	let removed: any;
 	let lastDate: any;
 	let lastDateHarv: any;
 	let source: any = [];
+	let tempHumidAve: any = [];
+	let harvestData: any = [];
 	onMount(async () => {
 		farmData = await fetchFarmData();
+		removed = await allRemovedBags();
 		planted = await allPlantedBags();
 		harvest = await allHarvestedGrams();
 		lastDate = await LastDateInBagsRecord();
 		lastDateHarv = await LastDateInHarvest();
+		tempHumidAve = await getTempHumidAve();
+		harvestData = await getHarvestData();
+		console.log(harvestData);
 		console.log(lastDateHarv);
 		const userDocRef = doc(db, 'user', '123456');
 		const bagsRecordCollectionRef = collection(userDocRef, 'temp and humid');
@@ -70,8 +82,8 @@
 	});
 </script>
 
-<div style="display: none;">
-	<!-- <div> -->
+<!-- <div style="display: none;"> -->
+<div>
 	<div id="element">
 		<h1 class="report-heading flex justify-center items-center text-4xl">
 			MushProd: NodeMCU-Based and Yield Prediction System for Oyster Mushroom System Report
@@ -86,7 +98,7 @@
 			{/each}
 		</div>
 		<div class="planted_bags">
-			<h2 class="section-heading">II. Planted Bags</h2>
+			<h2 class="section-heading">II. Growing Bag Analysis</h2>
 			<p class="section-content" />
 			<h4 class="subsubsection-heading">Planted Bag Record</h4>
 			<table class="table">
@@ -104,42 +116,52 @@
 		</div>
 		<div class="harvested_grams">
 			<h2 class="section-heading">III. Harvest Data</h2>
-			<p class="section-content">
-				Here, you will find detailed information about the harvested mushrooms, including bag IDs,
-				crop types, and harvest dates.
-			</p>
+
 			<h3 class="subsection-heading">Harvest Records</h3>
 
-			<h4 class="subsubsection-heading">1. Harvested Bags</h4>
 			<table class="table">
 				<tr>
+					<th>Batch Code</th>
+					<th>Number of Harvest</th>
 					<th>Total Grams Harvested</th>
-					<th>Last Harvest Date</th>
-					<th>Remarks</th>
 				</tr>
-				<tr>
-					<td>{lastDateHarv}</td>
-					<td>{harvest}</td>
-					<td>N/A</td>
-				</tr>
+				{#each harvestData as row}
+					<tr>
+						<td>{row.batchCode}</td>
+						<td>{row.totalHarvests}</td>
+						<td>{row.totalGrams}</td>
+					</tr>
+				{/each}
 			</table>
 		</div>
-		<!-- <div class="mushroom_data">
+		<div class="mushroom_data">
 			<h2 class="section-heading">IV. Mushroom Data</h2>
-			<p class="section-content">
-				Explore insights into the mushroom cultivation process, including types of mushrooms grown
-				and their characteristics.
-			</p>
-		</div> -->
+			<table class="table">
+				<tr>
+					<th>Type</th>
+					<th>Total Bags</th>
+					<th>Total Harvested</th>
+					<th>Total Bags Removed</th>
+				</tr>
+				<!-- {#each tempHumidAve as row} -->
+				<tr class="">
+					<td>Oyster Mushroom</td>
+					<td>{planted}</td>
+					<td>{harvest}</td>
+					<td>{removed}</td>
+				</tr>
+				<!-- {/each} -->
+			</table>
+		</div>
 		<div class="temp_humid">
-			<h2 class="section-heading">IV. Temperature and Humidity Monitoring</h2>
+			<h2 class="section-heading">V. Temperature and Humidity Monitoring</h2>
 			<table class="table">
 				<tr>
 					<th>Date</th>
 					<th>Average Temperature </th>
 					<th>Average Humidity</th>
 				</tr>
-				{#each source as row}
+				{#each tempHumidAve as row}
 					<tr class="">
 						<td>{row.date}</td>
 						<td>{row['ave temp']}</td>
@@ -197,6 +219,9 @@
 {/if}
 
 <style>
+	* {
+		background-color: aliceblue;
+	}
 	.report-heading {
 		color: black;
 		font-size: large;
@@ -233,9 +258,8 @@
 	.table,
 	.table th,
 	.table td {
-		width: 100%;
 		border-collapse: collapse;
-		border: 1px solid #333;
+		border: 1.2px solid #000000;
 		padding: 8px;
 		text-align: left;
 		background-color: white;

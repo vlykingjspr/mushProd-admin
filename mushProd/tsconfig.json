@@ -13,6 +13,6 @@
 	  
 	  "target": "es2017"
 	},
-	"exclude": ["src/routes/firebaseAdmin/sendNotif.js"]
+	"include": ["src/**/*.ts", "src/**/*.d.ts"]
   }
   
