@@ -105,6 +105,7 @@
 				const s = query(batchHarvestRef, orderBy('date', 'asc'));
 				const unsubscribe1 = onSnapshot(s, (querySnapshot) => {
 					source.length = 0; // Clear the array before pushing new data
+					source = [];
 					querySnapshot.forEach((doc) => {
 						const data = doc.data();
 						// Ensure that the `date` field is a valid Firestore Timestamp
@@ -413,14 +414,11 @@
 					</tr>
 				</tfoot>
 			{:else}
-				<tbody>
-					<tr>
-						<td class="flex justify-center items-center m-2">
-							<h1 class="h4 text-center">No Harvest Yet!</h1>
-						</td>
-					</tr>
+				<tbody class="flex justify-center items-center">
+					<!-- <tr class="flex justify-center items-center m-2"> -->
+					<h1 class="h4 m-2">No Harvest Yet!</h1>
+					<!-- </tr> -->
 				</tbody>
-				<tfoot />
 			{/if}
 		</table>
 	</div>
