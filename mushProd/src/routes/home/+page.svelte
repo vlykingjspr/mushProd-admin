@@ -7,13 +7,12 @@
 	import { onMount } from 'svelte';
 	import { dateFormat, updateTime } from '../../lib/components/Data/DateAndTime';
 	import { updateTab } from '../records/pageTab';
-	import { getFirestore, collection, addDoc } from 'firebase/firestore';
-	import { db } from '$lib/firebase/firebase';
+
 	import { getToken, onMessage } from 'firebase/messaging';
 	import { getMessaging } from 'firebase/messaging';
 	import { sendNotification } from '$lib/components/Data/addNotification';
 	import { getApp, getApps, initializeApp } from 'firebase/app';
-	// import { sendNotif1 } from './sendNotif';
+
 	const getMessage = async () => {
 		const firebaseConfig = {
 			apiKey: import.meta.env.VITE_APIKEY,
@@ -119,9 +118,6 @@
 		updateTitle('Records');
 		updateTab(tabNumber);
 	}
-	import { getDailyAverage } from '$lib/components/Data/calculateAverage';
-	// import { sendNotification } from '$lib/components/Data/addNotification';
-	// import { __methods } from '../firebaseAdmin/firebaseAdmin';
 </script>
 
 <Modal transitionIn={fade} transitionInParams={{ duration: 200 }} />
@@ -134,15 +130,6 @@
 {:else}
 	<div class=" ml-4">
 		<h1 class="h1 mb-10">Welcome to MushProd</h1>
-
-		<!-- <button on:click={() => handleButtonClick()} class="grow btn btn-sm variant-filled-primary"
-			>Add Temp
-		</button> -->
-
-		<!-- <input bind:value={notification.title} placeholder="Notification Title" />
-		<textarea bind:value={notification.body} placeholder="Notification Body" />
-
-		<button on:click={sendNotification}>Send Notification</button> -->
 	</div>
 	<div class="flex items-center justify-center">
 		<div class="w-full text-token grid sm:grid-cols-1 md:grid-cols-3 gap-4 p-4">
@@ -212,21 +199,8 @@
 			</div>
 			<div class={cardStyle}>
 				<div class={cardInsideStyle}>
-					<a href="/records" on:click={() => updateTabs(0)}>
-						<h2 class={h2Style}>Planted Records</h2>
-
-						<hr class="opacity-50 mb-2" />
-
-						<div class={valueStyle}>
-							<i class="fa-solid fa-seedling fa-md" />
-						</div>
-					</a>
-				</div>
-			</div>
-			<div class={cardStyle}>
-				<div class={cardInsideStyle}>
-					<a href="/records" on:click={() => updateTabs(1)}>
-						<h2 class={h2Style}>Harvest Records</h2>
+					<a href="/records/batch" on:click={() => updateTabs(1)}>
+						<h2 class={h2Style}>Batch Records</h2>
 
 						<hr class="opacity-50 mb-2" />
 
@@ -236,32 +210,7 @@
 					</a>
 				</div>
 			</div>
-			<!-- <div class={cardStyle}>
-				<div class={cardInsideStyle}>
-					<a href="/records" on:click={() => updateTabs(2)}>
-						<h2 class={h2Style}>Mushroom Records</h2>
 
-						<hr class="opacity-50 mb-2" />
-
-						<div class={valueStyle}>
-							<i class="fa-solid fa-clipboard fa-md" />
-						</div>
-					</a>
-				</div>
-			</div>
-			<div class={cardStyle}>
-				<div class={cardInsideStyle}>
-					<a href="/records" on:click={() => updateTabs(3)}>
-						<h2 class={h2Style}>Removed Bags</h2>
-
-						<hr class="opacity-50 mb-2" />
-
-						<div class={valueStyle}>
-							<i class="fa-solid fa-trash fa-md" />
-						</div>
-					</a>
-				</div>
-			</div> -->
 			<div class={cardStyle}>
 				<div class={cardInsideStyle}>
 					<a href="/records" on:click={() => updateTabs(4)}>
