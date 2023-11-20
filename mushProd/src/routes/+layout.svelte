@@ -41,6 +41,8 @@
 	let humd: number;
 	let temp: number;
 	let time: any;
+	let notifSend: boolean = false;
+	let lastNotificationTime: any = null;
 	const currentDate = new Date();
 	const formattedDate = format(currentDate, 'yyyy-MM-dd');
 	const rdb = getDatabase();
@@ -89,7 +91,23 @@
 					if (24 >= temp && 85 >= humd && 29 <= temp && 95 <= humd) {
 						// if (true) {
 						// uncomment to send notif
-						sendNotification(temp, humd);
+						// Check if it's been at least 30 minutes since the last notification
+						const currentTime = new Date().getTime();
+						const thirtyMinutesInMillis = 30 * 60 * 1000; // 30 minutes in milliseconds
+
+						if (
+							!lastNotificationTime ||
+							currentTime - lastNotificationTime >= thirtyMinutesInMillis
+						) {
+							// Send the notification
+							sendNotification(temp, humd);
+
+							// Update the last notification time
+							lastNotificationTime = currentTime;
+
+							// Set a flag to indicate that the notification has been sent
+							notifSend = true;
+						}
 					}
 					setLoading(false);
 				} else {
@@ -142,6 +160,9 @@
 				<div class=" flex justify-between items-center">
 					<i class="fa-brands fa-envira fa-lg" />
 					<h1>MushProd</h1>
+					<br />
+					{temp}
+					{humd}
 				</div>
 
 				<svelte:fragment slot="trail"><LightSwitch /></svelte:fragment>

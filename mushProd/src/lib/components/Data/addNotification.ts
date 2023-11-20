@@ -7,11 +7,11 @@ import { db } from '$lib/firebase/firebase';
 export async function sendNotification(temperature: number, humidity: number) {
     let temp: number = temperature;
     let humd: number = humidity;
-    let alertTitleTemp;
-    let alertTitleHumd;
-    let alertTitle;
-    let alertMessagetemp;
-    let alertMessagehumid;
+    let alertTitleTemp: string = '';
+    let alertTitleHumd: string = '';
+    let alertTitle: string = '';
+    let alertMessagetemp: string = '';
+    let alertMessagehumid: string = '';
     let alertMessage = '';
     if (24 >= temperature) {
         alertTitleTemp = 'Low Temperature'
@@ -58,14 +58,13 @@ export async function sendNotification(temperature: number, humidity: number) {
             temperature: temperature,
         });
 
-        console.log('Notification sent to Firestore with ID: ', docRef.id);
+        // console.log('Notification sent to Firestore with ID: ', docRef.id);
 
         Notification.requestPermission().then((perm: NotificationPermission) => {
             if (perm === 'granted') {
 
-                const notif = new Notification('Example of Notification', {
-                    body: 'This is more text',
-                    data: { hello: "world" }
+                const notif = new Notification(alertTitle, {
+                    body: alertMessage,
                 });
 
                 notif.addEventListener("error", (e: Event) => {
