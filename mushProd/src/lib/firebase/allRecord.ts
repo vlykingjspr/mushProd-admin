@@ -1,42 +1,53 @@
-import { getDocs, collection, doc, query, Timestamp, orderBy, limit } from 'firebase/firestore';
+import { getDocs, collection, doc, query, Timestamp, orderBy, limit, DocumentSnapshot, getDoc } from 'firebase/firestore';
 import { db } from './firebase';
 import { format, toDate } from 'date-fns';
 
 export async function allPlantedBags(): Promise<number> {
     const userDocRef = doc(db, 'user', '123456');
-    const bagsRecordCollectionRef = collection(userDocRef, 'bags record');
-    const q = query(bagsRecordCollectionRef);
+    const batchCollectionRef = collection(userDocRef, 'batch');
+    const q = query(batchCollectionRef);
     const querySnapshot = await getDocs(q);
 
-    let totalQuantity = 0;
+    let totalBags = 0;
 
     querySnapshot.forEach((doc) => {
         const data = doc.data();
-        if (data.quantity) {
-            totalQuantity += data.quantity;
+        if (data.batch_total_bags) {
+            totalBags += data.batch_total_bags;
         }
     });
 
-    return totalQuantity;
+    return totalBags;
 }
 export async function allHarvestedGrams(): Promise<number> {
     const userDocRef = doc(db, 'user', '123456');
-    const bagsRecordCollectionRef = collection(userDocRef, 'harvest record');
-    const q = query(bagsRecordCollectionRef);
+    const batchCollectionRef = collection(userDocRef, 'batch');
+    const q = query(batchCollectionRef);
     const querySnapshot = await getDocs(q);
 
     let totalGrams = 0;
+    const promises: Promise<void>[] = [];
+    querySnapshot.forEach(async (batchDoc) => {
+        const batchHarvestCollectionRef = collection(batchDoc.ref, 'batch_harvest');
+        const harvestDocsSnapshotPromise = getDocs(batchHarvestCollectionRef);
 
-    querySnapshot.forEach((doc) => {
-        const data = doc.data();
-        if (data.grams) {
-            totalGrams += data.grams;
-        }
+        promises.push(
+            harvestDocsSnapshotPromise.then((harvestDocsSnapshot) => {
+                harvestDocsSnapshot.forEach((harvestDoc) => {
+                    const harvestData = harvestDoc.data();
+                    if (harvestData && harvestData.grams) {
+                        totalGrams += harvestData.grams;
+                    }
+                });
+            })
+        );
     });
+
+    // Wait for all promises to resolve before returning the totalGrams
+    await Promise.all(promises);
 
     return totalGrams;
 }
-
 
 export async function LastDateInBagsRecord(): Promise<string | null> {
     const bagsRecordCollectionRef = collection(db, 'user', '123456', 'bags record');

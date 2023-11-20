@@ -73,10 +73,8 @@
 				console.log('Predicted Weight: ', data.predicted_weight, data.unit);
 			})
 			.catch((error) => console.log('Error in fetching data:', error));
-
-		fetchData();
 	});
-
+	fetchData();
 	// setLoading(true);
 	// creating a current date format
 	const currentDate = new Date();
