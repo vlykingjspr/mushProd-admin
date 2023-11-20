@@ -52,10 +52,10 @@
 	// Create a Firestore listener and initialize tableData
 	onMount(async () => {
 		const userDocRef = doc(db, 'user', '123456');
-
 		const batchRec = collection(userDocRef, 'batch');
 		const s = query(batchRec, orderBy('batch_planted', 'asc'));
 		const unsubscribe1 = onSnapshot(s, (querySnapshot) => {
+			source2 = [];
 			querySnapshot.forEach((doc) => {
 				const data = doc.data();
 				// Ensure that the `date` field is a valid Firestore Timestamp
