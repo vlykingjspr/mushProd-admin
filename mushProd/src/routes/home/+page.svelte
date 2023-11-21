@@ -132,8 +132,8 @@
 		<h1 class="h1 mb-10">Welcome to MushProd</h1>
 	</div>
 	<div class="flex items-center justify-center">
-		<div class="w-full text-token grid sm:grid-cols-1 md:grid-cols-3 gap-4 p-4">
-			<div class={`${cardStyle} sm:col-span-1 md:col-span-3 lg:col-span-1`}>
+		<div class="w-full text-token grid sm:grid-cols-1 md:grid-cols-4 gap-4 p-4">
+			<div class={`${cardStyle} sm:col-span-1 md:col-span-4 lg:col-span-4`}>
 				<div class={cardInsideStyle}>
 					{#each farmData as farm}
 						<div class="flex items-center">
@@ -173,7 +173,7 @@
 				</div>
 			</div>
 
-			<div class={cardStyle}>
+			<div class={`${cardStyle} sm:col-span-1 md:col-span-2 lg:col-span-1`}>
 				<div class={cardInsideStyle}>
 					<a href="/dashboard" on:click={() => updateTitle('Dashboard')}>
 						<h2 class={h2Style}>Dashboard</h2>
@@ -184,7 +184,7 @@
 					</a>
 				</div>
 			</div>
-			<div class={cardStyle}>
+			<div class={`${cardStyle} sm:col-span-1 md:col-span-2 lg:col-span-1`}>
 				<div class={cardInsideStyle}>
 					<a href="/notification" on:click={() => updateTitle('Notification')}>
 						<h2 class={h2Style}>Notification</h2>
@@ -197,7 +197,7 @@
 					</a>
 				</div>
 			</div>
-			<div class={cardStyle}>
+			<div class={`${cardStyle} sm:col-span-1 md:col-span-2 lg:col-span-1`}>
 				<div class={cardInsideStyle}>
 					<a href="/records/batch" on:click={() => updateTabs(1)}>
 						<h2 class={h2Style}>Batch Records</h2>
@@ -211,7 +211,7 @@
 				</div>
 			</div>
 
-			<div class={cardStyle}>
+			<div class={`${cardStyle} sm:col-span-1 md:col-span-2 lg:col-span-1`}>
 				<div class={cardInsideStyle}>
 					<a href="/records" on:click={() => updateTabs(4)}>
 						<h2 class={h2Style}>Temperature & Humidity</h2>

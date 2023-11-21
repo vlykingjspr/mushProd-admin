@@ -1,14 +1,16 @@
 
 import { onMount } from 'svelte';
 import { getHourlyAverages } from '../Data/calculateAverage';
+import { getHarvestData } from '../Report/getData';
+getHarvestData
+
 
 
 let tempData;
 let humdData
-
+let hrData
 const averagesArray = await getHourlyAverages();
-
-
+console.log(averagesArray)
 averagesArray.sort((a, b) => {
   // Convert "Hour" values to numbers for proper numerical comparison
   const hourA = parseInt(a.Hour);
@@ -22,21 +24,16 @@ averagesArray.sort((a, b) => {
 // Process averagesArray and update data and data2
 const temperatureData = averagesArray.map((entry) => Math.floor(entry.AverageTemperature));
 const humidityData = averagesArray.map((entry) => Math.floor(entry.AverageHumidity));
-
+const hourData = averagesArray.map((entry) => entry.Hour)
 $: tempData = temperatureData
 $: humdData = humidityData
-
-export const data = {
-  labels: [
-    '12:00 AM', '1:00 AM', '2:00 AM', '3:00 AM', '4:00 AM', '5:00 AM',
-    '6:00 AM', '7:00 AM', '8:00 AM', '9:00 AM', '10:00 AM', '11:00 AM',
-    '12:00 PM', '1:00 PM', '2:00 PM', '3:00 PM', '4:00 PM', '5:00 PM',
-    '6:00 PM', '7:00 PM', '8:00 PM', '9:00 PM', '10:00 PM', '11:00 PM'
-  ],
+$: hrData = hourData
+export const dailyTempHumd = {
+  labels: hrData,
   datasets: [
     {
       label: 'Temperature',
-      // fill: true,
+      fill: true,
       lineTension: 0.3,
       backgroundColor: 'rgba(225, 204,230, .3)',
       borderColor: 'rgba(11, 104, 158, 0.8)',
@@ -78,3 +75,38 @@ export const data = {
     },
   ],
 };
+
+let harvCodeData;
+let harvGramsData;
+const harvData: any = await getHarvestData();
+const harvCode = harvData.map((entry: any) => entry.batchCode);
+const harvGrams = harvData.map((entry: any) => entry.totalGrams);
+$: harvCodeData = harvCode
+$: harvGramsData = harvGrams
+
+export const harvestData = {
+  labels: harvCodeData,
+  datasets: [
+    {
+      label: 'Total Grams Harvested',
+      data: harvGramsData,
+      backgroundColor: [
+        'rgba(255, 134,159,0.4)',
+        'rgba(98,  182, 239,0.4)',
+        'rgba(255, 218, 128,0.4)',
+        'rgba(113, 205, 205,0.4)',
+        'rgba(170, 128, 252,0.4)',
+        'rgba(255, 177, 101,0.4)',
+      ],
+      borderWidth: 2,
+      borderColor: [
+        'rgba(255, 134, 159, 1)',
+        'rgba(98,  182, 239, 1)',
+        'rgba(255, 218, 128, 1)',
+        'rgba(113, 205, 205, 1)',
+        'rgba(170, 128, 252, 1)',
+        'rgba(255, 177, 101, 1)',
+      ],
+    },
+  ],
+}

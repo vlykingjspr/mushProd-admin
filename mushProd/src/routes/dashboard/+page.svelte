@@ -8,7 +8,8 @@
 		getAllAveTempHumd
 	} from '../../lib/firebase/allRecord';
 	// chart
-	import Chart from '../../lib/components/Charts/Chart.svelte';
+	import Chart from '../../lib/components/Charts/dailyTempHumd.svelte';
+	import HarvestData from '../../lib/components/Charts/harvestData.svelte';
 	// components
 	import {
 		Modal,
@@ -20,8 +21,7 @@
 	// modal
 	import { getModalStore } from '@skeletonlabs/skeleton';
 	import ModalReport from '$lib/components/Report/ModalReport.svelte';
-	import AddBagsModal from '$lib/components/PlantedBags/AddBagsModal.svelte';
-	import AddHarvestedModal from '$lib/components/Harvested/AddHarvestedModal.svelte';
+
 	import { fade } from 'svelte/transition';
 	import { currentPageTitle, setLoading, report } from '$lib/stores/stores';
 	import { format } from 'date-fns';
@@ -39,7 +39,7 @@
 	let gramsCount: number;
 	let lastDatePlanted: any;
 	let yield_pred: any;
-	let aveTemp1: any;
+	let harv: any;
 	let aveTempHumd: any;
 	let aveHumd1: any;
 	// getting all data of added bags and grams
@@ -59,16 +59,18 @@
 		loading.set(false);
 	}
 
-	onMount(() => {});
-	fetchData();
+	onMount(() => {
+		fetchData();
+	});
+
 	// setLoading(true);
 	// creating a current date format
 	const currentDate = new Date();
 	const formattedDate = format(currentDate, 'yyyy-MM-dd');
 	// getting data from firebase
 	const rdb = getDatabase();
-	const dateRef = ref(rdb, `/BETAPEAK/2023-11-18`);
-	// const dateRef = ref(rdb, `BETAPEAK/${formattedDate}`);
+	// const dateRef = ref(rdb, `/BETAPEAK/2023-11-18`);
+	const dateRef = ref(rdb, `BETAPEAK/${formattedDate}`);
 
 	const queryRef = query(dateRef, limitToLast(1));
 	const unsubscribe = onValue(queryRef, (snapshot) => {
@@ -96,30 +98,7 @@
 	});
 	// modals
 	const modalStore = getModalStore();
-	function showAddBagModal(): void {
-		const c: ModalComponent = { ref: AddBagsModal };
-		const modal: ModalSettings = {
-			type: 'component',
-			component: c,
-			title: '',
-			body: '',
 
-			response: (r) => console.log('response:', r)
-		};
-		modalStore.trigger(modal);
-	}
-	function showAddHarvestModal(): void {
-		const c: ModalComponent = { ref: AddHarvestedModal };
-		const modal: ModalSettings = {
-			type: 'component',
-			component: c,
-			title: '',
-			body: '',
-
-			response: (r) => console.log('response:', r)
-		};
-		modalStore.trigger(modal);
-	}
 	function updateTitle(title: string): void {
 		currentPageTitle.set(title);
 	}
@@ -241,60 +220,7 @@
 				</a>
 			</div>
 		</div>
-		<!-- <div class={cardStyle}>
-			<div class={cardInsideStyle}>
-				<a href="/records" on:click={() => updateTitle('Records')}>
-					<div>
-						<div class="flex items-start">
-							<i class="fa-solid fa-seedling fa-md text-base mr-2" />
-							<h3 class={h3Style}>Mushroom</h3>
-						</div>
-						<hr class="opacity-50" />
 
-						<div class="flex items-center justify-between">
-							<div>
-								{#if bagCount}
-									<strong><div class={smallerValueStyle}><h1>{bagCount} pcs.</h1></div></strong>
-								{:else}
-									<div class="flex justify-center items-center">
-										<ProgressRadial width="w-10" value={undefined} />
-									</div>
-								{/if}
-							</div>
-							<div class="flex justify-center align-center space-x-4 m-4">
-								<button class="grow btn btn-sm variant-filled-primary" on:click={showAddBagModal}
-									>Add</button
-								>
-							</div>
-						</div>
-					</div>
-					<div>
-						<div class="flex items-start">
-							<i class="fa-solid fa-trash fa-md text-base mr-2" />
-							<h3 class={h3Style}>Total Removed</h3>
-						</div>
-						<hr class="opacity-50" />
-						<div class="flex items-center justify-between">
-							<div>
-								{#if gramsCount}
-									<strong><div class={smallerValueStyle}><h1>{gramsCount} bags</h1></div></strong>
-								{:else}
-									<div class="flex justify-center items-center">
-										<ProgressRadial width="w-10" value={undefined} />
-									</div>
-								{/if}
-							</div>
-							<div class="flex justify-center align-center space-x-4 m-4">
-								<button
-									class="grow btn btn-sm variant-filled-primary"
-									on:click={showAddHarvestModal}>Remove Bags</button
-								>
-							</div>
-						</div>
-					</div>
-				</a>
-			</div>
-		</div> -->
 		<div class={`md:col-span-2 `}>
 			<div class={`p-4  ${cardStyle}`}>
 				<div class={`p-4 bg-surface-100  `}>
@@ -351,6 +277,13 @@
 							>
 						</div>
 					</div>
+				</div>
+			</div>
+		</div>
+		<div class={`md:col-span-2 `}>
+			<div class={`p-4  ${cardStyle}`}>
+				<div class={`p-4 bg-surface-100  `}>
+					<HarvestData />
 				</div>
 			</div>
 		</div>

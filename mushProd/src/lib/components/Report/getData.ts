@@ -74,7 +74,6 @@ export async function getMushroomData() {
     });
 }
 let batchData: any = [];
-
 export async function getAnalysis() {
     const userDocRef = doc(db, 'user', '123456');
     const batchCollectionRef = collection(userDocRef, 'batch');

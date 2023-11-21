@@ -2,8 +2,9 @@
 	// @ts-nocheck
 
 	import { Line } from 'svelte-chartjs';
-	import { data } from './data.ts';
+	import { dailyTempHumd } from './data.js';
 
+	let data = dailyTempHumd;
 	import {
 		Chart as ChartJS,
 		Title,

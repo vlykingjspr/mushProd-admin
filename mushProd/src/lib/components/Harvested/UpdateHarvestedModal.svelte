@@ -4,7 +4,6 @@
 	import { collection, doc, updateDoc } from 'firebase/firestore';
 	import { db } from '$lib/firebase/firebase';
 	import { showErrorToast, showUpdateToast } from '../Toast/toast';
-	import { data } from '../Charts/data';
 
 	export let parent: any;
 
