@@ -184,19 +184,7 @@
 					</a>
 				</div>
 			</div>
-			<div class={`${cardStyle} sm:col-span-1 md:col-span-2 lg:col-span-1`}>
-				<div class={cardInsideStyle}>
-					<a href="/notification" on:click={() => updateTitle('Notification')}>
-						<h2 class={h2Style}>Notification</h2>
 
-						<hr class="opacity-50 mb-2" />
-
-						<div class={valueStyle}>
-							<i class="fa-solid fa-bell fa-md" />
-						</div>
-					</a>
-				</div>
-			</div>
 			<div class={`${cardStyle} sm:col-span-1 md:col-span-2 lg:col-span-1`}>
 				<div class={cardInsideStyle}>
 					<a href="/records/batch" on:click={() => updateTabs(1)}>
@@ -213,13 +201,26 @@
 
 			<div class={`${cardStyle} sm:col-span-1 md:col-span-2 lg:col-span-1`}>
 				<div class={cardInsideStyle}>
-					<a href="/records" on:click={() => updateTabs(4)}>
-						<h2 class={h2Style}>Temperature & Humidity</h2>
+					<a href="/records/temp&humid" on:click={() => updateTabs(4)}>
+						<h2 class="text-sm md:text-lg lg:text-1xl mb-1">Temperature & Humidity</h2>
 
 						<hr class="opacity-50 mb-2" />
 
 						<div class={valueStyle}>
 							<i class="fa-solid fa-temperature-high fa-md" />
+						</div>
+					</a>
+				</div>
+			</div>
+			<div class={`${cardStyle} sm:col-span-1 md:col-span-2 lg:col-span-1`}>
+				<div class={cardInsideStyle}>
+					<a href="/notification" on:click={() => updateTitle('Notification')}>
+						<h2 class={h2Style}>Notification</h2>
+
+						<hr class="opacity-50 mb-2" />
+
+						<div class={valueStyle}>
+							<i class="fa-solid fa-bell fa-md" />
 						</div>
 					</a>
 				</div>

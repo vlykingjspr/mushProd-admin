@@ -10,7 +10,7 @@
 	import { notifications } from '$lib/stores/stores';
 	import { writable, type Writable } from 'svelte/store';
 	// getting data
-	import { collection, getDocs, query, doc, onSnapshot } from 'firebase/firestore';
+	import { collection, getDocs, query, doc, onSnapshot, orderBy } from 'firebase/firestore';
 	import { db } from '$lib/firebase/firebase';
 	import { format } from 'date-fns';
 	import { onDestroy, onMount } from 'svelte';
@@ -23,7 +23,7 @@
 	onMount(async () => {
 		const userDocRef = doc(db, 'user', '123456');
 		const bagsRecordCollectionRef = collection(userDocRef, 'notifications');
-		const q = query(bagsRecordCollectionRef);
+		const q = query(bagsRecordCollectionRef, orderBy('date', 'desc'));
 
 		unsubscribe = onSnapshot(q, (querySnapshot) => {
 			source = [];

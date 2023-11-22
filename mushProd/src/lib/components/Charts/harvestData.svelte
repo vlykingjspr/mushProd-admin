@@ -15,6 +15,13 @@
 	{data}
 	options={{
 		responsive: true,
+		plugins: {
+			title: {
+				display: true,
+				text: 'Harvest Data',
+				position: 'top'
+			}
+		},
 		scales: {
 			y: {
 				beginAtZero: true

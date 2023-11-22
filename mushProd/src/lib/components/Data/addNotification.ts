@@ -37,7 +37,7 @@ export async function sendNotification(temperature: number, humidity: number) {
         alertMessage = alertMessagehumid;
     }
     if (alertTitleTemp && alertTitleHumd) {
-        alertTitle = `${alertTitleTemp}\n${alertTitleHumd}`;
+        alertTitle = `${alertTitleTemp} & ${alertTitleHumd}`;
 
     } else if (alertTitleTemp) {
         alertTitle = alertTitleTemp;

@@ -10,6 +10,7 @@
 	// chart
 	import Chart from '../../lib/components/Charts/dailyTempHumd.svelte';
 	import HarvestData from '../../lib/components/Charts/harvestData.svelte';
+	import EveryTempHumid from '$lib/components/Charts/everyTempHumid.svelte';
 	// components
 	import {
 		Modal,
@@ -135,7 +136,7 @@
 		<ProgressRadial value={undefined} />
 	</div>
 {:else}
-	<div class="w-full text-token grid grid-cols-1 md:grid-cols-3 gap-4 p-4">
+	<div class="w-full text-token grid grid-cols-1 md:grid-cols-5 gap-4 p-4">
 		<!-- Temperature -->
 		<div class={cardStyle}>
 			<div class={cardInsideStyle2}>
@@ -178,7 +179,7 @@
 		<!-- Total bags and harvest -->
 		<div class={cardStyle}>
 			<div class={cardInsideStyle}>
-				<a href="/records" on:click={() => updateTitle('Records')}>
+				<a href="/records/batch" on:click={() => updateTitle('Records')}>
 					<div>
 						<div class="flex items-start">
 							<i class="fa-solid fa-bag-shopping fa-md text-base mr-2" />
@@ -221,69 +222,76 @@
 			</div>
 		</div>
 
-		<div class={`md:col-span-2 `}>
+		<div class={cardStyle}>
+			<div class={cardInsideStyle}>
+				<div class="flex items-start">
+					<i class="fa-solid fa-calendar-days fa-md text-base mr-2" />
+					<h2 class={h3Style}>Last Date Planted</h2>
+				</div>
+
+				<hr class="opacity-50" />
+				<div class={smallValueStyle}>
+					<h1 class={smallerValueStyle}>
+						<strong>
+							{#if lastDatePlanted}
+								{lastDatePlanted}
+							{:else}
+								<div class="flex justify-center items-center">
+									<ProgressRadial width="w-10" value={undefined} />
+								</div>
+							{/if}
+						</strong>
+					</h1>
+				</div>
+			</div>
+		</div>
+		<div class={cardStyle}>
+			<div class={cardInsideStyle}>
+				<div class="flex items-start">
+					<i class="fa-solid fa-seedling fa-md text-base mr-2" />
+					<h2 class={h3Style}>Yield Prediction</h2>
+				</div>
+				<hr class="opacity-50" />
+				<div class="">
+					<div class={smallerValueStyle}>
+						<strong>
+							{#if yield_pred}
+								<h1>{yield_pred.toFixed(2)} grams</h1>
+							{:else}
+								<div class="flex justify-center items-center">
+									<ProgressRadial width="w-10" value={undefined} />
+								</div>
+							{/if}
+						</strong>
+					</div>
+					<div class="flex justify-center align-center space-x-4 m-4">
+						<button class="grow btn btn-sm variant-filled-primary" on:click={showReportModal}
+							>Generate Report</button
+						>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class={`md:col-span-3 `}>
 			<div class={`p-4  ${cardStyle}`}>
 				<div class={`p-4 bg-surface-100  `}>
 					<Chart />
 				</div>
 			</div>
 		</div>
-		<div class="">
-			<div class={`mb-3 ${cardStyle}`}>
-				<div class={cardInsideStyle}>
-					<div class="flex items-start">
-						<i class="fa-solid fa-calendar-days fa-md text-base mr-2" />
-						<h2 class={h3Style}>Last Date Planted</h2>
-					</div>
 
-					<hr class="opacity-50" />
-					<div class={smallValueStyle}>
-						<h1 class={smallerValueStyle}>
-							<strong>
-								{#if lastDatePlanted}
-									{lastDatePlanted}
-								{:else}
-									<div class="flex justify-center items-center">
-										<ProgressRadial width="w-10" value={undefined} />
-									</div>
-								{/if}
-							</strong>
-						</h1>
-					</div>
-				</div>
-			</div>
-			<div class={cardStyle}>
-				<div class={cardInsideStyle}>
-					<div class="flex items-start">
-						<i class="fa-solid fa-seedling fa-md text-base mr-2" />
-						<h2 class={h3Style}>Yield Prediction</h2>
-					</div>
-					<hr class="opacity-50" />
-					<div class="">
-						<div class={smallerValueStyle}>
-							<strong>
-								{#if yield_pred}
-									<h1>{yield_pred.toFixed(2)} grams</h1>
-								{:else}
-									<div class="flex justify-center items-center">
-										<ProgressRadial width="w-10" value={undefined} />
-									</div>
-								{/if}
-							</strong>
-						</div>
-						<div class="flex justify-center align-center space-x-4 m-4">
-							<button class="grow btn btn-sm variant-filled-primary" on:click={showReportModal}
-								>Generate Report</button
-							>
-						</div>
-					</div>
+		<div class={`col-span-2 `}>
+			<div class={`p-4  ${cardStyle}`}>
+				<div class={`p-4 bg-surface-100  `}>
+					<HarvestData />
 				</div>
 			</div>
 		</div>
 		<div class={`md:col-span-2 `}>
 			<div class={`p-4  ${cardStyle}`}>
 				<div class={`p-4 bg-surface-100  `}>
-					<HarvestData />
+					<EveryTempHumid />
 				</div>
 			</div>
 		</div>

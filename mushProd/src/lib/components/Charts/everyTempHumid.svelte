@@ -2,9 +2,9 @@
 	// @ts-nocheck
 
 	import { Line } from 'svelte-chartjs';
-	import { dailyTempHumd } from './data.js';
+	import { everyTempHumid } from './data.js';
 
-	let data = dailyTempHumd;
+	let data = everyTempHumid;
 	import {
 		Chart as ChartJS,
 		Title,
@@ -26,7 +26,7 @@
 		plugins: {
 			title: {
 				display: true,
-				text: 'Hourly Average Temperature and Humidity',
+				text: 'Daily Average',
 				position: 'top'
 			}
 		},

@@ -1,4 +1,4 @@
-import { collection, getDocs, query, doc, onSnapshot, orderBy } from 'firebase/firestore';
+import { collection, getDocs, query, doc, onSnapshot, orderBy, where } from 'firebase/firestore';
 import { db } from '$lib/firebase/firebase';
 import { format } from 'date-fns';
 import { onDestroy, onMount } from 'svelte';
@@ -74,6 +74,47 @@ export async function getMushroomData() {
     });
 }
 let batchData: any = [];
+export async function writeAnalysis(batchCode: string,
+    growthDurationDays: number,
+    totalBags: number,
+    totalGrams: number) {
+    // Assuming an average of 300 grams per bag
+    const averageGramsPerBag = 300;
+    const averageLifeSpan = 106
+    // Calculate the estimated total production based on the growth duration
+    const estimatedTotalProduction = averageGramsPerBag * totalBags
+    const estimatedTotalProdThatDay = (estimatedTotalProduction / averageLifeSpan) * growthDurationDays;
+
+    // Determine if the batch is gaining or losing
+    const isGaining = totalGrams >= estimatedTotalProdThatDay;
+
+    // Calculate the percentage of produced grams compared to expected overall grams
+    const percentageProduced = (totalGrams / estimatedTotalProduction) * 100;
+    const percentageGrams = (totalGrams / estimatedTotalProdThatDay) * 100
+    // Generate a message based on the analysis result
+    let message = `The ${batchCode} batch has ${isGaining ? "demonstrated favorable performance" : "exhibited suboptimal performance"
+        }\n`;
+
+    let stat: string = '';
+    if (isGaining) {
+        stat = 'Gaining'
+    } else {
+        stat = 'Losing'
+    }
+
+    message += `, yielding ${totalGrams} grams of mushrooms, which accounts for ${percentageGrams.toFixed(2)}% of the projected yield over a ${growthDurationDays}-day period, amounting to ${estimatedTotalProdThatDay.toFixed(2)} grams. This constitutes  ${percentageProduced.toFixed(2)}% of the expected total production of ${estimatedTotalProduction.toFixed(2)} grams. `
+
+    return {
+        batchCode,
+        isGaining,
+        stat,
+        estimatedTotalProduction,
+        percentageProduced,
+        estimatedTotalProdThatDay,
+        message,
+    };
+
+}
 export async function getAnalysis() {
     const userDocRef = doc(db, 'user', '123456');
     const batchCollectionRef = collection(userDocRef, 'batch');
@@ -111,23 +152,36 @@ export async function getAnalysis() {
                 return acc + (harvestDoc.data().grams || 0);
             }, 0);
 
-            // Calculate average temperature and average humidity
-            let temperatureSum = batchData.temperature || 0; // Assuming temperature is stored in the batch document
-            let humiditySum = batchData.humidity || 0; // Assuming humidity is stored in the batch document
-            let numTemperatureReadings = 1;
-            let numHumidityReadings = 1;
+            // Fetch 'temp and humid' documents for the batch from planting date to current date
 
-            batchHarvestDocsSnapshot.forEach((harvestDoc) => {
-                const harvestData = harvestDoc.data();
-                temperatureSum += harvestData.temperature || 0;
-                humiditySum += harvestData.humidity || 0;
-                numTemperatureReadings++;
-                numHumidityReadings++;
+            const tempHumid = await getTempHumidAve()
+            const tempAndHumidCollectionRef = collection(doc(db, 'user', '123456'), 'temp and humid');
+            const tempAndHumidQuery = query(tempAndHumidCollectionRef,
+                where('date', '>=', batchPlanted),
+                where('date', '<=', today),
+                orderBy('date', 'asc')
+            );
+
+            const tempAndHumidDocsSnapshot = await getDocs(tempAndHumidQuery);
+
+            // Calculate average temperature and average humidity
+            let temperatureSum = 0;
+            let humiditySum = 0;
+            let numReadings = 0;
+
+            tempAndHumidDocsSnapshot.forEach((tempAndHumidDoc) => {
+                const tempAndHumidData = tempAndHumidDoc.data();
+                temperatureSum += tempAndHumidData.temp || 0;
+                humiditySum += tempAndHumidData.humid || 0;
+                numReadings++;
             });
 
-            const averageTemperature = temperatureSum / numTemperatureReadings;
-            const averageHumidity = humiditySum / numHumidityReadings;
+            const averageTemperature = numReadings > 0 ? temperatureSum / numReadings : 0;
+            const averageHumidity = numReadings > 0 ? humiditySum / numReadings : 0;
+            console.log(averageTemperature)
 
+            const analysis = await writeAnalysis(batchCode, growthDuration, batchData.batch_total_bags, totalGrams)
+            console.log(analysis)
             allBatchData.push({
                 batchCode,
                 growthDuration,
@@ -135,6 +189,7 @@ export async function getAnalysis() {
                 averageTemperature,
                 averageHumidity,
                 totalGrams,
+                analysis,
             });
         }
 

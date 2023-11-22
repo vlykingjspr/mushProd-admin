@@ -253,7 +253,7 @@
 								<h1>Total Bags: {row.batch_total_bags}</h1>
 							</div>
 							<div class="flex items-center">
-								<i class="fa-solid fa-calendar-days mr-2" />
+								<i class="fa-solid fa-trash mr-2" />
 								<h1>Total Bags Removed: {row.batch_total_removed}</h1>
 							</div>
 

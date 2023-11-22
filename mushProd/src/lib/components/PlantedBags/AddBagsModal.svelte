@@ -104,7 +104,7 @@
 			<input type="number" placeholder="Number of Bags" bind:value={batch_total_bags} />
 		</div>
 		<div class="input-group input-group-divider grid-cols-[auto_1fr_auto]">
-			<div class="input-group-shim"><i class="fa-solid fa-calendar" /></div>
+			<div class="input-group-shim"><i class="fa-solid fa-note-sticky" /></div>
 			<textarea class="textarea" rows="3" placeholder="Batch Remarks" bind:value={batch_remarks} />
 		</div>
 		{#if errorMessage}
