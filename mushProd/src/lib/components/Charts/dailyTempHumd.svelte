@@ -23,13 +23,13 @@
 	{data}
 	options={{
 		responsive: true,
-		plugins: {
-			title: {
-				display: true,
-				text: 'Hourly Average Temperature and Humidity',
-				position: 'top'
-			}
-		},
+		// plugins: {
+		// 	title: {
+		// 		display: true,
+		// 		text: 'Hourly Average Temperature and Humidity',
+		// 		position: 'top'
+		// 	}
+		// },
 		scales: {
 			y: {
 				beginAtZero: true

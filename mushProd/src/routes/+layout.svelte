@@ -90,7 +90,7 @@
 	// Schedule the function to execute at 3:30 PM (15:30) each day
 
 	onMount(() => {
-		timeoutId = executeAtSpecificTime(20, 10, 1);
+		timeoutId = executeAtSpecificTime(23, 59, 1);
 		setLoading(false);
 		const unsubscribe = auth.onAuthStateChanged(async (user) => {
 			const currentPath = window.location.pathname;
@@ -142,7 +142,7 @@
 							currentTime - lastNotificationTime >= thirtyMinutesInMillis
 						) {
 							// Send the notification
-							sendNotification(temp, humd);
+							// sendNotification(temp, humd);
 
 							// Update the last notification time
 							lastNotificationTime = currentTime;

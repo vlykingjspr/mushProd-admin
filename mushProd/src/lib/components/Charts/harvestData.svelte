@@ -16,10 +16,8 @@
 	options={{
 		responsive: true,
 		plugins: {
-			title: {
-				display: true,
-				text: 'Harvest Data',
-				position: 'top'
+			legend: {
+				display: false
 			}
 		},
 		scales: {

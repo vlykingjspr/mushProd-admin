@@ -170,7 +170,7 @@ export async function getAllAveTempHumd() {
             let totalTemp = 0;
             let totalHumidity = 0;
             let totalDocuments = 0;
-
+            let date;
             querySnapshot.forEach((doc) => {
                 const data = doc.data();
 
@@ -182,7 +182,7 @@ export async function getAllAveTempHumd() {
 
                 // Add the ID to the data object
                 data.id = doc.id;
-
+                date = data.date
                 // Sum up temperature and humidity
                 totalTemp += data[`ave temp`] || 0;
                 totalHumidity += data[`ave humidity`] || 0;
@@ -197,6 +197,7 @@ export async function getAllAveTempHumd() {
 
             // Resolve the promise with the averages
             resolve({
+                date,
                 aveTemp,
                 aveHumidity,
             });
@@ -208,3 +209,4 @@ export async function getAllAveTempHumd() {
     });
 
 }
+

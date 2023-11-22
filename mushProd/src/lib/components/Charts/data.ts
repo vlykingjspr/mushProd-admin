@@ -32,7 +32,7 @@ export const dailyTempHumd = {
   datasets: [
     {
       label: 'Temperature',
-      fill: true,
+      // fill: true,
       lineTension: 0.3,
       backgroundColor: 'rgba(225, 204,230, .3)',
       borderColor: 'rgba(11, 104, 158, 0.8)',
@@ -87,7 +87,7 @@ export const harvestData = {
   labels: harvCodeData,
   datasets: [
     {
-      label: 'Total Grams Harvested',
+      label: 'Grams',
       data: harvGramsData,
       backgroundColor: [
         'rgba(255, 134,159,0.4)',
@@ -108,14 +108,20 @@ export const harvestData = {
       ],
     },
   ],
-
+  options: {
+    plugins: {
+      legend: {
+        display: false, // Set to false to hide the legend
+      },
+    },
+  },
 }
 
 let dayDate;
 let dayTemp;
 let dayHumd;
 const dayTempHumd: any = await getTempHumidAve();
-console.log(dayTempHumd)
+// console.log(dayTempHumd)
 const dayDateData = dayTempHumd.map((entry: any) => entry.date);
 const dayTempData = dayTempHumd.map((entry: any) => entry['ave temp']);
 const dayHumdData = dayTempHumd.map((entry: any) => entry['ave humidity']);
@@ -129,7 +135,7 @@ export const everyTempHumid = {
   datasets: [
     {
       label: 'Temperature',
-      fill: true,
+      // fill: true,
       lineTension: 0.3,
       backgroundColor: 'rgba(225, 204,230, .3)',
       borderColor: 'rgba(11, 104, 158, 0.8)',

@@ -77,11 +77,14 @@ let batchData: any = [];
 export async function writeAnalysis(batchCode: string,
     growthDurationDays: number,
     totalBags: number,
-    totalGrams: number) {
+    totalGrams: number,
+    averageTemp: number,
+    averageHumid: number) {
     // Assuming an average of 300 grams per bag
     const averageGramsPerBag = 300;
-    const averageLifeSpan = 106
-    // Calculate the estimated total production based on the growth duration
+    const averageLifeSpan = 120
+
+
     const estimatedTotalProduction = averageGramsPerBag * totalBags
     const estimatedTotalProdThatDay = (estimatedTotalProduction / averageLifeSpan) * growthDurationDays;
 
@@ -91,6 +94,11 @@ export async function writeAnalysis(batchCode: string,
     // Calculate the percentage of produced grams compared to expected overall grams
     const percentageProduced = (totalGrams / estimatedTotalProduction) * 100;
     const percentageGrams = (totalGrams / estimatedTotalProdThatDay) * 100
+
+    // Get suggestions for temperature and humidity adjustments
+    const temperatureSuggestion = suggestTemperatureAdjustment(averageTemp);
+    const humiditySuggestion = suggestHumidityAdjustment(averageHumid);
+
     // Generate a message based on the analysis result
     let message = `The ${batchCode} batch has ${isGaining ? "demonstrated favorable performance" : "exhibited suboptimal performance"
         }\n`;
@@ -102,7 +110,7 @@ export async function writeAnalysis(batchCode: string,
         stat = 'Losing'
     }
 
-    message += `, yielding ${totalGrams} grams of mushrooms, which accounts for ${percentageGrams.toFixed(2)}% of the projected yield over a ${growthDurationDays}-day period, amounting to ${estimatedTotalProdThatDay.toFixed(2)} grams. This constitutes  ${percentageProduced.toFixed(2)}% of the expected total production of ${estimatedTotalProduction.toFixed(2)} grams. `
+    message += `, yields ${totalGrams} grams of mushrooms, which accounts for ${percentageGrams.toFixed(2)}% of the projected yield over a ${growthDurationDays}-day period, amounting to ${estimatedTotalProdThatDay.toFixed(2)} grams. This constitutes  ${percentageProduced.toFixed(2)}% of the expected total production of ${estimatedTotalProduction.toFixed(2)} grams. `
 
     return {
         batchCode,
@@ -111,6 +119,8 @@ export async function writeAnalysis(batchCode: string,
         estimatedTotalProduction,
         percentageProduced,
         estimatedTotalProdThatDay,
+        temperatureSuggestion,
+        humiditySuggestion,
         message,
     };
 
@@ -119,11 +129,8 @@ export async function getAnalysis() {
     const userDocRef = doc(db, 'user', '123456');
     const batchCollectionRef = collection(userDocRef, 'batch');
     const q = query(batchCollectionRef);
-
     const batchDocsSnapshot = await getDocs(q);
-
     batchData = [];
-
     for (const batchDoc of batchDocsSnapshot.docs) {
         const userDocRef = doc(db, 'user', '123456');
         const batchCollectionRef = collection(userDocRef, 'batch');
@@ -171,17 +178,17 @@ export async function getAnalysis() {
 
             tempAndHumidDocsSnapshot.forEach((tempAndHumidDoc) => {
                 const tempAndHumidData = tempAndHumidDoc.data();
-                temperatureSum += tempAndHumidData.temp || 0;
-                humiditySum += tempAndHumidData.humid || 0;
+                temperatureSum += tempAndHumidData['ave temp'] || 0;
+                humiditySum += tempAndHumidData['ave humidity'] || 0;
                 numReadings++;
             });
 
             const averageTemperature = numReadings > 0 ? temperatureSum / numReadings : 0;
             const averageHumidity = numReadings > 0 ? humiditySum / numReadings : 0;
-            console.log(averageTemperature)
+            // console.log(averageTemperature)
 
-            const analysis = await writeAnalysis(batchCode, growthDuration, batchData.batch_total_bags, totalGrams)
-            console.log(analysis)
+            const analysis = await writeAnalysis(batchCode, growthDuration, batchData.batch_total_bags, totalGrams, averageTemperature, averageHumidity)
+            // console.log(analysis)
             allBatchData.push({
                 batchCode,
                 growthDuration,
@@ -192,7 +199,90 @@ export async function getAnalysis() {
                 analysis,
             });
         }
+        // console.log(allBatchData)
 
         return allBatchData;
+    }
+}
+
+export async function getAveEachBatch() {
+    const userDocRef = doc(db, 'user', '123456');
+    const batchCollectionRef = collection(userDocRef, 'batch');
+    const batchSnapshot = await getDocs(batchCollectionRef);
+
+    const allBatchData = [];
+
+    for (const batchDoc of batchSnapshot.docs) {
+        const plantedDate = batchDoc.data().batch_planted;
+
+        const tempAndHumidCollectionRef = collection(userDocRef, 'temp and humid');
+        const tempAndHumidQuery = query(
+            tempAndHumidCollectionRef,
+            where('date', '>=', plantedDate),
+            where('date', '<=', new Date()),
+            orderBy('date', 'asc')
+        );
+
+        const tempHumidSnapshot = await getDocs(tempAndHumidQuery);
+
+        let totalTemp = 0;
+        let totalHumid = 0;
+        let count = 0;
+
+        tempHumidSnapshot.forEach((tempHumidDoc) => {
+            const currentDate = tempHumidDoc.data().date;
+
+            if (currentDate >= plantedDate && currentDate <= new Date()) {
+                totalTemp += tempHumidDoc.data()['ave temp'] || 0;
+                totalHumid += tempHumidDoc.data()['ave humidity'] || 0;
+                count++;
+            }
+        });
+
+        const averageTemp = count > 0 ? totalTemp / count : 0;
+        const averageHumid = count > 0 ? totalHumid / count : 0;
+
+        // console.log(`Batch Code: ${batchDoc.data().batch_code}`);
+        // console.log(`Average Temperature: ${averageTemp}`);
+        // console.log(`Average Humidity: ${averageHumid}`);
+
+        allBatchData.push({
+            batchCode: batchDoc.data().batch_code,
+            averageTemperature: averageTemp,
+            averageHumidity: averageHumid,
+        });
+        // console.log(allBatchData)
+    }
+
+    return allBatchData;
+}
+function suggestTemperatureAdjustment(averageTemp: number) {
+
+
+    if (averageTemp >= 24 && averageTemp <= 29) {
+        return " maintaining the temperature ";
+    }
+
+    if (averageTemp < 24) {
+        return " increasing the temperature ";
+    }
+
+    if (averageTemp > 29) {
+        return " decreasing the temperature ";
+    }
+}
+function suggestHumidityAdjustment(averageHumid: number) {
+
+
+    if (averageHumid >= 80 && averageHumid <= 90) {
+        return " maintaining the humidity ";
+    }
+
+    if (averageHumid < 80) {
+        return " increasing humidity ";
+    }
+
+    if (averageHumid > 90) {
+        return " decreasing humidity ";
     }
 }

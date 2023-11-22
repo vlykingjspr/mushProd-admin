@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { getModalStore } from '@skeletonlabs/skeleton';
+	import { ProgressRadial, getModalStore } from '@skeletonlabs/skeleton';
 	import { report } from '$lib/stores/stores';
 	import { onMount } from 'svelte';
 	import { download } from './Download';
@@ -10,7 +10,9 @@
 		allHarvestedGrams,
 		LastDateInBagsRecord,
 		LastDateInHarvest,
-		allRemovedBags
+		allRemovedBags,
+		getYield,
+		getAllAveTempHumd
 	} from '../../firebase/allRecord';
 	import { collection, doc, onSnapshot, orderBy, query } from 'firebase/firestore';
 	import { db } from '$lib/firebase/firebase';
@@ -21,6 +23,7 @@
 	import { getAnalysis, getHarvestData, getTempHumidAve } from './getData';
 
 	export let parent: any;
+	let isLoading = true;
 	let farmData: any[] = [];
 	let planted: any;
 	let harvest: any;
@@ -31,6 +34,9 @@
 	let tempHumidAve: any = [];
 	let harvestData: any = [];
 	let analysisData: any = [];
+	let allTempHumd: any;
+	let yield_pred: any;
+
 	onMount(async () => {
 		farmData = await fetchFarmData();
 		removed = await allRemovedBags();
@@ -41,6 +47,15 @@
 		tempHumidAve = await getTempHumidAve();
 		harvestData = await getHarvestData();
 		analysisData = await getAnalysis();
+		allTempHumd = await getAllAveTempHumd();
+
+		getYield(planted, allTempHumd.aveTemp, allTempHumd.aveHumidity)
+			.then((predictedWeight) => {
+				yield_pred = predictedWeight;
+			})
+			.catch((error) => {
+				console.error('Error in fetching data:', error);
+			});
 		const userDocRef = doc(db, 'user', '123456');
 		const bagsRecordCollectionRef = collection(userDocRef, 'temp and humid');
 		const q = query(bagsRecordCollectionRef, orderBy('date', 'desc'));
@@ -62,6 +77,7 @@
 				source.push(data);
 			});
 		});
+		isLoading = false;
 
 		// Don't forget to unsubscribe when your component is no longer needed
 	});
@@ -82,8 +98,8 @@
 	});
 </script>
 
-<!-- <div style="display: none;"> -->
-<div>
+<div style="display: none;">
+	<!-- <div> -->
 	<div id="element">
 		<h1 class="report-heading flex justify-center items-center text-4xl">
 			MushProd: NodeMCU-Based and Yield Prediction System for Oyster Mushroom
@@ -215,7 +231,7 @@
 		</div>
 
 		<div class="temp_humid mt-5">
-			<h2 class="section-heading mb-2">V. Temperature and Humidity Monitoring</h2>
+			<h2 class="section-heading mb-2">V. Temperature and Humidity Condition</h2>
 			<p class="section-content mb-5">
 				This table presents a chronological record of temperature and humidity levels during
 				specific dates in the mushroom cultivation environment. The average temperature, measured in
@@ -253,6 +269,28 @@
 				factors, including environmental conditions such as temperature and humidity, and the number
 				of bags.
 			</p>
+			<div class="table-container">
+				<table class="table">
+					<tr>
+						<th>Starting Date</th>
+						<th>Last Date </th>
+						<th>Number of Planted Bags</th>
+						<th>Average Temperature</th>
+						<th>Average Humidity</th>
+						<th>Predicted Yield</th>
+					</tr>
+					{#each tempHumidAve as row}
+						<tr class="">
+							<td>{row.date}</td>
+							<td>{row['ave temp']}</td>
+							<td>{planted}</td>
+							<td>{row['ave humidity']}</td>
+							<td>{row['ave humidity']}</td>
+							<td>{yield_pred}</td>
+						</tr>
+					{/each}
+				</table>
+			</div>
 		</div>
 
 		<!-- Include relevant content for Yield Prediction -->
@@ -262,31 +300,32 @@
 <!-- @component This example creates a simple form modal. -->
 
 {#if $modalStore[0]}
-	<div class="modal-example-form {cBase}">
-		<header class={cHeader}>
-			<div class="flex items-center">Generate Report</div>
-		</header>
-		<hr class="opacity-50" />
+	{#if isLoading}
+		<div class="flex justify-center items-center h-screen">
+			<ProgressRadial value={undefined} />
+		</div>
+	{:else}
+		<div class="modal-example-form {cBase}">
+			<header class={cHeader}>
+				<div class="flex items-center">Generate Report</div>
+			</header>
+			<hr class="opacity-50" />
 
-		<h1 class="text-base">Do you want to generate report ?</h1>
+			<h1 class="text-base">Do you want to generate report ?</h1>
 
-		<!-- prettier-ignore -->
-		<footer class="modal-footer {parent.regionFooter}">
+			<!-- prettier-ignore -->
+			<footer class="modal-footer {parent.regionFooter}">
 			
 			<button class="btn {parent.buttonPositive}" on:click={()=>download(element)}>Yes</button>
             <button class="btn {parent.buttonNeutral}" on:click={parent.onClose}
 				>{parent.buttonTextCancel}</button
 			>
 		</footer>
-	</div>
+		</div>
+	{/if}
 {/if}
 
 <style>
-	* {
-		background-color: rgb(255, 255, 255);
-	}
-	.harvested_grams {
-	}
 	.chart-container {
 		width: 100%; /* Set a fixed width for the chart container */
 		height: 200px; /* Set a fixed height for the chart container */

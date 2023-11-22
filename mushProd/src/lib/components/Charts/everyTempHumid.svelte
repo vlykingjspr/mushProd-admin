@@ -23,13 +23,13 @@
 	{data}
 	options={{
 		responsive: true,
-		plugins: {
-			title: {
-				display: true,
-				text: 'Daily Average',
-				position: 'top'
-			}
-		},
+		// plugins: {
+		// 	title: {
+		// 		display: true,
+		// 		text: 'Daily Average',
+		// 		position: 'top'
+		// 	}
+		// },
 		scales: {
 			y: {
 				beginAtZero: true

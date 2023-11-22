@@ -90,7 +90,7 @@
 
 		<li class="mt-8 pl-2">
 			<a class="mt-4 font-bold text-lg" href="/records/batch" on:click={() => updateTabs(0)}>
-				<i class="fa-solid fa-sheet-plastic fa-md" />
+				<i class="fa-solid fa-folder-open fa-md" />
 				<span><h1 class="text-sm">RECORDS</h1></span></a
 			>
 		</li>
@@ -102,6 +102,12 @@
 			>
 				<i class="fa-solid fa-bell fa-md" />
 				<span><h1 class="text-sm">NOTIFICATIONS</h1></span></a
+			>
+		</li>
+		<li class="mt-8 pl-2">
+			<a class=" mt-4 mb-4 font-bold text-lg" href="/report" on:click={() => updateTitle('Report')}>
+				<i class="fa-solid fa-sheet-plastic fa-md" />
+				<span><h1 class="text-sm">REPORT</h1></span></a
 			>
 		</li>
 
