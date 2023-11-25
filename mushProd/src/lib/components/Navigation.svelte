@@ -61,12 +61,12 @@
 		{#each farmData as farm}
 			<p class="mr-2 flex items-center">
 				<strong>
-					<i class="fa-solid fa-house-user text-base mr-2 mb-2" />
+					<span class="material-symbols-outlined mr-2 mb-2"> potted_plant </span>
 					{farm.farm_name}
 				</strong>
 			</p>
 			<p class="mr-2 flex items-center text-xs">
-				<i class="fa-solid fa-location-dot text-base mr-4" />
+				<span class="material-symbols-outlined mr-3"> pin_drop </span>
 				{farm.farm_address}
 			</p>
 		{/each}
@@ -77,20 +77,21 @@
 	<ul>
 		<li class="mt-4 pl-2">
 			<a class=" mb-4 font-bold text-lg" href="/home" on:click={() => updateTitle('')}>
-				<i class="fa-solid fa-house fa-md" />
+				<span class="material-symbols-outlined"> home </span>
+
 				<span><h1 class="text-sm">HOME</h1></span>
 			</a>
 		</li>
 		<li data-sveltekit-preload-data="hover" class="mt-4 pl-2">
 			<a class="font-bold text-lg" href="/dashboard" on:click={() => updateTitle('Dashboard')}>
-				<i class="fa-solid fa-square-poll-vertical fa-md" />
+				<span class="material-symbols-outlined"> dashboard </span>
 				<span><h1 class="text-sm">DASHBOARD</h1></span></a
 			>
 		</li>
 
 		<li class="mt-8 pl-2">
 			<a class="mt-4 font-bold text-lg" href="/records/batch" on:click={() => updateTabs(0)}>
-				<i class="fa-solid fa-folder-open fa-md" />
+				<span class="material-symbols-outlined"> folder_open </span>
 				<span><h1 class="text-sm">RECORDS</h1></span></a
 			>
 		</li>
@@ -100,13 +101,13 @@
 				href="/notification"
 				on:click={() => updateTitle('Notification')}
 			>
-				<i class="fa-solid fa-bell fa-md" />
+				<span class="material-symbols-outlined"> notifications_active </span>
 				<span><h1 class="text-sm">NOTIFICATIONS</h1></span></a
 			>
 		</li>
 		<li class="mt-8 pl-2">
 			<a class=" mt-4 mb-4 font-bold text-lg" href="/report" on:click={() => updateTitle('Report')}>
-				<i class="fa-solid fa-sheet-plastic fa-md" />
+				<span class="material-symbols-outlined"> description </span>
 				<span><h1 class="text-sm">REPORT</h1></span></a
 			>
 		</li>
@@ -115,7 +116,7 @@
 		<li class=" pl-2">
 			<!-- svelte-ignore a11y-invalid-attribute -->
 			<a class=" mt-4 font-bold text-lg" href="#" on:click={logOut}>
-				<i class="fa-solid fa-right-from-bracket fa-md" />
+				<span class="material-symbols-outlined"> logout </span>
 				<span><h1 class="text-sm">LOG OUT</h1></span></a
 			>
 		</li>

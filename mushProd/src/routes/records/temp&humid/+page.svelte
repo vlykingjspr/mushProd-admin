@@ -151,16 +151,35 @@
 				class="input mb-2 mr-2 sm:w-36 ml-auto h-8"
 			/>
 			<button type="button" class="btn btn-sm variant-filled-tertiary h-8 mb-2" on:click={search}>
-				<i class="fa-solid fa-search" />
+				<span class="material-symbols-outlined"> search </span>
+
 				<span>Search</span>
 			</button>
 		</div>
 		<table class="table table-hover">
 			<thead>
 				<tr>
-					<th><i class="fa-solid fa-calendar-days mr-2" />Date</th>
-					<th><i class="fa-solid fa-temperature-high mr-2" />Temperature</th>
-					<th> <i class="fa-solid fa-pen-to-square mr-2" />Humidity</th>
+					<th>
+						<div class="flex item-center">
+							<span class="material-symbols-outlined mr-2"> calendar_month </span>
+
+							Date
+						</div>
+					</th>
+					<th>
+						<div class="flex item-center">
+							<span class="material-symbols-outlined mr-2"> thermostat </span>
+
+							Temperature
+						</div>
+					</th>
+					<th>
+						<div class="flex item-center">
+							<span class="material-symbols-outlined mr-2"> humidity_mid </span>
+
+							Humidity
+						</div>
+					</th>
 					<th />
 				</tr>
 			</thead>

@@ -123,11 +123,34 @@
 		<table class="table table-hover">
 			<thead>
 				<tr
-					><th><i class="fa-solid fa-calendar-days mr-2" />Date</th>
-					<th><i class="fa-solid fa-bell mr-2" />Alert Title</th>
-					<th><i class="fa-solid fa-temperature-three-quarters mr-2" />Temperature</th>
-					<th> <i class="fa-solid fa-droplet mr-2" />Humidity</th>
-					<th> <i class="fa-solid fa-circle-exclamation mr-2" />Alert Message</th>
+					><th>
+						<div class="flex items-center">
+							<span class="material-symbols-outlined mr-2"> calendar_month </span>
+							Date
+						</div>
+					</th>
+					<th>
+						<div class="flex items-center">
+							<span class="material-symbols-outlined mr-2"> notifications_active </span>
+							Alert Title
+						</div>
+					</th><th>
+						<div class="flex items-center">
+							<span class="material-symbols-outlined mr-2"> device_thermostat </span>
+							Temperature
+						</div>
+					</th><th>
+						<div class="flex items-center">
+							<span class="material-symbols-outlined mr-2"> humidity_mid </span>
+							Humidity
+						</div></th
+					>
+					<th>
+						<div class="flex items-center">
+							<span class="material-symbols-outlined mr-2"> notifications_active </span>
+							Alert Message
+						</div></th
+					>
 
 					<th />
 				</tr>

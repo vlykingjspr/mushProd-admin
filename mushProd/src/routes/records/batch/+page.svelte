@@ -215,8 +215,12 @@
 			placeholder="Search..."
 			class="input mb-2 mr-2 sm:w-36 ml-auto h-8"
 		/>
-		<button type="button" class="btn btn-sm variant-filled-tertiary h-8 mb-2" on:click={search}>
-			<i class="fa-solid fa-search" />
+		<button
+			type="button"
+			class="btn btn-sm variant-filled-tertiary h-8 ml-2 mb-2"
+			on:click={search}
+		>
+			<span class="material-symbols-outlined"> search </span>
 			<span>Search</span>
 		</button>
 
@@ -225,7 +229,7 @@
 			class="btn btn-sm variant-filled-primary ml-2 mb-2"
 			on:click={showAddModal}
 		>
-			<i class="fa-solid fa-plus" />
+			<span class="material-symbols-outlined"> add_circle </span>
 			<span>Add</span>
 		</button>
 	</div>
@@ -236,7 +240,7 @@
 				<div class={cardStyle}>
 					<div class={cardInsideStyle2}>
 						<div class="flex items-center">
-							<i class=" text-2xl fa-solid fa-qrcode m-2" />
+							<span class=" text-2xl material-symbols-outlined m-2"> qr_code </span>
 							<h2 class={h2Style}>{row.batch_code}</h2>
 						</div>
 
@@ -245,15 +249,15 @@
 						<div class={valueStyle}>
 							<!-- {#if {true}} -->
 							<div class="flex items-center">
-								<i class="fa-solid fa-calendar-days mr-2" />
+								<span class="material-symbols-outlined mr-2"> calendar_month </span>
 								<h1>{row.batch_planted}</h1>
 							</div>
 							<div class="flex items-center">
-								<i class="fa-solid fa-bag-shopping mr-2" />
+								<span class="material-symbols-outlined mr-2"> potted_plant </span>
 								<h1>Total Bags: {row.batch_total_bags}</h1>
 							</div>
 							<div class="flex items-center">
-								<i class="fa-solid fa-trash mr-2" />
+								<span class="material-symbols-outlined mr-2"> delete_forever </span>
 								<h1>Total Bags Removed: {row.batch_total_removed}</h1>
 							</div>
 

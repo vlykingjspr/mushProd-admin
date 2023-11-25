@@ -68,8 +68,8 @@
 	const formattedDate = format(currentDate, 'yyyy-MM-dd');
 	// getting data from firebase
 	const rdb = getDatabase();
-	// const dateRef = ref(rdb, `/BETAPEAK/2023-11-18`);
-	const dateRef = ref(rdb, `BETAPEAK/${formattedDate}`);
+	const dateRef = ref(rdb, `/BETAPEAK/2023-11-18`);
+	// const dateRef = ref(rdb, `BETAPEAK/${formattedDate}`);
 
 	const queryRef = query(dateRef, limitToLast(1));
 	const unsubscribe = onValue(queryRef, (snapshot) => {
@@ -126,8 +126,10 @@
 		<div class={`md:col-span-1 sm:col-span-1 lg:col-span-1 ${cardStyle}`}>
 			<div class={cardInsideStyle2}>
 				<div class="flex items-start mt-2">
-					<i class="fa-solid fa-temperature-three-quarters text-2xl mr-2" />
-					<h2 class={h2Style}>Temperature</h2>
+					<div class="flex items-center">
+						<span class="material-symbols-outlined text-4xl"> device_thermostat </span>
+						<h2 class={h2Style}>Temperature</h2>
+					</div>
 				</div>
 				<hr class="opacity-50" />
 				<div class={valueStyle}>
@@ -145,8 +147,10 @@
 		<div class={`md:col-span-1 sm:col-span-1 lg:col-span-1 ${cardStyle}`}>
 			<div class={cardInsideStyle2}>
 				<div class="flex items-start mt-2">
-					<i class="fa-solid fa-droplet text-2xl mr-2" />
-					<h2 class={h2Style}>Humidity</h2>
+					<div class="flex items-center">
+						<span class="material-symbols-outlined text-4xl"> humidity_mid </span>
+						<h2 class={h2Style}>Humidity</h2>
+					</div>
 				</div>
 				<hr class="opacity-50" />
 
@@ -166,8 +170,10 @@
 		<div class={`md:col-span-2 sm:col-span-1`}>
 			<div class={`p-4  ${cardStyle}`}>
 				<div class="flex items-start mt-2">
-					<i class="fa-solid fa-hourglass-start text-2xl mr-2" />
-					<h2 class={h2Style}>Hourly Average Temperature & Humidity</h2>
+					<div class="flex items-center">
+						<span class="material-symbols-outlined text-4xl"> hourglass_top </span>
+						<h2 class={h2Style}>Hourly Average Temperature & Humidity</h2>
+					</div>
 				</div>
 				<hr class="opacity-50 mb-4 mt-4" />
 				<div class={`p-4 bg-surface-100  `}>
@@ -178,8 +184,10 @@
 		<div class={`md:col-span-2 sm:col-span-1 `}>
 			<div class={`p-4  ${cardStyle}`}>
 				<div class="flex items-start mt-2">
-					<i class="fa-solid fa-calendar text-2xl mr-2" />
-					<h2 class={h2Style}>Daily Average Temperature & Humidity</h2>
+					<div class="flex items-center">
+						<span class="material-symbols-outlined mr-2 text-4xl"> calendar_month </span>
+						<h2 class={h2Style}>Daily Average Temperature & Humidity</h2>
+					</div>
 				</div>
 				<hr class="opacity-50 mb-4 mt-4" />
 				<div class={`p-4 bg-surface-100  `}>
@@ -190,8 +198,10 @@
 		<div class={`md:col-span-2 sm:col-span-1`}>
 			<div class={`p-4  ${cardStyle}`}>
 				<div class="flex items-start mt-2">
-					<i class="fa-solid fa-weight-scale text-2xl mr-2" />
-					<h2 class={h2Style}>Total Grams</h2>
+					<div class="flex items-center">
+						<span class="material-symbols-outlined text-2xl mr-2"> scale </span>
+						<h2 class={h2Style}>Total Grams</h2>
+					</div>
 				</div>
 				<hr class="opacity-50 mb-4 mt-4" />
 				<div class={`p-4 bg-surface-100  `}>
@@ -205,8 +215,11 @@
 				<div class={cardStyle}>
 					<div class={cardInsideStyle}>
 						<div class="flex items-start">
-							<i class="fa-solid fa-seedling fa-md text-base mr-2" />
-							<h2 class={h3Style}>Yield Prediction</h2>
+							<div class="flex items-center">
+								<span class="material-symbols-outlined mr-2"> psychiatry </span>
+
+								<h2 class={h3Style}>Yield Prediction</h2>
+							</div>
 						</div>
 						<hr class="opacity-50" />
 						<div class="">
@@ -228,8 +241,11 @@
 				<div class={cardStyle}>
 					<div class={cardInsideStyle}>
 						<div class="flex items-start">
-							<i class="fa-solid fa-bag-shopping fa-md text-base mr-2" />
-							<h3 class={h3Style}>Total Bags</h3>
+							<div class="flex items-center">
+								<span class="material-symbols-outlined mr-2"> shopping_bag</span>
+
+								<h2 class={h3Style}>Total Bags</h2>
+							</div>
 						</div>
 						<hr class="opacity-50" />
 
@@ -252,8 +268,11 @@
 				<div class={cardStyle}>
 					<div class={cardInsideStyle}>
 						<div class="flex items-start">
-							<i class="fa-solid fa-layer-group fa-md text-base mr-2" />
-							<h3 class={h3Style}>Total Harvest</h3>
+							<div class="flex items-center">
+								<span class="material-symbols-outlined mr-2"> layers</span>
+
+								<h2 class={h3Style}>Total Harvest</h2>
+							</div>
 						</div>
 
 						<hr class="opacity-50" />
@@ -275,8 +294,11 @@
 				<div class={cardStyle}>
 					<div class={cardInsideStyle}>
 						<div class="flex items-start">
-							<i class="fa-solid fa-calendar-days fa-md text-base mr-2" />
-							<h2 class={h3Style}>Last Date Planted</h2>
+							<div class="flex items-center">
+								<span class="material-symbols-outlined mr-2"> calendar_month</span>
+
+								<h2 class={h3Style}>Last Date Planted</h2>
+							</div>
 						</div>
 
 						<hr class="opacity-50" />

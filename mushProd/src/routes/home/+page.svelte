@@ -144,13 +144,15 @@
 								<div class="flex flex-col mt-2">
 									<div class="">
 										<div class="flex items-center justify-center">
-											<i class="fa-solid fa-calendar-days mr-2" />
+											<!-- <i class="fa-solid fa-calendar-days mr-2" /> -->
+											<span class="material-symbols-outlined mr-2"> calendar_month </span>
 											{dateFormat()}
 										</div>
 									</div>
 
 									<div class="flex items-center justify-end">
-										<i class="fa-solid fa-clock mr-2" />
+										<!-- <i class="fa-solid fa-clock mr-2" /> -->
+										<span class="material-symbols-outlined mr-2"> schedule </span>
 										{#if currentTime}
 											{currentTime}
 										{:else}
@@ -161,12 +163,14 @@
 							</div>
 						</div>
 						<hr class="opacity-50 mb-2" />
-						<p class="">
-							<i class="fa-solid fa-user text-base mr-2" />
+						<p class="flex items-center">
+							<!-- <i class="fa-solid fa-user text-base mr-2" /> -->
+							<span class="material-symbols-outlined mr-2"> person </span>
 							{farm.farmer_name}
 						</p>
-						<p class="">
-							<i class="fa-solid fa-location-dot text-base mr-2" />
+						<p class="flex items-center">
+							<!-- <i class="fa-solid fa-location-dot text-base mr-2" /> -->
+							<span class="material-symbols-outlined mr-2"> pin_drop </span>
 							{farm.farm_address}
 						</p>
 					{/each}
@@ -179,7 +183,10 @@
 						<h2 class={h2Style}>Dashboard</h2>
 						<hr class="opacity-50 mb-2" />
 						<div class={valueStyle}>
-							<i class="fa-solid fa-square-poll-vertical fa-md" />
+							<!-- <i class="fa-solid fa-square-poll-vertical fa-md" /> -->
+							<span class="material-symbols-outlined text-7xl md:text-4xl lg:text-8xl">
+								dashboard
+							</span>
 						</div>
 					</a>
 				</div>
@@ -193,7 +200,10 @@
 						<hr class="opacity-50 mb-2" />
 
 						<div class={valueStyle}>
-							<i class="fa-solid fa-jar-wheat fa-md" />
+							<!-- <i class="fa-solid fa-jar-wheat fa-md" /> -->
+							<span class="material-symbols-outlined text-7xl md:text-4xl lg:text-8xl">
+								folder_open
+							</span>
 						</div>
 					</a>
 				</div>
@@ -207,7 +217,10 @@
 						<hr class="opacity-50 mb-2" />
 
 						<div class={valueStyle}>
-							<i class="fa-solid fa-temperature-high fa-md" />
+							<!-- <i class="fa-solid fa-temperature-high fa-md" /> -->
+							<span class="material-symbols-outlined text-7xl md:text-4xl lg:text-8xl">
+								thermostat
+							</span>
 						</div>
 					</a>
 				</div>
@@ -220,7 +233,10 @@
 						<hr class="opacity-50 mb-2" />
 
 						<div class={valueStyle}>
-							<i class="fa-solid fa-bell fa-md" />
+							<!-- <i class="fa-solid fa-bell fa-md" /> -->
+							<span class="material-symbols-outlined text-7xl md:text-4xl lg:text-8xl">
+								notifications_active
+							</span>
 						</div>
 					</a>
 				</div>
@@ -233,7 +249,10 @@
 						<hr class="opacity-50 mb-2" />
 
 						<div class={valueStyle}>
-							<i class="fa-solid fa-sheet-plastic fa-md" />
+							<!-- <i class="fa-solid fa-sheet-plastic fa-md" /> -->
+							<span class="material-symbols-outlined text-7xl md:text-4xl lg:text-8xl">
+								description
+							</span>
 						</div>
 					</a>
 				</div>

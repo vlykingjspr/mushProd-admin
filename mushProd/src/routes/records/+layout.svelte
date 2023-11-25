@@ -5,11 +5,16 @@
 
 <TabGroup active="variant-filled-primary">
 	<TabAnchor href="/records/batch" selected={$page.url.pathname === '/records/batch'}>
-		<i class="fa-solid fa-seedling fa-md pr-1" /><span>Batch</span>
+		<div class="flex item-center">
+			<span class="material-symbols-outlined pr-1"> psychiatry </span><span>Batch</span>
+		</div>
 	</TabAnchor>
 
 	<TabAnchor href="/records/temp&humid" selected={$page.url.pathname === '/records/temp&humid'}>
-		<i class="fa-solid fa-temperature-high fa-md pr-1" /><span>Temperature & Humidity</span>
+		<div class="flex item-center">
+			<span class="material-symbols-outlined pr-1"> thermostat </span>
+			<span>Temperature & Humidity</span>
+		</div>
 	</TabAnchor>
 </TabGroup>
 <slot />
