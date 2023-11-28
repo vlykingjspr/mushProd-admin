@@ -1,4 +1,5 @@
 <script lang="ts">
+	export let data;
 	import { Modal, ProgressRadial, Toast, filter, getModalStore } from '@skeletonlabs/skeleton';
 	import type { ModalSettings, ModalComponent } from '@skeletonlabs/skeleton';
 	import { fade } from 'svelte/transition';
@@ -75,56 +76,54 @@
 		modalStore.trigger(modal);
 	}
 	function modalData(row: any): void {
-		const c: ModalComponent = { ref: ModalHarvested };
-		harvested.set({
-			id: row.id,
-			date_harvested: row.date_harvested,
-			grams: row.grams,
-			remarks: row.remarks
-		});
-		const modal: ModalSettings = {
-			type: 'component',
-			component: c,
-			title: '',
-			body: ''
-		};
-		modalStore.trigger(modal);
+		// const c: ModalComponent = { ref: ModalHarvested };
+		// harvested.set({
+		// 	id: row.id,
+		// 	date_harvested: row.date_harvested,
+		// 	grams: row.grams,
+		// 	remarks: row.remarks
+		// });
+		// const modal: ModalSettings = {
+		// 	type: 'component',
+		// 	component: c,
+		// 	title: '',
+		// 	body: ''
+		// };
+		// modalStore.trigger(modal);
 	}
 	function showUpdateModal(row: any): void {
-		const c: ModalComponent = { ref: UpdateHarvestedModal };
-		harvested.set({
-			id: row.id,
-			date_harvested: row.date_harvested,
-			grams: row.grams,
-			remarks: row.remarks
-		});
-		const modal: ModalSettings = {
-			type: 'component',
-			component: c,
-			title: '',
-			body: '',
-
-			response: (r) => console.log('response:', r)
-		};
-		modalStore.trigger(modal);
+		// const c: ModalComponent = { ref: UpdateHarvestedModal };
+		// harvested.set({
+		// 	id: row.id,
+		// 	date_harvested: row.date_harvested,
+		// 	grams: row.grams,
+		// 	remarks: row.remarks
+		// });
+		// const modal: ModalSettings = {
+		// 	type: 'component',
+		// 	component: c,
+		// 	title: '',
+		// 	body: '',
+		// 	response: (r) => console.log('response:', r)
+		// };
+		// modalStore.trigger(modal);
 	}
 	function showDeleteModal(row: any): void {
-		const c: ModalComponent = { ref: RemoveHarvestedModal };
-		harvested.set({
-			id: row.id,
-			date_harvested: row.date_harvested,
-			grams: row.grams,
-			remarks: row.remarks
-		});
-		const modal: ModalSettings = {
-			type: 'component',
-			component: c,
-			title: '',
-			body: '',
-
-			response: (r) => console.log('response:', r)
-		};
-		modalStore.trigger(modal);
+		// const c: ModalComponent = { ref: RemoveHarvestedModal };
+		// harvested.set({
+		// 	id: row.id,
+		// 	date_harvested: row.date_harvested,
+		// 	grams: row.grams,
+		// 	remarks: row.remarks
+		// });
+		// const modal: ModalSettings = {
+		// 	type: 'component',
+		// 	component: c,
+		// 	title: '',
+		// 	body: '',
+		// 	response: (r) => console.log('response:', r)
+		// };
+		// modalStore.trigger(modal);
 	}
 	function truncateRemarks(remarks: string, maxLength: number = 22): string {
 		if (remarks.length > maxLength) {
@@ -151,6 +150,9 @@
 				paginationSettings.page * paginationSettings.limit + paginationSettings.limit
 			);
 	}
+	let sample: any[] = [];
+	sample.push(data.allDailyAve);
+	console.log(sample);
 </script>
 
 <Modal transitionIn={fade} transitionInParams={{ duration: 200 }} />
@@ -198,6 +200,9 @@
 				</tr>
 			</thead>
 			<tbody>
+				{#each sample as item}
+					{item.date}
+				{/each}
 				{#each paginatedSource as row (row.id)}
 					<tr class="" on:click={() => modalData(row)}>
 						<td>{row.date_harvested}</td>
@@ -232,8 +237,8 @@
 					<th colspan="3">
 						<h1 class="mb-2">
 							Total Grams Harvested: <span class="text-2xl">
-								{#if gramsCount}
-									{gramsCount} grams
+								{#if data.allHarvest}
+									{data.allHarvest} grams
 								{:else}
 									<div class="flex justify-center items-center">
 										<ProgressRadial width="w-10" value={undefined} />

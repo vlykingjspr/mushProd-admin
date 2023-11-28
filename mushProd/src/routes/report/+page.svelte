@@ -56,6 +56,7 @@
 	let aveHumdAll: any;
 	let firstDateAve: any;
 	let lastDateAve: any;
+	let element: any;
 	onMount(async () => {
 		farmData = await fetchFarmData();
 		removed = await allRemovedBags();
@@ -105,10 +106,10 @@
 			});
 		});
 		isLoading = false;
-
+		// element = document.getElementById('element');
 		// Don't forget to unsubscribe when your component is no longer needed
 	});
-
+	element = document.getElementById('element');
 	// Local
 	const modalStore = getModalStore();
 
@@ -120,10 +121,12 @@
 
 	report.subscribe((data) => {});
 
-	let element: any;
-	onMount(() => {
-		element = document.getElementById('element');
-	});
+	// onMount(() => {
+	// 	if (!isLoading) {
+	// 		element = document.getElementById('element');
+	// 		console.log('executed');
+	// 	}
+	// });
 	function showReportModal(): void {
 		const c: ModalComponent = { ref: ModalReport };
 		// report.set({});
