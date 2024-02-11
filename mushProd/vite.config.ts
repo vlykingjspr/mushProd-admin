@@ -5,11 +5,6 @@ import { defineConfig } from 'vite';
 export default defineConfig({
 	plugins: [sveltekit(), purgeCss()],
 	server: {
-		fs: {
-			// Allow access to the directory containing firebase-messaging-sw.js
-			allow: ['D:/Documents/Files/SveltKit/Project 0/mushprod/public/firebase-messaging-sw.js'],
-		},
-
 	},
 });
 // export default defineConfig({
