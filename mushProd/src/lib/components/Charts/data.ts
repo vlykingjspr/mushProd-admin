@@ -6,27 +6,43 @@ import { getTempHumidAve } from '../Report/getData';
 
 
 
-let tempData;
-let humdData
-let hrData
-const averagesArray = await getHourlyAverages();
-averagesArray.sort((a, b) => {
-  // Convert "Hour" values to numbers for proper numerical comparison
-  const hourA = parseInt(a.Hour);
-  const hourB = parseInt(b.Hour);
+let tempData: number[] = [];
+let humdData: number[] = [];
+let hrData: string[] = [];
+// let averagesArray = [
+//   { Hour: '1', AverageTemperature: 25, AverageHumidity: 60 }
+// ];
+let temperatureData: number[];
+let humidityData: number[]
+let hourData: string[]
 
-  // Compare the "Hour" values
-  return hourA - hourB;
-});
+// async function fetchData() {
+//   const averagesArray = await getHourlyAverages();
 
+//   averagesArray.sort((a, b) => {
+//     // Convert "Hour" values to numbers for proper numerical comparison
+//     const hourA = parseInt(a.Hour);
+//     const hourB = parseInt(b.Hour);
+//     // Compare the "Hour" values
+//     return hourA - hourB;
+//   });
+//   // Process averagesArray and update data and data2
+//   temperatureData = averagesArray.map((entry) => Math.floor(entry.AverageTemperature));
 
-// Process averagesArray and update data and data2
-const temperatureData = averagesArray.map((entry) => Math.floor(entry.AverageTemperature));
-const humidityData = averagesArray.map((entry) => Math.floor(entry.AverageHumidity));
-const hourData = averagesArray.map((entry) => entry.Hour)
-$: tempData = temperatureData
-$: humdData = humidityData
-$: hrData = hourData
+//   humidityData = averagesArray.map((entry) => Math.floor(entry.AverageHumidity));
+
+//   hourData = averagesArray.map((entry) => entry.Hour)
+//   $: tempData = temperatureData
+//   $: humdData = humidityData
+//   $: hrData = hourData
+
+// }
+// let a: number[] = [];
+// fetchData().then(() => {
+//   $: a = tempData;
+//   console.log(tempData)
+// });
+
 export const dailyTempHumd = {
   labels: hrData,
   datasets: [
@@ -50,6 +66,7 @@ export const dailyTempHumd = {
       pointRadius: 1,
       pointHitRadius: 10,
       data: tempData,
+
     },
     {
       label: 'Humidity',
@@ -77,11 +94,11 @@ export const dailyTempHumd = {
 
 let harvCodeData;
 let harvGramsData;
-const harvData: any = await getHarvestData();
-const harvCode = harvData.map((entry: any) => entry.batchCode);
-const harvGrams = harvData.map((entry: any) => entry.totalGrams);
-$: harvCodeData = harvCode
-$: harvGramsData = harvGrams
+// const harvData: any = await getHarvestData();
+// const harvCode = harvData.map((entry: any) => entry.batchCode);
+// const harvGrams = harvData.map((entry: any) => entry.totalGrams);
+// $: harvCodeData = harvCode
+// $: harvGramsData = harvGrams
 
 export const harvestData = {
   labels: harvCodeData,
@@ -120,15 +137,15 @@ export const harvestData = {
 let dayDate;
 let dayTemp;
 let dayHumd;
-const dayTempHumd: any = await getTempHumidAve();
-// console.log(dayTempHumd)
-const dayDateData = dayTempHumd.map((entry: any) => entry.date);
-const dayTempData = dayTempHumd.map((entry: any) => entry['ave temp']);
-const dayHumdData = dayTempHumd.map((entry: any) => entry['ave humidity']);
+// const dayTempHumd: any = await getTempHumidAve();
+// // console.log(dayTempHumd)
+// const dayDateData = dayTempHumd.map((entry: any) => entry.date);
+// const dayTempData = dayTempHumd.map((entry: any) => entry['ave temp']);
+// const dayHumdData = dayTempHumd.map((entry: any) => entry['ave humidity']);
 
-$: dayDate = dayDateData
-$: dayTemp = dayTempData
-$: dayHumd = dayHumdData
+// $: dayDate = dayDateData
+// $: dayTemp = dayTempData
+// $: dayHumd = dayHumdData
 
 export const everyTempHumid = {
   labels: dayDate,

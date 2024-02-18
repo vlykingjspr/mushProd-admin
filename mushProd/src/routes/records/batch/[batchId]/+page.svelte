@@ -286,19 +286,34 @@
 	<div class=" m-5">
 		<div class=" flex">
 			<a href="/records/batch" class="btn-icon btn-icon-sm variant-filled m-2">
-				<i class="fa-solid fa-arrow-left" /></a
-			>
+				<!-- <i class="fa-solid fa-arrow-left" /> -->
+				<span class="material-symbols-outlined"> arrow_back </span>
+			</a>
 		</div>
 		{#each source2 as row (row.id)}
-			<div class="text-2xl"><i class="fa-solid fa-qrcode m-2" />{row.batch_code}</div>
+			<div class="text-2xl">
+				<span class=" text-2xl material-symbols-outlined m-2"> qr_code </span>{row.batch_code}
+			</div>
 		{/each}
 		<table class="table table-hover">
 			<thead>
-				<tr>
-					<th><i class="fa-solid fa-calendar-days mr-2" />Date</th>
-					<th><i class="fa-solid fa-bag-shopping mr-2" />Number of Bags</th>
-					<th><i class="fa-solid fa-circle-xmark mr-2" />Number of Bags Removed</th>
-					<th> <i class="fa-solid fa-pen-to-square mr-2" />Remarks</th>
+				<tr class="">
+					<th class="flex">
+						<!-- <span class="material-symbols-outlined mr-2"> calendar_month </span> -->
+						Date</th
+					>
+					<th class="">
+						<!-- <span class="material-symbols-outlined mr-2"> shopping_bag </span> -->
+						Number of Bags</th
+					>
+					<th class="">
+						<!-- <span class="material-symbols-outlined mr-2"> delete_forever </span> -->
+						Number of Bags Removed</th
+					>
+					<th class="">
+						<!-- <span class="material-symbols-outlined mr-2"> edit_note </span>  -->
+						Remarks</th
+					>
 				</tr>
 			</thead>
 			<tbody>
@@ -307,16 +322,17 @@
 						<td>{row.date}</td>
 						<td class="flex items-center justify-between"
 							>{row.batch_total_bags}
+
 							<button
 								type="button"
-								class="btn btn-sm variant-filled-error"
+								class="btn btn-sm variant-filled-error ml-2"
 								on:click|stopPropagation={() => {
 									showRemovePlanted(row);
 								}}
 							>
-								<i class="fa-solid fa-trash" />
-							</button></td
-						>
+								<span class="material-symbols-outlined"> delete </span>
+							</button>
+						</td>
 						<td>{row.batch_total_removed}</td>
 						<td class="flex items-center justify-between"
 							>{truncateRemarks(row.batch_remarks)}
@@ -327,7 +343,7 @@
 									showUpdatePlanted(row);
 								}}
 							>
-								<i class="fa-solid fa-pen-to-square" />
+								<span class="material-symbols-outlined"> edit </span>
 							</button></td
 						>
 					{/each}
@@ -346,24 +362,34 @@
 				class="input mb-2 mr-2 sm:w-36 ml-auto h-8"
 			/>
 			<button type="button" class="btn btn-sm variant-filled-tertiary h-8 mb-2" on:click={search}>
-				<i class="fa-solid fa-search" />
+				<!-- <i class="fa-solid fa-search" /> -->
 				<span>Search</span>
 			</button>
 		</div>
 		<table class="table table-hover">
 			<thead>
 				<tr>
-					<th><i class="fa-solid fa-calendar-days mr-2" />Date</th>
-					<th><i class="fa-solid fa-layer-group mr-2" />Grams Harvested</th>
-					<th> <i class="fa-solid fa-pen-to-square mr-2" />Remarks</th>
+					<th>
+						<!-- <i class="fa-solid fa-calendar-days mr-2" /> -->
+						Date</th
+					>
+					<th>
+						<!-- <i class="fa-solid fa-layer-group mr-2" /> -->
+						Grams Harvested</th
+					>
+					<th>
+						<!-- <i class="fa-solid fa-pen-to-square mr-2" /> -->
+						Remarks</th
+					>
 					<th class="flex items-center justify-center">
 						<button
 							type="button"
 							class="btn btn-sm variant-filled-primary mr-2"
 							on:click={() => showAddModal(id)}
 						>
-							<i class="fa-solid fa-plus" />
-							<span>Add</span>
+							<!-- <i class="fa-solid fa-plus" /> -->
+							<span class="material-symbols-outlined"> add </span>
+							<!-- <span>Add</span> -->
 						</button>
 					</th>
 				</tr>
@@ -383,8 +409,9 @@
 										showUpdateModal(row);
 									}}
 								>
-									<i class="fa-solid fa-pen-to-square" />
-									<span>Update</span>
+									<!-- <i class="fa-solid fa-pen-to-square" /> -->
+									<span class="material-symbols-outlined"> edit </span>
+									<!-- <span>Update</span> -->
 								</button><button
 									type="button"
 									class="btn btn-sm variant-filled-error"
@@ -392,8 +419,9 @@
 										showRemoveModal(row);
 									}}
 								>
-									<i class="fa-solid fa-trash" />
-									<span>Remove</span>
+									<!-- <i class="fa-solid fa-trash" />
+									<span>Remove</span> -->
+									<span class="material-symbols-outlined"> delete </span>
 								</button>
 							</td>
 						</tr>

@@ -197,7 +197,7 @@
 					</button>
 				</svelte:fragment>
 				<div class=" flex justify-between items-center">
-					<i class="fa-brands fa-envira fa-lg" />
+					<span class="material-symbols-outlined"> psychiatry </span>
 					<h1>MushProd</h1>
 				</div>
 

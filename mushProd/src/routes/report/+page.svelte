@@ -151,7 +151,7 @@
 	<div class="flex justify-between items-center m-4">
 		<div class="ml-auto">
 			<button class="btn btn-sm variant-filled-primary" on:click={() => download(element)}>
-				<i class="fa-solid fa-print mr-2" />Generate Report
+				<span class="material-symbols-outlined"> summarize </span>Generate Report
 			</button>
 		</div>
 	</div>

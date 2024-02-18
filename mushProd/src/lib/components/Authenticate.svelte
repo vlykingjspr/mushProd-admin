@@ -47,12 +47,14 @@
 			<p class="error">The Information you have enter is not correct</p>
 		{/if}
 		<div class="input-group input-group-divider grid-cols-[auto_1fr_auto]">
-			<div class="input-group-shim"><i class="fa-solid fa-calendar" /></div>
+			<div class="input-group-shim"><span class="material-symbols-outlined"> person </span></div>
 			<input type="email" placeholder="Email" bind:value={email} />
 		</div>
 
 		<div class="input-group input-group-divider grid-cols-[auto_1fr_auto]">
-			<div class="input-group-shim"><i class="fa-solid fa-calendar" /></div>
+			<div class="input-group-shim">
+				<span class="material-symbols-outlined"> password </span>
+			</div>
 			<input type="password" placeholder="Password" bind:value={password} />
 		</div>
 
@@ -70,9 +72,9 @@
 			class="btn btn-md variant-filled-primary mr-2"
 		>
 			{#if authenticating}
-				<i class="fa-solid fa-spinner spin" />
+				<span class="material-symbols-outlined"> cached </span>
 			{:else}
-				<i class="fa-solid fa-right-to-bracket mr-2" /> Login
+				<span class="material-symbols-outlined"> login </span> Login
 			{/if}
 		</button>
 	</form>

@@ -173,7 +173,7 @@
 									showDeleteModal(row);
 								}}
 							>
-								<i class="fa-solid fa-trash" />
+								<span class="material-symbols-outlined"> delete </span>
 								<span>Remove</span>
 							</button>
 						</td>

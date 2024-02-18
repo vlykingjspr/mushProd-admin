@@ -36,10 +36,7 @@
 {#if $modalStore[0]}
 	<div class="modal-example-form {cBase}">
 		<header class={cHeader}>
-			<div class="flex items-center justify-center">
-				<i class="fa-solid fa-clipboard mr-2" />
-				Record
-			</div>
+			<div class="flex items-center justify-center">Temperature & Humidity Record</div>
 		</header>
 
 		<hr class="opacity-50" />
