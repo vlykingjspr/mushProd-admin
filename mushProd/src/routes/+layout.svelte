@@ -142,7 +142,7 @@
 							currentTime - lastNotificationTime >= thirtyMinutesInMillis
 						) {
 							// Send the notification
-							// sendNotification(temp, humd);
+							sendNotification(temp, humd);
 
 							// Update the last notification time
 							lastNotificationTime = currentTime;
