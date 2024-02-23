@@ -6,9 +6,9 @@ import { getTempHumidAve } from '../Report/getData';
 
 
 
-let tempData: number[] = [];
-let humdData: number[] = [];
-let hrData: string[] = [];
+// let tempData: number[] = [];
+// let humdData: number[] = [];
+// let hrData: string[] = [];
 // let averagesArray = [
 //   { Hour: '1', AverageTemperature: 25, AverageHumidity: 60 }
 // ];
@@ -16,33 +16,38 @@ let temperatureData: number[];
 let humidityData: number[]
 let hourData: string[]
 
-// async function fetchData() {
-//   const averagesArray = await getHourlyAverages();
+// // async function fetchData() {
+// const averagesArray = await getHourlyAverages();
 
-//   averagesArray.sort((a, b) => {
-//     // Convert "Hour" values to numbers for proper numerical comparison
-//     const hourA = parseInt(a.Hour);
-//     const hourB = parseInt(b.Hour);
-//     // Compare the "Hour" values
-//     return hourA - hourB;
-//   });
-//   // Process averagesArray and update data and data2
-//   temperatureData = averagesArray.map((entry) => Math.floor(entry.AverageTemperature));
+// averagesArray.sort((a, b) => {
+//   // Convert "Hour" values to numbers for proper numerical comparison
+//   const hourA = parseInt(a.Hour);
+//   const hourB = parseInt(b.Hour);
+//   // Compare the "Hour" values
+//   return hourA - hourB;
+// });
+// // Process averagesArray and update data and data2
+// temperatureData = averagesArray.map((entry) => Math.floor(entry.AverageTemperature));
 
-//   humidityData = averagesArray.map((entry) => Math.floor(entry.AverageHumidity));
+// humidityData = averagesArray.map((entry) => Math.floor(entry.AverageHumidity));
 
-//   hourData = averagesArray.map((entry) => entry.Hour)
-//   $: tempData = temperatureData
-//   $: humdData = humidityData
-//   $: hrData = hourData
+// hourData = averagesArray.map((entry) => entry.Hour)
+// $: tempData = temperatureData
+// $: humdData = humidityData
+// $: hrData = hourData
 
+// console.log(tempData)
+// console.log(humdData)
+// console.log(hrData)
 // }
 // let a: number[] = [];
 // fetchData().then(() => {
 //   $: a = tempData;
 //   console.log(tempData)
 // });
-
+let tempData: number[] = [29, 31, 31, 31, 32, 31, 31];
+let humdData: number[] = [98, 98, 96, 90, 90, 86, 85];
+let hrData: string[] = ['07', '08', '09', '10', '11', '16', '17'];
 export const dailyTempHumd = {
   labels: hrData,
   datasets: [
@@ -92,14 +97,23 @@ export const dailyTempHumd = {
   ],
 };
 
-let harvCodeData;
-let harvGramsData;
+
+// let harvCodeDate;
+// let harvGramsData;
+
 // const harvData: any = await getHarvestData();
 // const harvCode = harvData.map((entry: any) => entry.batchCode);
 // const harvGrams = harvData.map((entry: any) => entry.totalGrams);
 // $: harvCodeData = harvCode
 // $: harvGramsData = harvGrams
 
+// console.log(harvCodeData)
+// console.log(harvGramsData)
+
+let harvCodeData: string[] = [
+  '#OM12SEPT', '#OM01OCT', '#OM14NOV', '#OM16NOV', '#OM09DEC', '#OM13FEB'
+];
+let harvGramsData: number[] = [3714, 2700, 2810, 1640, 23, 0];
 export const harvestData = {
   labels: harvCodeData,
   datasets: [
@@ -134,9 +148,9 @@ export const harvestData = {
   },
 }
 
-let dayDate;
-let dayTemp;
-let dayHumd;
+// let dayDate;
+// let dayTemp;
+// let dayHumd;
 // const dayTempHumd: any = await getTempHumidAve();
 // // console.log(dayTempHumd)
 // const dayDateData = dayTempHumd.map((entry: any) => entry.date);
@@ -146,6 +160,20 @@ let dayHumd;
 // $: dayDate = dayDateData
 // $: dayTemp = dayTempData
 // $: dayHumd = dayHumdData
+
+// console.log(dayDate)
+// console.log(dayTemp)
+// console.log(dayHumd)
+
+let dayDate: string[] = [
+  'September 04, 2023', 'September 14, 2023', 'October 11, 2023', 'October 18, 2023',
+  'November 01, 2023', 'November 15, 2023', 'November 22, 2023', 'February 18, 2024',
+  'February 19, 2024', 'February 22, 2024'
+]
+
+let dayTemp: number[] = [28, 27, 32, 25, 30, 28, 29, 31.36, 31.36, 31.36]
+
+let dayHumd: number[] = [89, 85, 86, 81, 90, 86, 88, 92.08, 92.08, 92.08]
 
 export const everyTempHumid = {
   labels: dayDate,
