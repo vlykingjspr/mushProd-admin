@@ -121,12 +121,12 @@
 
 	report.subscribe((data) => {});
 
-	// onMount(() => {
-	// 	if (!isLoading) {
-	// 		element = document.getElementById('element');
-	// 		console.log('executed');
-	// 	}
-	// });
+	onMount(() => {
+		if (!isLoading) {
+			element = document.getElementById('element');
+			console.log('executed');
+		}
+	});
 	function showReportModal(): void {
 		const c: ModalComponent = { ref: ModalReport };
 		// report.set({});
@@ -177,10 +177,6 @@
 						<div class="info-item">
 							<span class="info-label">Farm Location:</span>
 							<span class="info-value">{farm.farm_address}</span>
-						</div>
-						<div class="info-item">
-							<span class="info-label">Device Code:</span>
-							<span class="info-value">{farm.device_code}</span>
 						</div>
 					</div>
 				{/each}
@@ -239,6 +235,7 @@
 					<div class="chart-container1">
 						<HarvestedData />
 					</div>
+
 					<table class="table1">
 						<tr>
 							<th>Batch Code</th>
@@ -255,6 +252,8 @@
 					</table>
 				</div>
 			</div>
+			<div class="html2pdf__page-break" />
+
 			<div class="mushroom-data-container mt-5">
 				<div class="mushroom-data-table">
 					<h2 class="section-heading mb-2">IV. Mushroom Data</h2>
@@ -305,6 +304,8 @@
 				<div class="mb-2 flex items-center justify-center">
 					<EveryTempHumid />
 				</div>
+				<div class="html2pdf__page-break" />
+
 				<div class="table-container">
 					<table class="table">
 						<tr>
@@ -322,6 +323,7 @@
 					</table>
 				</div>
 			</div>
+
 			<div class="yield mt-5 mb-10">
 				<h2 class="section-heading mb-2">VI. Yield Prediction</h2>
 				<p class="section-content mb-2">
