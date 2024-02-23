@@ -9,14 +9,14 @@ import { getTempHumidAve } from '../Report/getData';
 // let tempData: number[] = [];
 // let humdData: number[] = [];
 // let hrData: string[] = [];
-// let averagesArray = [
-//   { Hour: '1', AverageTemperature: 25, AverageHumidity: 60 }
-// ];
-let temperatureData: number[];
-let humidityData: number[]
-let hourData: string[]
+// // let averagesArray = [
+// //   { Hour: '1', AverageTemperature: 25, AverageHumidity: 60 }
+// // ];
+// let temperatureData: number[];
+// let humidityData: number[]
+// let hourData: string[]
 
-// // async function fetchData() {
+// // // async function fetchData() {
 // const averagesArray = await getHourlyAverages();
 
 // averagesArray.sort((a, b) => {
@@ -45,9 +45,11 @@ let hourData: string[]
 //   $: a = tempData;
 //   console.log(tempData)
 // });
-let tempData: number[] = [29, 31, 31, 31, 32, 31, 31];
-let humdData: number[] = [98, 98, 96, 90, 90, 86, 85];
-let hrData: string[] = ['07', '08', '09', '10', '11', '16', '17'];
+
+
+let tempData: number[] = [26, 24, 23];
+let humdData: number[] = [98, 80, 76];
+let hrData: string[] = ['08', '09', '10'];
 export const dailyTempHumd = {
   labels: hrData,
   datasets: [
