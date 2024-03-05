@@ -100,22 +100,22 @@ export const dailyTempHumd = {
 };
 
 
-let harvCodeData;
-let harvGramsData;
+// let harvCodeData;
+// let harvGramsData;
 
-const harvData: any = await getHarvestData();
-const harvCode = harvData.map((entry: any) => entry.batchCode);
-const harvGrams = harvData.map((entry: any) => entry.totalGrams);
-$: harvCodeData = harvCode
-$: harvGramsData = harvGrams
+// const harvData: any = await getHarvestData();
+// const harvCode = harvData.map((entry: any) => entry.batchCode);
+// const harvGrams = harvData.map((entry: any) => entry.totalGrams);
+// $: harvCodeData = harvCode
+// $: harvGramsData = harvGrams
 
-console.log(harvCodeData)
-console.log(harvGramsData)
+// console.log(harvCodeData)
+// console.log(harvGramsData)
 
-// let harvCodeData: string[] = [
-//   '#OM12SEPT', '#OM01OCT', '#OM14NOV', '#OM16NOV', '#OM09DEC', '#OM13FEB'
-// ];
-// let harvGramsData: number[] = [3714, 2700, 2810, 1640, 23, 0];
+let harvCodeData: string[] = [
+  '#OM12SEPT', '#OM01OCT', '#OM14NOV', '#OM16NOV', '#OM09DEC', '#OM13FEB'
+];
+let harvGramsData: number[] = [3714, 2700, 2810, 1640, 23, 0];
 export const harvestData = {
   labels: harvCodeData,
   datasets: [
