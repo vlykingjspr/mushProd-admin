@@ -39,17 +39,17 @@ import { getTempHumidAve } from '../Report/getData';
 // console.log(tempData)
 // console.log(humdData)
 // console.log(hrData)
-// }
+// // }
 // let a: number[] = [];
-// fetchData().then(() => {
-//   $: a = tempData;
-//   console.log(tempData)
-// });
+// // fetchData().then(() => {
+// //   $: a = tempData;
+// //   console.log(tempData)
+// // });
 
 
-let tempData: number[] = [26, 24, 23, 23, 23, 23, 23, 23];
-let humdData: number[] = [98, 80, 79, 79, 86, 78, 79, 82];
-let hrData: string[] = ['08', '09', '10', '11', '12', '13', '14', '15'];
+let tempData: number[] = [24, 25, 24, 24, 23, 24, 24, 24];
+let humdData: number[] = [67, 61, 65, 60, 59, 65, 61, 65];
+let hrData: string[] = ['09', '10', '11', '12', '13', '14', '15', '16'];
 export const dailyTempHumd = {
   labels: hrData,
   datasets: [
@@ -100,22 +100,22 @@ export const dailyTempHumd = {
 };
 
 
-// let harvCodeDate;
-// let harvGramsData;
+let harvCodeData;
+let harvGramsData;
 
-// const harvData: any = await getHarvestData();
-// const harvCode = harvData.map((entry: any) => entry.batchCode);
-// const harvGrams = harvData.map((entry: any) => entry.totalGrams);
-// $: harvCodeData = harvCode
-// $: harvGramsData = harvGrams
+const harvData: any = await getHarvestData();
+const harvCode = harvData.map((entry: any) => entry.batchCode);
+const harvGrams = harvData.map((entry: any) => entry.totalGrams);
+$: harvCodeData = harvCode
+$: harvGramsData = harvGrams
 
-// console.log(harvCodeData)
-// console.log(harvGramsData)
+console.log(harvCodeData)
+console.log(harvGramsData)
 
-let harvCodeData: string[] = [
-  '#OM12SEPT', '#OM01OCT', '#OM14NOV', '#OM16NOV', '#OM09DEC', '#OM13FEB'
-];
-let harvGramsData: number[] = [3714, 2700, 2810, 1640, 23, 0];
+// let harvCodeData: string[] = [
+//   '#OM12SEPT', '#OM01OCT', '#OM14NOV', '#OM16NOV', '#OM09DEC', '#OM13FEB'
+// ];
+// let harvGramsData: number[] = [3714, 2700, 2810, 1640, 23, 0];
 export const harvestData = {
   labels: harvCodeData,
   datasets: [
@@ -170,12 +170,12 @@ export const harvestData = {
 let dayDate: string[] = [
   'September 04, 2023', 'September 14, 2023', 'October 11, 2023', 'October 18, 2023',
   'November 01, 2023', 'November 15, 2023', 'November 22, 2023', 'February 18, 2024',
-  'February 19, 2024', 'February 22, 2024'
+  'February 19, 2024', 'February 22, 2024', 'February 25, 2024'
 ]
 
-let dayTemp: number[] = [28, 27, 32, 25, 30, 28, 29, 31.36, 31.36, 31.36]
+let dayTemp: number[] = [28, 27, 32, 25, 30, 28, 29, 31.36, 31.36, 31.36, 30.81]
 
-let dayHumd: number[] = [89, 85, 86, 81, 90, 86, 88, 92.08, 92.08, 92.08]
+let dayHumd: number[] = [89, 85, 86, 81, 90, 86, 88, 92.08, 92.08, 92.08, 89.85]
 
 export const everyTempHumid = {
   labels: dayDate,
