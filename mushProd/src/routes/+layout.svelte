@@ -47,8 +47,8 @@
 
 	const formattedDate = format(currentDate, 'yyyy-MM-dd');
 	const rdb = getDatabase();
-	const dateRef = ref(rdb, `/BETAPEAK/2023-11-18`);
-	// const dateRef = ref(rdb, `BETAPEAK/${formattedDate}`);
+	// const dateRef = ref(rdb, `/BETAPEAK/2023-11-18`);
+	const dateRef = ref(rdb, `BETAPEAK/${formattedDate}`);
 	let currentTime: any;
 	let executedToday = false;
 	let timeoutId: NodeJS.Timeout | null = null;

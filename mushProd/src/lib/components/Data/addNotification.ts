@@ -3,7 +3,7 @@
 import { getFirestore, collection, addDoc } from 'firebase/firestore';
 import { db } from '$lib/firebase/firebase';
 
-// Define a function to send a notification to Firestore
+// Defined function to send a notification to Firestore
 export async function sendNotification(temperature: number, humidity: number) {
     let temp: number = temperature;
     let humd: number = humidity;

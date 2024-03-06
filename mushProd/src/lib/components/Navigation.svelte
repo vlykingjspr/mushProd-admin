@@ -106,7 +106,11 @@
 			>
 		</li>
 		<li class="mt-8 pl-2">
-			<a class=" mt-4 mb-4 font-bold text-lg" href="/report" on:click={() => updateTitle('Report')}>
+			<a
+				class=" mt-4 mb-4 font-bold text-lg"
+				href="/report/growing-bag"
+				on:click={() => updateTitle('Report')}
+			>
 				<span class="material-symbols-outlined"> description </span>
 				<span><h1 class="text-sm">REPORT</h1></span></a
 			>

@@ -243,7 +243,7 @@
 			</div>
 			<div class={`${cardStyle} sm:col-span-1 md:col-span-2 lg:col-span-1`}>
 				<div class={cardInsideStyle}>
-					<a href="/report" on:click={() => updateTitle('Report')}>
+					<a href="/report/growing-bag" on:click={() => updateTitle('Report')}>
 						<h2 class={h2Style}>Report</h2>
 
 						<hr class="opacity-50 mb-2" />
