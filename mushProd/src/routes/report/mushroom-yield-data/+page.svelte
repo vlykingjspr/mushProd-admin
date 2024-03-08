@@ -107,36 +107,37 @@
 		<ProgressRadial value={undefined} />
 	</div>
 {:else}
-	<div class="mushroom-data-container mt-5">
-		<div class="mushroom-data-table">
-			<h2 class="section-heading mb-2 h4">Mushroom Data</h2>
+	<div class="p-4">
+		<div class="mushroom-data-container">
+			<div class="mushroom-data-table">
+				<h2 class="section-heading mb-2 h4">Mushroom Data</h2>
 
-			<p class="section-content mb-2">This table provides information of the mushrooms.</p>
-			<div class="table-container">
-				<table class="table table-hover">
-					<thead>
-						<tr>
-							<th>Type</th>
-							<th>Total Bags</th>
-							<th>Total Harvested</th>
-							<th>Total Bags Removed</th>
-						</tr>
-					</thead>
-					<tbody>
-						<!-- {#each tempHumidAve as row} -->
-						<tr class="">
-							<td>Oyster Mushroom</td>
-							<td>{planted}</td>
-							<td>{harvest}</td>
-							<td>{removed}</td>
-						</tr>
-						<!-- {/each} -->
-					</tbody>
-				</table>
+				<p class="section-content mb-2">This table provides information of the mushrooms.</p>
+				<div class="table-container">
+					<table class="table table-hover">
+						<thead>
+							<tr>
+								<th>Type</th>
+								<th>Total Bags</th>
+								<th>Total Harvested</th>
+								<th>Total Bags Removed</th>
+							</tr>
+						</thead>
+						<tbody>
+							<!-- {#each tempHumidAve as row} -->
+							<tr class="">
+								<td>Oyster Mushroom</td>
+								<td>{planted}</td>
+								<td>{harvest}</td>
+								<td>{removed}</td>
+							</tr>
+							<!-- {/each} -->
+						</tbody>
+					</table>
+				</div>
 			</div>
-		</div>
 
-		<!-- <div class="additional-info mt-6">
+			<!-- <div class="additional-info mt-6">
 			<div class="summary-description">
 				<p><strong>Type:</strong> Oyster Mushroom</p>
 				<p>
@@ -152,45 +153,48 @@
 				</p>
 			</div>
 		</div> -->
-	</div>
-
-	<div class="yield mt-5 mb-10">
-		<h2 class="section-heading mb-2 h4">Yield Prediction</h2>
-		<p class="section-content mb-2">
-			This table provides predictions for mushroom yield based on the gathered data and conditions.
-		</p>
-
-		<div class="table-container1 mb-2">
-			<div class="table-container">
-				<table class="table table-hover">
-					<thead>
-						<tr>
-							<th>Starting Date</th>
-							<th>Last Date </th>
-							<th>Number of Planted Bags</th>
-							<th>Average Temperature</th>
-							<th>Average Humidity</th>
-							<th>Predicted Yield</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr class="">
-							<td>{firstDateAve}</td>
-							<td>{lastDateAve}</td>
-							<td>{planted}</td>
-							<td>{aveTempAll}°C</td>
-							<td>{aveHumdAll} %</td>
-							<td>{yield_pred2}</td>
-						</tr>
-					</tbody>
-				</table>
-			</div>
 		</div>
-		<p class="section-content mb-5">
-			During the observed period from {firstDateAve} to {lastDateAve}, we planted {planted} Oyster Mushroom
-			bags in our cultivation environment. The average temperature throughout this period was {aveTempAll}°C,
-			and the average humidity was {aveHumdAll}%. Considering these environmental conditions, our
-			predictive model anticipates a mushroom yield of approximately {yield_pred2} grams.
-		</p>
+		<hr />
+		<div class="yield mt-5 mb-10">
+			<h2 class="section-heading mb-2 h4">Yield Prediction</h2>
+			<p class="section-content mb-2">
+				This table provides predictions for mushroom yield based on the gathered data and
+				conditions.
+			</p>
+
+			<div class="table-container1 mb-2">
+				<div class="table-container">
+					<table class="table table-hover">
+						<thead>
+							<tr>
+								<th>Starting Date</th>
+								<th>Last Date </th>
+								<th>Number of Planted Bags</th>
+								<th>Average Temperature</th>
+								<th>Average Humidity</th>
+								<th>Predicted Yield</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr class="">
+								<td>{firstDateAve}</td>
+								<td>{lastDateAve}</td>
+								<td>{planted}</td>
+								<td>{aveTempAll}°C</td>
+								<td>{aveHumdAll} %</td>
+								<td>{yield_pred2}</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<p class="section-content mb-5">
+				During the observed period from {firstDateAve} to {lastDateAve}, we planted {planted} Oyster
+				Mushroom bags in our cultivation environment. The average temperature throughout this period
+				was {aveTempAll}°C, and the average humidity was {aveHumdAll}%. Considering these
+				environmental conditions, our predictive model anticipates a mushroom yield of approximately {yield_pred2}
+				grams.
+			</p>
+		</div>
 	</div>
 {/if}

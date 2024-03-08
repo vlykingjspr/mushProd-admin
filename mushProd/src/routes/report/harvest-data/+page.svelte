@@ -13,19 +13,54 @@
 	let searchQuery = '';
 
 	onMount(async () => {
-		harvestData = await getHarvestData();
+		// harvestData = await getHarvestData();
+		const userDocRef = doc(db, 'user', '123456');
 
+		const batchCollectionRef = collection(userDocRef, 'batch');
+		const batchQuery = query(batchCollectionRef, orderBy('batch_planted', 'asc'));
+
+		const batchDocsSnapshot = await getDocs(batchQuery);
+
+		// harvestData = [];
+
+		for (const batchDoc of batchDocsSnapshot.docs) {
+			const batchCode = batchDoc.data().batch_code;
+
+			// Get the batch_harvest collection for the current batch
+			const batchHarvestCollectionRef = collection(batchDoc.ref, 'batch_harvest');
+			const batchHarvestQuery = query(batchHarvestCollectionRef);
+
+			const batchHarvestDocsSnapshot = await getDocs(batchHarvestQuery);
+
+			// Calculate the total number of harvests and total grams for the current batch
+			const totalHarvests = batchHarvestDocsSnapshot.size;
+			const totalGrams = batchHarvestDocsSnapshot.docs.reduce((acc, harvestDoc) => {
+				const grams = harvestDoc.data().grams || 0;
+				return acc + grams;
+			}, 0);
+
+			// Add the batch data to the result array
+			harvestData.push({
+				batchCode,
+				totalHarvests,
+				totalGrams
+			});
+		}
+		console.log(harvestData);
 		source.push(harvestData);
+		console.log(source);
 		isLoading = false;
 	});
+	console.log(source);
 
 	$: {
 		paginationSettings.size = harvestData.length;
 	}
+
 	let paginationSettings = {
 		page: 0,
 		limit: 10, // Number of items to display per page
-		size: harvestData.length, // Total number of items
+		size: source.length, // Total number of items
 		amounts: [1, 2, 5, 10] // Available amounts for the paginator
 	};
 
@@ -59,52 +94,55 @@
 		<ProgressRadial value={undefined} />
 	</div>
 {:else}
-	<h2 class="section-heading mb-2 h4">Harvest Data</h2>
-	<p class="section-content mb-2">
-		This table provides a overview of the harvest data for batches. It includes the data such as the
-		Batch Code, the Number of Harvests, and the Total Grams Harvested for each respective batch.
-	</p>
-	<div class="flex-container">
-		<div class="chart-container1">
-			<div class="w-full text-token grid grid-cols-1 md:grid-cols-4 gap-4 pr-4 pl-4 pb-2">
-				<div class={`md:col-span-2 sm:col-span-1`}>
-					<div class="m-2">
-						<HarvestedData />
+	<div class="p-4">
+		<h2 class="section-heading mb-2 h4">Harvest Data</h2>
+		<p class="section-content mb-2">
+			This table provides a overview of the harvest data for batches. It includes the data such as
+			the Batch Code, the Number of Harvests, and the Total Grams Harvested for each respective
+			batch.
+		</p>
+		<div class="flex-container">
+			<div class="chart-container1">
+				<div class="w-full text-token grid grid-cols-1 md:grid-cols-4 gap-4 pr-4 pl-4 pb-2">
+					<div class={`md:col-span-2 sm:col-span-1`}>
+						<div class="m-2">
+							<HarvestedData />
+						</div>
 					</div>
 				</div>
 			</div>
-		</div>
-		<div class="table-container mb-3">
-			<table class="table table-hover">
-				<thead>
-					<tr>
-						<th>Batch Code</th>
-						<th>Number of Harvest</th>
-						<th>Total Grams Harvested</th>
-					</tr>
-				</thead>
-				<!-- {#each paginatedSource as row (harvestData.id)} -->
-				{#each harvestData as row}
-					<tbody>
+			<div class="table-container mb-3">
+				<table class="table table-hover">
+					<thead>
 						<tr>
-							<td>{row.batchCode}</td>
-							<td>{row.totalHarvests}</td>
-							<td>{row.totalGrams}</td>
+							<th>Batch Code</th>
+							<th>Number of Harvest</th>
+							<th>Total Grams Harvested</th>
 						</tr>
-					</tbody>
-				{/each}
-				<tfoot>
-					<tr>
-						<th colspan="3">
-							<Paginator
-								bind:settings={paginationSettings}
-								showFirstLastButtons={false}
-								showPreviousNextButtons={true}
-							/>
-						</th>
-					</tr>
-				</tfoot>
-			</table>
+					</thead>
+					<!-- {#each paginatedSource as row (harvestData.id)} -->
+					<tbody>
+						{#each paginatedSource as row}
+							<tr>
+								<td>{row.batchCode}</td>
+								<td>{row.totalHarvests}</td>
+								<td>{row.totalGrams}</td>
+							</tr>
+						{/each}</tbody
+					>
+					<tfoot>
+						<tr>
+							<th colspan="3">
+								<Paginator
+									bind:settings={paginationSettings}
+									showFirstLastButtons={false}
+									showPreviousNextButtons={true}
+								/>
+							</th>
+						</tr>
+					</tfoot>
+				</table>
+			</div>
 		</div>
 	</div>
 {/if}
