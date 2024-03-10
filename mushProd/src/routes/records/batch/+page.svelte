@@ -53,7 +53,7 @@
 	onMount(async () => {
 		const userDocRef = doc(db, 'user', '123456');
 		const batchRec = collection(userDocRef, 'batch');
-		const s = query(batchRec, orderBy('batch_planted', 'asc'));
+		const s = query(batchRec, orderBy('batch_planted', 'desc'));
 		const unsubscribe1 = onSnapshot(s, (querySnapshot) => {
 			source2 = [];
 			querySnapshot.forEach((doc) => {

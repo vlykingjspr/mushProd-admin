@@ -112,7 +112,9 @@
 			<div class="mushroom-data-table">
 				<h2 class="section-heading mb-2 h4">Mushroom Data</h2>
 
-				<p class="section-content mb-2">This table provides information of the mushrooms.</p>
+				<blockquote class="blockquote mb-2 mt-2">
+					This table provides information of the mushrooms.
+				</blockquote>
 				<div class="table-container">
 					<table class="table table-hover">
 						<thead>
@@ -128,7 +130,7 @@
 							<tr class="">
 								<td>Oyster Mushroom</td>
 								<td>{planted}</td>
-								<td>{harvest}</td>
+								<td>{harvest} g</td>
 								<td>{removed}</td>
 							</tr>
 							<!-- {/each} -->
@@ -136,31 +138,13 @@
 					</table>
 				</div>
 			</div>
-
-			<!-- <div class="additional-info mt-6">
-			<div class="summary-description">
-				<p><strong>Type:</strong> Oyster Mushroom</p>
-				<p>
-					<strong>Total Bags:</strong>
-					{planted} bags have been planted.
-				</p>
-				<p>
-					<strong>Total Harvested:</strong> A total of {harvest} grams harvested.
-				</p>
-				<p>
-					<strong>Total Bags Removed:</strong>
-					{removed} bags have been removed.
-				</p>
-			</div>
-		</div> -->
 		</div>
-		<hr />
 		<div class="yield mt-5 mb-10">
 			<h2 class="section-heading mb-2 h4">Yield Prediction</h2>
-			<p class="section-content mb-2">
+			<blockquote class="blockquote mb-2 mt-2">
 				This table provides predictions for mushroom yield based on the gathered data and
 				conditions.
-			</p>
+			</blockquote>
 
 			<div class="table-container1 mb-2">
 				<div class="table-container">
@@ -182,7 +166,7 @@
 								<td>{planted}</td>
 								<td>{aveTempAll}°C</td>
 								<td>{aveHumdAll} %</td>
-								<td>{yield_pred2}</td>
+								<td>{yield_pred2} g</td>
 							</tr>
 						</tbody>
 					</table>

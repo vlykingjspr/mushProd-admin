@@ -13,45 +13,10 @@
 	let searchQuery = '';
 
 	onMount(async () => {
-		// harvestData = await getHarvestData();
-		const userDocRef = doc(db, 'user', '123456');
+		harvestData = await getHarvestData();
 
-		const batchCollectionRef = collection(userDocRef, 'batch');
-		const batchQuery = query(batchCollectionRef, orderBy('batch_planted', 'asc'));
-
-		const batchDocsSnapshot = await getDocs(batchQuery);
-
-		// harvestData = [];
-
-		for (const batchDoc of batchDocsSnapshot.docs) {
-			const batchCode = batchDoc.data().batch_code;
-
-			// Get the batch_harvest collection for the current batch
-			const batchHarvestCollectionRef = collection(batchDoc.ref, 'batch_harvest');
-			const batchHarvestQuery = query(batchHarvestCollectionRef);
-
-			const batchHarvestDocsSnapshot = await getDocs(batchHarvestQuery);
-
-			// Calculate the total number of harvests and total grams for the current batch
-			const totalHarvests = batchHarvestDocsSnapshot.size;
-			const totalGrams = batchHarvestDocsSnapshot.docs.reduce((acc, harvestDoc) => {
-				const grams = harvestDoc.data().grams || 0;
-				return acc + grams;
-			}, 0);
-
-			// Add the batch data to the result array
-			harvestData.push({
-				batchCode,
-				totalHarvests,
-				totalGrams
-			});
-		}
-		console.log(harvestData);
-		source.push(harvestData);
-		console.log(source);
 		isLoading = false;
 	});
-	console.log(source);
 
 	$: {
 		paginationSettings.size = harvestData.length;
@@ -59,8 +24,8 @@
 
 	let paginationSettings = {
 		page: 0,
-		limit: 10, // Number of items to display per page
-		size: source.length, // Total number of items
+		limit: 5, // Number of items to display per page
+		size: harvestData.length, // Total number of items
 		amounts: [1, 2, 5, 10] // Available amounts for the paginator
 	};
 
@@ -96,11 +61,12 @@
 {:else}
 	<div class="p-4">
 		<h2 class="section-heading mb-2 h4">Harvest Data</h2>
-		<p class="section-content mb-2">
+
+		<blockquote class="blockquote">
 			This table provides a overview of the harvest data for batches. It includes the data such as
 			the Batch Code, the Number of Harvests, and the Total Grams Harvested for each respective
 			batch.
-		</p>
+		</blockquote>
 		<div class="flex-container">
 			<div class="chart-container1">
 				<div class="w-full text-token grid grid-cols-1 md:grid-cols-4 gap-4 pr-4 pl-4 pb-2">
@@ -111,6 +77,23 @@
 					</div>
 				</div>
 			</div>
+			<div class="mr-5 mt-5 flex items-center justify-center">
+				<input
+					type="text"
+					bind:value={searchQuery}
+					placeholder="Search..."
+					class="input mb-2 mr-2 sm:w-36 ml-auto h-8"
+				/>
+				<button
+					type="button"
+					class="btn btn-sm variant-filled-tertiary h-8 ml-2 mb-2"
+					on:click={search}
+				>
+					<span class="material-symbols-outlined"> search </span>
+					<span>Search</span>
+				</button>
+			</div>
+
 			<div class="table-container mb-3">
 				<table class="table table-hover">
 					<thead>
@@ -126,10 +109,10 @@
 							<tr>
 								<td>{row.batchCode}</td>
 								<td>{row.totalHarvests}</td>
-								<td>{row.totalGrams}</td>
+								<td>{row.totalGrams} g</td>
 							</tr>
-						{/each}</tbody
-					>
+						{/each}
+					</tbody>
 					<tfoot>
 						<tr>
 							<th colspan="3">

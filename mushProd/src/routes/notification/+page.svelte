@@ -19,6 +19,7 @@
 	let tableData: any[] = [];
 	let isLoading = true;
 	let unsubscribe: any;
+	let searchQuery = '';
 
 	onMount(async () => {
 		const userDocRef = doc(db, 'user', '123456');
@@ -61,6 +62,24 @@
 		paginationSettings.page * paginationSettings.limit + paginationSettings.limit
 	);
 
+	function rowMatchesSearch(row: any): boolean {
+		const searchTerms = searchQuery.toLowerCase().split(' ');
+
+		// Check if any of the search terms match any field in the row
+		return searchTerms.every((term) =>
+			Object.values(row).some(
+				(value) => typeof value === 'string' && value.toLowerCase().includes(term)
+			)
+		);
+	}
+	function search(): void {
+		paginatedSource = source
+			.filter((row: any) => rowMatchesSearch(row))
+			.slice(
+				paginationSettings.page * paginationSettings.limit,
+				paginationSettings.page * paginationSettings.limit + paginationSettings.limit
+			);
+	}
 	const modalStore = getModalStore();
 	//Modals for clicking data
 	function modalData(row: any): void {
@@ -120,6 +139,23 @@
 
 	<!-- Display the page content when isLoading is false -->
 	<div class=" m-5">
+		<div class="mr-5 mt-5 flex items-center justify-center">
+			<input
+				type="text"
+				bind:value={searchQuery}
+				placeholder="Search..."
+				class="input mb-2 mr-2 sm:w-36 ml-auto h-8"
+			/>
+			<button
+				type="button"
+				class="btn btn-sm variant-filled-tertiary h-8 ml-2 mb-2"
+				on:click={search}
+			>
+				<span class="material-symbols-outlined"> search </span>
+				<span>Search</span>
+			</button>
+		</div>
+
 		<table class="table table-hover">
 			<thead>
 				<tr

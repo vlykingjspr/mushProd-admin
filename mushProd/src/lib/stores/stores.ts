@@ -45,3 +45,17 @@ export const batch = writable({
     batch_total_bags: 0,
     batch_total_removed: 0,
 })
+
+export const growing = writable({
+    batchCode: '',
+    growthDuration: '',
+    totalBags: '',
+    averageTemperature: 0,
+    averageHumidity: 0,
+    analysisStat: '',
+    analysisMessage: '',
+    totalGrams: 0,
+    analysistempSugg: '',
+    analysishumdSugg: '',
+
+})

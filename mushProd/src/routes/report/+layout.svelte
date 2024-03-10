@@ -36,5 +36,11 @@
 			<span>Mushroom & Yield Prediction</span>
 		</div>
 	</TabAnchor>
+	<TabAnchor href="/report/print" selected={$page.url.pathname === '/report/print'}>
+		<div class="flex item-center">
+			<span class="material-symbols-outlined pr-1"> print </span>
+			<span>Print Report</span>
+		</div>
+	</TabAnchor>
 </TabGroup>
 <slot />

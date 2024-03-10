@@ -20,6 +20,7 @@
 	let aveHumdAll: any;
 	let firstDateAve: any;
 	let lastDateAve: any;
+	let searchQuery = '';
 
 	onMount(async () => {
 		allTempHumd = await getAllAveTempHumd();
@@ -67,6 +68,24 @@
 		paginationSettings.page * paginationSettings.limit,
 		paginationSettings.page * paginationSettings.limit + paginationSettings.limit
 	);
+	function rowMatchesSearch(row: any): boolean {
+		const searchTerms = searchQuery.toLowerCase().split(' ');
+
+		// Check if any of the search terms match any field in the row
+		return searchTerms.every((term) =>
+			Object.values(row).some(
+				(value) => typeof value === 'string' && value.toLowerCase().includes(term)
+			)
+		);
+	}
+	function search(): void {
+		paginatedSource = tempHumidAve
+			.filter((row: any) => rowMatchesSearch(row))
+			.slice(
+				paginationSettings.page * paginationSettings.limit,
+				paginationSettings.page * paginationSettings.limit + paginationSettings.limit
+			);
+	}
 </script>
 
 {#if isLoading}
@@ -76,12 +95,13 @@
 {:else}
 	<div class="temp_humid p-4">
 		<h2 class="section-heading mb-2 h4">Temperature and Humidity Condition</h2>
-		<p class="section-content mb-2">
+
+		<blockquote class="blockquote">
 			This table presents a chronological record of temperature and humidity levels during specific
 			dates in the mushroom cultivation environment. The average temperature, measured in degrees
 			celsius, and average humidity, expressed as a percentage, are key metrics captured for
 			monitoring and assessing the growing conditions
-		</p>
+		</blockquote>
 
 		<div class="html2pdf__page-break" />
 		<div class="flex-container">
@@ -96,6 +116,22 @@
 					</div>
 				</div>
 			</div>
+		</div>
+		<div class="mr-5 mt-5 flex items-center justify-center">
+			<input
+				type="text"
+				bind:value={searchQuery}
+				placeholder="Search..."
+				class="input mb-2 mr-2 sm:w-36 ml-auto h-8"
+			/>
+			<button
+				type="button"
+				class="btn btn-sm variant-filled-tertiary h-8 ml-2 mb-2"
+				on:click={search}
+			>
+				<span class="material-symbols-outlined"> search </span>
+				<span>Search</span>
+			</button>
 		</div>
 
 		<div class="table-container">
