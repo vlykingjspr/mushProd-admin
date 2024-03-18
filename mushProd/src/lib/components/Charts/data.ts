@@ -47,9 +47,9 @@ import { getTempHumidAve } from '../Report/getData';
 // // });
 
 
-let tempData: number[] = [29, 25];
-let humdData: number[] = [97, 69];
-let hrData: string[] = ['08', '09'];
+let tempData: number[] = [30, 30];
+let humdData: number[] = [81, 75];
+let hrData: string[] = ['10', '11'];
 export const dailyTempHumd = {
   labels: hrData,
   datasets: [
@@ -112,10 +112,8 @@ export const dailyTempHumd = {
 // console.log(harvCodeData)
 // console.log(harvGramsData)
 
-let harvCodeData: string[] = [
-  '#OM12SEPT', '#OM01OCT', '#OM14NOV', '#OM16NOV', '#OM09DEC', '#OM13FEB', '#OM23FEB'
-];
-let harvGramsData: number[] = [3714, 2700, 2810, 1640, 23, 0, 23];
+let harvCodeData: string[] = ['#OM13MAR', '#OM14MAR'];
+let harvGramsData: number[] = [0, 100];
 export const harvestData = {
   labels: harvCodeData,
   datasets: [
@@ -167,18 +165,10 @@ export const harvestData = {
 // console.log(dayTemp)
 // console.log(dayHumd)
 
-let dayDate: string[] = [
-  'September 04, 2023', 'September 14, 2023', 'October 11, 2023', 'October 18, 2023',
-  'November 01, 2023', 'November 15, 2023', 'November 22, 2023', 'February 18, 2024',
-  'February 19, 2024', 'February 22, 2024', 'February 25, 2024', 'March 05, 2024',
-  'March 06 2024'
-]
+let dayDate: string[] = ['March 11, 2024', 'March 13, 2024', 'March 14, 2024', 'March 17, 2024']
+let dayTemp: number[] = [26.4, 29.44, 28.26, 30]
 
-let dayTemp: number[] = [28, 27, 32, 25, 30, 28, 29, 31.36, 31.36, 31.36, 30.81, 24.5, 24.5]
-
-let dayHumd: number[] = [
-  89, 85, 86, 81, 90, 86, 88, 92.08, 92.08, 92.08, 89.85, 63.31, 63.31
-]
+let dayHumd: number[] = [89.85, 71.76, 87.27, 90.53, 90]
 
 export const everyTempHumid = {
   labels: dayDate,
