@@ -166,7 +166,7 @@
 		<Navigation />
 	</Drawer>
 
-	<AppShell slotSidebarLeft="w-0 md:w-52 bg-primary-200/10" slotHeader="bg-primary-500">
+	<AppShell slotSidebarLeft="w-0 md:w-52 bg-secondary-500  "  slotLead="bg-tertiary-500">
 		<svelte:fragment slot="sidebarLeft">
 			<Navigation />
 		</svelte:fragment>
@@ -196,12 +196,14 @@
 						</span>
 					</button>
 				</svelte:fragment>
-				<div class=" flex justify-between items-center">
+				<div class=" flex justify-between items-center ">
 					<span class="material-symbols-outlined"> psychiatry </span>
 					<h1>MushProd</h1>
 				</div>
 
-				<svelte:fragment slot="trail"><LightSwitch /></svelte:fragment>
+				<svelte:fragment slot="trail">
+					<LightSwitch /> -->
+				</svelte:fragment>
 			</AppBar>
 			<PageTitle /></svelte:fragment
 		>
