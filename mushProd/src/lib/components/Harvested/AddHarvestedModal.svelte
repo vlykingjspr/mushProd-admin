@@ -88,15 +88,21 @@
 		<hr class="opacity-50" />
 
 		<div class="input-group input-group-divider grid-cols-[auto_1fr_auto]">
-			<div class="input-group-shim"><i class="fa-solid fa-calendar" /></div>
+			<div class="input-group-shim"><span class="material-symbols-outlined">
+				calendar_today
+				</span></div>
 			<input type="date" placeholder="Date" bind:value={date} />
 		</div>
 		<div class="input-group input-group-divider grid-cols-[auto_1fr_auto]">
-			<div class="input-group-shim"><i class="fa-solid fa-weight-scale" /></div>
+			<div class="input-group-shim"><span class="material-symbols-outlined">
+				weight
+				</span></div>
 			<input type="number" placeholder="Grams Harvested" bind:value={grams} />
 		</div>
 		<div class="input-group input-group-divider grid-cols-[auto_1fr_auto]">
-			<div class="input-group-shim"><i class="fa-solid fa-calendar" /></div>
+			<div class="input-group-shim"><span class="material-symbols-outlined">
+				description
+				</span></div>
 			<textarea class="textarea" rows="3" placeholder="Remarks" bind:value={remarks} />
 		</div>
 		{#if errorMessage}

@@ -60,7 +60,9 @@
 	<div class="modal-example-form {cBase}">
 		<header class={cHeader}>
 			<div class="flex items-center">
-				<i class="fa-solid fa-trash mr-2" />
+				<span class="material-symbols-outlined mr-2">
+					delete
+					</span>
 				Please Confirm to Remove
 			</div>
 		</header>

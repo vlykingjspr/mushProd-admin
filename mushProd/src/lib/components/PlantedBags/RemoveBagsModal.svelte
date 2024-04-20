@@ -84,14 +84,18 @@
 	<div class="modal-example-form {cBase}">
 		<header class={cHeader}>
 			<div class="flex items-center">
-				<i class="fa-solid fa-trash mr-2" />
+				<span class="material-symbols-outlined mr-2">
+					delete
+					</span>
 				How many bags you want to remove?
 			</div>
 		</header>
 		<hr class="opacity-50" />
 
 		<div class="input-group input-group-divider grid-cols-[auto_1fr_auto]">
-			<div class="input-group-shim"><i class="fa-solid fa-seedling" /></div>
+			<div class="input-group-shim"><span class="material-symbols-outlined">
+				psychiatry
+				</span></div>
 			<input type="number" placeholder="Number of Bags" bind:value={removeBags} />
 		</div>
 		{#if isInvalidQuantity}
