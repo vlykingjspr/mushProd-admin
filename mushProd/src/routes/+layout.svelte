@@ -202,7 +202,7 @@
 				</div>
 
 				<svelte:fragment slot="trail">
-					<LightSwitch /> -->
+					<LightSwitch /> 
 				</svelte:fragment>
 			</AppBar>
 			<PageTitle /></svelte:fragment
