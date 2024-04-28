@@ -12,7 +12,8 @@ export const notifications = writable({
     alertTitle: '',
     temperature: 0,
     humidity: 0,
-    alertMessage: ''
+    alertMessage: '',
+    time:''
 });
 export const harvested = writable({
     batch_id: '',

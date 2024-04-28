@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { getModalStore } from '@skeletonlabs/skeleton';
 	import { notifications } from '$lib/stores/stores';
+	import { format } from 'date-fns';
 
 	/** Exposes parent props to this component. */
 	export let parent: any;
@@ -24,6 +25,7 @@
 	let alertTitle: string;
 	let temperature: string;
 	let humidity: string;
+	let time: string;
 
 	let selectedRowData: any;
 	notifications.subscribe((data) => {
@@ -34,7 +36,14 @@
 		alertMessage = selectedRowData.alertMessage;
 		temperature = selectedRowData.temperature;
 		humidity = selectedRowData.humidity;
+		time = selectedRowData.time;
 	});
+	function convertTo12HourFormat(time: String) {
+		if (!time) {
+			return "No time"
+		}
+        return format(new Date(`2000-01-01T${time}`), 'h:mm:ss aa');
+    }
 </script>
 
 <!-- @component This example creates a simple form modal. -->
@@ -60,7 +69,9 @@
 			<h1 class="text-lg">
 				<strong>
 					<i class="fa-solid fa-calendar-days mr-1" />
-					{date}
+					{date ? format(new Date(date.seconds * 1000), 'MMMM dd, yyyy hh:mm:ss a') : 'N/A'}
+					<!-- {date} -  -->
+					<!-- {convertTo12HourFormat(time)} -->
 				</strong>
 			</h1>
 		</div>

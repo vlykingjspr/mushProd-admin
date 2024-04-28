@@ -14,7 +14,8 @@
 	import { db } from '$lib/firebase/firebase';
 	import { format } from 'date-fns';
 	import { onDestroy, onMount } from 'svelte';
-
+	import { Timestamp } from 'firebase/firestore';
+	//import {createNotification} from '$lib/components/Data/addNotification';
 	let source: any = [];
 	let tableData: any[] = [];
 	let isLoading = true;
@@ -28,10 +29,17 @@
 
 		unsubscribe = onSnapshot(q, (querySnapshot) => {
 			source = [];
+			
 			querySnapshot.forEach((doc) => {
 				const data = doc.data();
+			// 	if (data.timestamp instanceof Timestamp) {
+            //     data.date = data.timestamp.toDate();
+            // } else {
+            //     console.error('Invalid timestamp format:', data.timestamp);
+            // }
 				if (data.date && typeof data.date.toDate === 'function') {
-					data.date = format(data.date.toDate(), 'MMMM dd, yyyy');
+					// data.date = format(data.date.toDate(), 'MMMM dd, yyyy');
+				
 				}
 				// Add the ID to the data object
 				data.id = doc.id;
@@ -80,6 +88,7 @@
 				paginationSettings.page * paginationSettings.limit + paginationSettings.limit
 			);
 	}
+	
 	const modalStore = getModalStore();
 	//Modals for clicking data
 	function modalData(row: any): void {
@@ -90,7 +99,8 @@
 			alertTitle: row.alertTitle,
 			temperature: row.temperature,
 			humidity: row.humidity,
-			alertMessage: row.alertMessage
+			alertMessage: row.alertMessage,
+			time: row.time
 		});
 		const modal: ModalSettings = {
 			type: 'component',
@@ -109,7 +119,8 @@
 			alertTitle: row.alertTitle,
 			temperature: row.temperature,
 			humidity: row.humidity,
-			alertMessage: row.alertMessage
+			alertMessage: row.alertMessage,
+			time: row.time
 		});
 		const modal: ModalSettings = {
 			type: 'component',
@@ -125,6 +136,16 @@
 		}
 		return alertMessage;
 	}
+	function convertTo12HourFormat(time: String) {
+		if (!time) {
+			return "No time"
+		}
+        return format(new Date(`2000-01-01T${time}`), 'h:mm:ss aa');
+    }
+	function formatTimestamp(timestamp:any) {
+    return new Date(timestamp).toLocaleString(); // You can adjust the format as per your requirement
+  }
+	
 </script>
 
 <Modal transitionIn={fade} transitionInParams={{ duration: 200 }} />
@@ -154,6 +175,7 @@
 				<span class="material-symbols-outlined"> search </span>
 				<span>Search</span>
 			</button>
+		
 		</div>
 
 		<table class="table table-hover">
@@ -195,7 +217,11 @@
 			<tbody>
 				{#each paginatedSource as row (row.id)}
 					<tr class="" on:click={() => modalData(row)}>
-						<td>{row.date}</td>
+						
+						<td>{row.date ? format(new Date(row.date.seconds * 1000), 'MMMM dd, yyyy hh:mm:ss a') : 'N/A'}</td>
+						<!-- <td>{row.date}</td> -->
+						<!-- <td>{formatTimestamp(row.date)}</td> -->
+						<!-- <td>{convertTo12HourFormat(row.time)}</td> -->
 						<td>{row.alertTitle}</td>
 						<td>{row.temperature}</td>
 						<td>{row.humidity}</td>

@@ -59,7 +59,7 @@
 		<hr class="opacity-50" />
 
 		<div>
-			<h1>Are you sure you want to remove the fruiting bags?</h1>
+			<h1>Are you sure you want to remove the notification?</h1>
 		</div>
 
 		<!-- prettier-ignore -->
