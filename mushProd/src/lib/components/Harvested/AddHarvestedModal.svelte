@@ -26,7 +26,7 @@
 
 	let date: any;
 	let grams: number;
-	let remarks: string = '';
+	let remarks: string = ' ';
 	let batch_id: string = '';
 	let errorMessage: string = '';
 	let isDisable: boolean = false;
@@ -44,7 +44,9 @@
 
 			return;
 		}
-
+if(!remarks){
+		remarks = ' ';
+}
 		const formattedDate = parse(date, 'yyyy-MM-dd', new Date());
 		// Get the current time
 		const currentTime = new Date();
