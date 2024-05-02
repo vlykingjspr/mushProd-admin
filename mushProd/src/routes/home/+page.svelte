@@ -145,7 +145,7 @@
 								<div class="flex flex-col mt-2">
 									<div class="">
 										<div class="flex items-center justify-center">
-											<!-- <i class="fa-solid fa-calendar-days mr-2" /> -->
+											
 											<span class="material-symbols-outlined mr-2"> calendar_month </span>
 											{dateFormat()}
 										</div>
@@ -185,7 +185,7 @@
 						<hr class="opacity-50 mb-2" />
 						<div class={valueStyle}>
 							<!-- <i class="fa-solid fa-square-poll-vertical fa-md" /> -->
-							<span class="material-symbols-outlined ">
+							<span class="material-symbols-outlined text-7xl md:text-4xl lg:text-8xl">
 								dashboard
 							</span>
 						</div>
