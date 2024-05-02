@@ -313,28 +313,27 @@
 					<th class="">
 						<!-- <span class="material-symbols-outlined mr-2"> edit_note </span>  -->
 						Remarks</th
+					><th class="">
+						<!-- <span class="material-symbols-outlined mr-2"> edit_note </span>  -->
+						</th
 					>
 				</tr>
 			</thead>
 			<tbody>
 				<tr class="">
 					{#each source2 as row (row.id)}
-						<td>{row.date}</td>
-						<td class="flex items-center justify-between"
-							>{row.batch_total_bags}
-
-							<button
-								type="button"
-								class="btn btn-sm variant-filled-error ml-2"
-								on:click|stopPropagation={() => {
-									showRemovePlanted(row);
-								}}
+						<td class="">{row.date}</td>
+						<td class=" "
 							>
-								<span class="material-symbols-outlined"> delete </span>
-							</button>
+							<div class="">
+							{row.batch_total_bags}
+
+							
+						</div>
 						</td>
 						<td>{row.batch_total_removed}</td>
-						<td class="flex items-center justify-between"
+						<td>{row.batch_remarks}</td>
+						<td class=""
 							>{truncateRemarks(row.batch_remarks)}
 							<button
 								type="button"
@@ -344,8 +343,18 @@
 								}}
 							>
 								<span class="material-symbols-outlined"> edit </span>
+							</button>
+							<button
+								type="button"
+								class="btn btn-sm variant-filled-error ml-2"
+								on:click|stopPropagation={() => {
+									showRemovePlanted(row);
+								}}
+							>
+								<span class="material-symbols-outlined"> delete </span>
 							</button></td
 						>
+						
 					{/each}
 				</tr>
 			</tbody>
