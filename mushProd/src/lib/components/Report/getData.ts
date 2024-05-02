@@ -1,4 +1,4 @@
-import { collection, getDocs, query, doc, onSnapshot, orderBy, where } from 'firebase/firestore';
+import { collection, getDocs, query, doc, onSnapshot, orderBy, where, limit } from 'firebase/firestore';
 import { db } from '$lib/firebase/firebase';
 import { format } from 'date-fns';
 import { onDestroy, onMount } from 'svelte';
@@ -9,7 +9,7 @@ let aveTempHumd: any = [];
 export async function getTempHumidAve() {
     return new Promise((resolve, reject) => {
         const bagsRecordCollectionRef = collection(userDocRef, 'temp and humid');
-        const q = query(bagsRecordCollectionRef, orderBy('date', 'asc'));
+        const q = query(bagsRecordCollectionRef, orderBy('date', 'desc'), limit(10));
 
         aveTempHumd = [];
 
