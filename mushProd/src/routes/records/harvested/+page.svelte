@@ -204,10 +204,10 @@
 					{item.date}
 				{/each}
 				{#each paginatedSource as row (row.id)}
-					<tr class="" on:click={() => modalData(row)}>
-						<td>{row.date_harvested}</td>
-						<td>{row.grams}</td>
-						<td>{truncateRemarks(row.remarks)}</td>
+					<tr class="text-center" on:click={() => modalData(row)}>
+						<td class="flex items-center justify-center">{row.date_harvested}</td>
+						<td class="flex items-center justify-center">{row.grams}</td>
+						<td class="flex items-center justify-center">{truncateRemarks(row.remarks)}</td>
 						<td class="flex items-center justify-center">
 							<button
 								type="button"
