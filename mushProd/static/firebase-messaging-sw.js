@@ -21,7 +21,7 @@ const firebaseConfig = {
   };
 
 
-  // firebaseConfig.initializeApp(firebaseConfig);
+  firebaseConfig.initializeApp(firebaseConfig);
   const messaging = firebase.messaging();
 
   messaging.onBackgroundMessage(payload => {
