@@ -13,85 +13,68 @@
 	import { sendNotification } from '$lib/components/Data/addNotification';
 	import { getApp, getApps, initializeApp } from 'firebase/app';
 
-	const getMessage = async () => {
-		const firebaseConfig = {
-			apiKey: import.meta.env.VITE_APIKEY,
-			authDomain: import.meta.env.VITE_AUTH_DOMAIN,
-			databaseURL: import.meta.env.VITE_DB_URL,
-			projectId: import.meta.env.VITE_PROJECT_ID,
-			storageBucket: import.meta.env.VITE_STORAGE_BUCKET,
-			messagingSenderId: import.meta.env.VITE_MESSAGING_SENDER_ID,
-			appId: import.meta.env.VITE_APP_ID,
-			measurementId: import.meta.env.VITE_MEASUREMENT_ID
-		};
+	// const getMessage = async () => {
+	// 	const firebaseConfig = {
+	// 		apiKey: import.meta.env.VITE_APIKEY,
+	// 		authDomain: import.meta.env.VITE_AUTH_DOMAIN,
+	// 		databaseURL: import.meta.env.VITE_DB_URL,
+	// 		projectId: import.meta.env.VITE_PROJECT_ID,
+	// 		storageBucket: import.meta.env.VITE_STORAGE_BUCKET,
+	// 		messagingSenderId: import.meta.env.VITE_MESSAGING_SENDER_ID,
+	// 		appId: import.meta.env.VITE_APP_ID,
+	// 		measurementId: import.meta.env.VITE_MEASUREMENT_ID
+	// 	};
 
-		// Initialize Firebase
-		let firebaseApp;
+	// 	// Initialize Firebase
+	// 	let firebaseApp;
 
-		if (!getApps().length) {
-			firebaseApp = initializeApp(firebaseConfig);
-		} else {
-			firebaseApp = getApp();
-		}
+	// 	if (!getApps().length) {
+	// 		firebaseApp = initializeApp(firebaseConfig);
+	// 	} else {
+	// 		firebaseApp = getApp();
+	// 	}
 
-		const messaging = getMessaging(firebaseApp);
+	// 	const messaging = getMessaging(firebaseApp);
 
-		Notification.requestPermission().then((permission) => {
-			if (permission === 'granted') {
-				// console.log('Notification permission granted.');
-			} else {
-				console.log('Unable to get permission to notify.');
-			}
-		});
-		// Get the FCM token for the current user
-		onMessage(messaging, (payload) => {
-			console.log('Message received. ', payload);
-		});
-		getToken(messaging, {
-			vapidKey:
-				'BKCGjREYWFg3CLjeSHSwOSR2cy8JsGvtwmsmq3EPAsJU32IKumg1uLilX_01WtKKGEJhq3L-tHoMeCoItVJgHWs'
-		})
-			.then((currentToken) => {
-				if (currentToken) {
-					// console.log(currentToken);
-				} else {
-					// Show permission request UI
-					console.log('No registration token available. Request permission to generate one.');
-					// ...
-				}
-			})
-			.catch((err) => {
-				console.log('An error occurred while retrieving token. ', err);
-				// ...
-			});
-	};
-
-	let notification = { title: '', body: '' };
-
-	// const sendNotification = async () => {
-	// 	const registrationToken =
-	// 		'fSJ_Sb21DpwDhvRtM89__C:APA91bH25MZA4a1yVg8p5L0A0XO9gPbdXizSU0zvcxmn8T0F0pnhxn5GuS0WvM0pjBw4e90Zbsg7Do3oEoA5ZuBI4L10D_-fJ8lRsErnpNfI51OFIXAJ-uNu0usFCqWyshePstWZrW7B'; // Replace with the actual device token
-	// 	const response = await fetch('/firebaseAdmin/sendNotif', {
-	// 		method: 'POST',
-	// 		headers: {
-	// 			'Content-Type': 'application/json'
-	// 		},
-	// 		body: JSON.stringify({
-	// 			registrationToken,
-	// 			title: notification.title,
-	// 			body: notification.body
-	// 		})
+	// 	Notification.requestPermission().then((permission) => {
+	// 		if (permission === 'granted') {
+	// 			// console.log('Notification permission granted.');
+	// 		} else {
+	// 			console.log('Unable to get permission to notify.');
+	// 		}
 	// 	});
-
-	// 	const result = await response.json();
-	// 	console.log(result);
+	// 	// Get the FCM token for the current user
+	// 	onMessage(messaging, (payload) => {
+	// 		console.log('Message received. ', payload);
+	// 	});
+	// 	getToken(messaging, {
+	// 		vapidKey:
+	// 			'BKCGjREYWFg3CLjeSHSwOSR2cy8JsGvtwmsmq3EPAsJU32IKumg1uLilX_01WtKKGEJhq3L-tHoMeCoItVJgHWs'
+	// 	})
+	// 		.then((currentToken) => {
+	// 			if (currentToken) {
+	// 				// console.log(currentToken);
+	// 			} else {
+	// 				// Show permission request UI
+	// 				console.log('No registration token available. Request permission to generate one.');
+	// 				// ...
+	// 			}
+	// 		})
+	// 		.catch((err) => {
+	// 			console.log('An error occurred while retrieving token. ', err);
+	// 			// ...
+	// 		});
 	// };
+
+	// let notification = { title: '', body: '' };
+
+
 
 	function updatePage(tabNumber: number) {}
 	let farmData: any[] = [];
 	onMount(async () => {
 		farmData = await fetchFarmData();
-		getMessage();
+		// getMessage();
 	});
 
 	function updateTitle(title: string): void {

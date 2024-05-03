@@ -24,10 +24,12 @@
 	import Navigation from '$lib/components/Navigation.svelte';
 	import PageTitle from '$lib/components/PageTitle.svelte';
 	import Footer from '$lib/components/Footer.svelte';
-	import { sendNotification } from '$lib/components/Data/addNotification';
+	// import { createNotification, sendNotification,fetchDataFromFirebase, notifsend1 } from '$lib/components/Data/addNotification';
+	import {createNotification} from '$lib/components/Data/addNotification';
 	import Authenticate from '$lib/components/Authenticate.svelte';
 	import { format } from 'date-fns';
 	import { dateFormat, updateTime } from '$lib/components/Data/DateAndTime';
+	import { saveMessagingDeviceToken } from '$lib/firebase/messaging';
 	storePopup.set({ computePosition, autoUpdate, flip, shift, offset, arrow });
 
 	initializeStores();
@@ -47,7 +49,7 @@
 
 	const formattedDate = format(currentDate, 'yyyy-MM-dd');
 	const rdb = getDatabase();
-	// const dateRef = ref(rdb, `/BETAPEAK/2023-11-18`);
+	// const dateRef = ref(rdb, `/BETAPEAK/2024-04-23`);
 	const dateRef = ref(rdb, `BETAPEAK/${formattedDate}`);
 	let currentTime: any;
 	let executedToday = false;
@@ -68,9 +70,8 @@
 
 		timeoutId = setTimeout(() => {
 			if (!executedToday) {
-				getDailyAverage();
+				// getDailyAverage();
 				executedToday = true;
-				console.log('sd');
 				// You can add additional code here if needed
 			}
 
@@ -88,7 +89,7 @@
 	}
 
 	// Schedule the function to execute at 3:30 PM (15:30) each day
-
+	
 	onMount(() => {
 		timeoutId = executeAtSpecificTime(23, 59, 1);
 		setLoading(false);
@@ -115,50 +116,59 @@
 				users = true;
 				let dataToSetToStore: DocumentData;
 				const docRef = doc(db, 'users', user.uid);
+				saveMessagingDeviceToken(user.uid)
 				const docSnap = await getDoc(docRef);
 			}
 		});
 
 		const queryRef = query(dateRef, limitToLast(1));
-		const unsubscribe1 = onValue(queryRef, (snapshot) => {
-			try {
-				if (snapshot.exists()) {
-					const data = snapshot.val();
-					const lastEntryKey = Object.keys(data)[0];
-					const lastEntry = data[lastEntryKey];
-					humd = lastEntry.Humd;
-					temp = lastEntry.Temp;
-					time = lastEntry.Time;
+		// const unsubscribe1 = onValue(queryRef, (snapshot) => {
+		// 	try {
+		// 		if (snapshot.exists()) {
+		// 			const data = snapshot.val();
+		// 			const lastEntryKey = Object.keys(data)[0];
+		// 			const lastEntry = data[lastEntryKey];
+		// 			humd = lastEntry.Humd;
+		// 			temp = lastEntry.Temp;
+		// 			time = lastEntry.Time;
 
-					if (24 >= temp || 85 >= humd || 29 <= temp || 95 <= humd) {
-						// if (true) {
-						// uncomment to send notif
-						// Check if it's been at least 30 minutes since the last notification
-						const currentTime = new Date().getTime();
-						const thirtyMinutesInMillis = 30 * 60 * 1000; // 30 minutes in milliseconds
+		// 			if (24 >= temp || 85 >= humd || 29 <= temp || 95 <= humd) {	
+		// 				// sendNotification1(temp, humd,time);
+		// 	// console.log('notif sent')
+		// 				// if (true) {
+		// 				// uncomment to send notif
+		// 				// Check if it's been at least 30 minutes since the last notification
+		// 				const currentTime = new Date().getTime();
+		// 				const thirtyMinutesInMillis = 30 * 60 * 1000; // 30 minutes in milliseconds
 
-						if (
-							!lastNotificationTime ||
-							currentTime - lastNotificationTime >= thirtyMinutesInMillis
-						) {
-							// Send the notification
-							sendNotification(temp, humd);
-
-							// Update the last notification time
-							lastNotificationTime = currentTime;
-						}
-					}
-					setLoading(false);
-				} else {
-					console.log('it does not exist');
-				}
-			} catch (error) {
-				console.log('Error fetching data: ', error);
-			}
-		});
+		// 				if (
+		// 					!lastNotificationTime ||
+		// 					currentTime - lastNotificationTime >= thirtyMinutesInMillis
+		// 				) {
+		// 					// Send the notification
+						
+		// 					//notifsend1()
+							
+		// 					// Update the last notification time
+		// 					lastNotificationTime = currentTime;
+		// 				}
+		// 			}createNotification()
+		// 			setLoading(false);
+		// 		} else {
+		// 			console.log('it does not exist');
+		// 		}
+		// 	} catch (error) {
+		// 		console.log('Error fetching data: ', error);
+		// 	}
+		// });
 
 		return unsubscribe;
 	});
+	
+	
+	
+	
+	
 </script>
 
 {#if users}
@@ -218,3 +228,5 @@
 
 <style>
 </style>
+
+

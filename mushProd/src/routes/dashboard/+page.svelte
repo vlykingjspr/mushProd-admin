@@ -19,6 +19,12 @@
 		type ModalSettings
 	} from '@skeletonlabs/skeleton';
 
+	//getting data from realtime database and saving it to firestore
+	import {
+		getAllDataAndSaveToFirestore,
+		getDailyAverage
+	} from '../../lib/components/Data/calculateAverage';
+
 	// modal
 	import { getModalStore } from '@skeletonlabs/skeleton';
 
@@ -68,7 +74,7 @@
 	const formattedDate = format(currentDate, 'yyyy-MM-dd');
 	// getting data from firebase
 	const rdb = getDatabase();
-	// const dateRef = ref(rdb, `/BETAPEAK/2023-11-18`);
+	// const dateRef = ref(rdb, `/BETAPEAK/2024-04-23`);
 	const dateRef = ref(rdb, `BETAPEAK/${formattedDate}`);
 
 	const queryRef = query(dateRef, limitToLast(1));
@@ -189,6 +195,8 @@
 						<h2 class={h2Style}>Daily Average Temperature & Humidity</h2>
 					</div>
 				</div>
+				
+
 				<hr class="opacity-50 mb-4 mt-4" />
 				<div class={`p-4 bg-surface-100  `}>
 					<EveryTempHumid />

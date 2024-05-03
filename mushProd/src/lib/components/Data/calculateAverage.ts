@@ -18,12 +18,11 @@ const calculateAverage = (arr: number[]): number => {
     return sum / arr.length;
 };
 
-
 export function getHourlyAverages(): Promise<{ Hour: string, AverageHumidity: number, AverageTemperature: number }[]> {
     return new Promise((resolve, reject) => {
         const rdb = getDatabase();
-        const dateRef = ref(rdb, `/BETAPEAK/${formattedDate}`);
-        // const dateRef = ref(rdb, `/BETAPEAK/2024-03-27`);
+         const dateRef = ref(rdb, `/BETAPEAK/${formattedDate}`);
+        // const dateRef = ref(rdb, `/BETAPEAK/2024-04-25`);
         const queryRef = query(dateRef);
 
         const hourlyAverages: Record<string, { Humd: number; Temp: number }[]> = {};
@@ -58,6 +57,48 @@ export function getHourlyAverages(): Promise<{ Hour: string, AverageHumidity: nu
     });
 }
 
+interface DataItem {
+    Humd: number;
+    Temp: number;
+    // Add other properties if any
+}
+
+
+export async function getAllDataAndSaveToFirestore(): Promise<void> {
+    try {
+        const rdb = getDatabase();
+        const dateRef = ref(rdb, '/BETAPEAK');
+        const queryRef = query(dateRef);
+
+        const allData: DataItem[] = [];
+        onValue(queryRef, (snapshot) => {
+            if (snapshot.exists()) {
+                const rawData = Object.values(snapshot.val() || []) as DataItem[];
+                allData.push(...rawData);
+            }
+        });
+        const averageHumidity = calculateAverage(allData.map((item) => item.Humd));
+        const averageTemperature = calculateAverage(allData.map((item) => item.Temp));
+
+        const formattedAverageHumidity = parseFloat(averageHumidity.toFixed(2));
+        const formattedAverageTemperature = parseFloat(averageTemperature.toFixed(2));
+
+        const timestamp = new Timestamp(currentDate.getTime() / 1000, 0);
+
+        const userDocRef = collection(db, 'user', '123456', 'temp and humid');
+
+        await addDoc(userDocRef, {
+            'ave temp': formattedAverageTemperature,
+            'ave humidity': formattedAverageHumidity,
+            'date': timestamp,
+        });
+
+    } catch (error) {
+        console.error('Error:', error);
+        throw error;
+    }
+}
+
 export async function getDailyAverage(): Promise<{ AverageHumidity: number; AverageTemperature: number; Date: Timestamp }> {
     try {
         const hourlyAverages = await getHourlyAverages();
@@ -72,7 +113,9 @@ export async function getDailyAverage(): Promise<{ AverageHumidity: number; Aver
         const formattedDailyAverageHumidity = parseFloat(dailyAverageHumidity.toFixed(2));
         const formattedDailyAverageTemperature = parseFloat(dailyAverageTemperature.toFixed(2));
 
-        const timestamp = new Timestamp(currentDate.getTime() / 1000, 0);
+        const specificDate = new Date(`2024-04-25T23:59:59`); 
+
+        const timestamp = new Timestamp(specificDate.getTime() / 1000, 0);
 
         // Store data in Firestore
 

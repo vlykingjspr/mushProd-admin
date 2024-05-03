@@ -15,7 +15,7 @@ export default {
 		typography,
 		skeleton({
 			themes: {
-				preset: ["skeleton", "hamlindigo", "wintry"],
+				preset: ["gold-nouveau", "hamlindigo", "wintry"],
 				custom: [
 					myCustomTheme
 				],
