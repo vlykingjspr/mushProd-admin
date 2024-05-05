@@ -138,7 +138,7 @@ export async function LastDateInHarvest(): Promise<string | null> {
 
 export async function getYield(bags: number, temp: number, hum: number) {
 
-    const url = 'https://mushprod-api-d34b935be1f6.herokuapp.com/predict';
+    const url = 'https://yield-prediction-for-mushroom-086f7f174ff4.herokuapp.com/predict';
 
     const input_data = {
         bags: bags,
