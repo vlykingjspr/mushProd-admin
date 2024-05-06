@@ -29,7 +29,7 @@
 	onMount(async () => {
 		const userDocRef = doc(db, 'user', '123456');
 		const bagsRecordCollectionRef = collection(userDocRef, 'harvest record');
-		const q = query(bagsRecordCollectionRef, orderBy('date_harvested', 'asc'));
+		const q = query(bagsRecordCollectionRef, orderBy('date_harvested', 'desc'));
 
 		const unsubscribe = onSnapshot(q, (querySnapshot) => {
 			source = [];

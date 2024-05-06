@@ -102,7 +102,7 @@
 			if (isBatchHarvestExisting) {
 				const batchDocRef = doc(userDocRef, 'batch', id);
 				const batchHarvestRef = collection(batchDocRef, 'batch_harvest');
-				const s = query(batchHarvestRef, orderBy('date', 'asc'));
+				const s = query(batchHarvestRef, orderBy('date', 'desc'));
 				const unsubscribe1 = onSnapshot(s, (querySnapshot) => {
 					source.length = 0; // Clear the array before pushing new data
 					source = [];
