@@ -2,9 +2,9 @@
 	import { Paginator, ProgressRadial } from '@skeletonlabs/skeleton';
 
 	import { onMount } from 'svelte';
-	import EveryTempHumid from '$lib/components/Charts/everyTempHumid.svelte';
+	import EveryTempHumid2 from '$lib/components/Charts/everyTempHumid2.svelte';
 	import { getAllAveTempHumd } from '$lib/firebase/allRecord';
-	import { getTempHumidAve } from '$lib/components/Report/getData';
+	import { getTempHumidAve2 } from '$lib/components/Report/getData';
 	import { collection, doc, onSnapshot, orderBy, query } from 'firebase/firestore';
 	import { db } from '$lib/firebase/firebase';
 	import { format } from 'date-fns';
@@ -44,7 +44,7 @@
 			// resolve(aveTempHumd);
 		});
 
-		tempHumidAve = await getTempHumidAve();
+		tempHumidAve = await getTempHumidAve2();
 		aveTempAll = allTempHumd.aveTemp.toFixed(2);
 		aveHumdAll = allTempHumd.aveHumidity.toFixed(2);
 		firstDateAve = tempHumidAve[0].date;
@@ -107,10 +107,10 @@
 		<div class="flex-container">
 			<div class="chart-container1">
 				<div class="w-full text-token grid grid-cols-1 md:grid-cols-4 gap-4 pr-4 pl-4 pb-2">
-					<div class={`md:col-span-2 sm:col-span-1`}>
+					<div class={`md:col-span-12 sm:col-span-1`}>
 						<div class="m-2">
 							<div class="mb-2 flex items-center justify-center">
-								<EveryTempHumid />
+								<EveryTempHumid2/>
 							</div>
 						</div>
 					</div>

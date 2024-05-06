@@ -29,6 +29,29 @@ export async function getTempHumidAve() {
         });
     });
 }
+export async function getTempHumidAve2() {
+    return new Promise((resolve, reject) => {
+        const bagsRecordCollectionRef = collection(userDocRef, 'temp and humid');
+        const q = query(bagsRecordCollectionRef, orderBy('date', 'desc'));
+
+        aveTempHumd = [];
+
+        const unsubscribe = onSnapshot(q, (querySnapshot) => {
+
+
+            querySnapshot.forEach((doc) => {
+                const data = doc.data();
+                if (data.date && data.date.toDate) {
+                    data.date = format(data.date.toDate(), 'MMMM dd, yyyy');
+                }
+
+                data.id = doc.id;
+                aveTempHumd.push(data);
+            });
+            resolve(aveTempHumd);
+        });
+    });
+}
 let harvestData: any = [];
 export async function getHarvestData() {
     return new Promise(async (resolve, reject) => {
