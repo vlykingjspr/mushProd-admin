@@ -25,14 +25,14 @@ export async function getTempHumidAve() {
                 data.id = doc.id;
                 aveTempHumd.push(data);
             });
-            resolve(aveTempHumd);
+            resolve(aveTempHumd.reverse());
         });
     });
 }
 export async function getTempHumidAve2() {
     return new Promise((resolve, reject) => {
         const bagsRecordCollectionRef = collection(userDocRef, 'temp and humid');
-        const q = query(bagsRecordCollectionRef, orderBy('date', 'desc'));
+        const q = query(bagsRecordCollectionRef, orderBy('date', 'asc'));
 
         aveTempHumd = [];
 
