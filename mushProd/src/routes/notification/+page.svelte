@@ -15,13 +15,17 @@
 	import { format } from 'date-fns';
 	import { onDestroy, onMount } from 'svelte';
 	import { Timestamp } from 'firebase/firestore';
+	import { notificationVisited } from '$lib/stores/modalNotifStore';
 	//import {createNotification} from '$lib/components/Data/addNotification';
 	let source: any = [];
 	let tableData: any[] = [];
 	let isLoading = true;
 	let unsubscribe: any;
 	let searchQuery = '';
-
+	let notificationsStore: any;
+	onMount(() => {
+		notificationVisited.set(true);
+	});
 	onMount(async () => {
 		const userDocRef = doc(db, 'user', '123456');
 		const bagsRecordCollectionRef = collection(userDocRef, 'notifications');
@@ -29,17 +33,16 @@
 
 		unsubscribe = onSnapshot(q, (querySnapshot) => {
 			source = [];
-			
+
 			querySnapshot.forEach((doc) => {
 				const data = doc.data();
-			// 	if (data.timestamp instanceof Timestamp) {
-            //     data.date = data.timestamp.toDate();
-            // } else {
-            //     console.error('Invalid timestamp format:', data.timestamp);
-            // }
+				// 	if (data.timestamp instanceof Timestamp) {
+				//     data.date = data.timestamp.toDate();
+				// } else {
+				//     console.error('Invalid timestamp format:', data.timestamp);
+				// }
 				if (data.date && typeof data.date.toDate === 'function') {
 					// data.date = format(data.date.toDate(), 'MMMM dd, yyyy');
-				
 				}
 				// Add the ID to the data object
 				data.id = doc.id;
@@ -88,7 +91,7 @@
 				paginationSettings.page * paginationSettings.limit + paginationSettings.limit
 			);
 	}
-	
+
 	const modalStore = getModalStore();
 	//Modals for clicking data
 	function modalData(row: any): void {
@@ -138,14 +141,13 @@
 	}
 	function convertTo12HourFormat(time: String) {
 		if (!time) {
-			return "No time"
+			return 'No time';
 		}
-        return format(new Date(`2000-01-01T${time}`), 'h:mm:ss aa');
-    }
-	function formatTimestamp(timestamp:any) {
-    return new Date(timestamp).toLocaleString(); // You can adjust the format as per your requirement
-  }
-	
+		return format(new Date(`2000-01-01T${time}`), 'h:mm:ss aa');
+	}
+	function formatTimestamp(timestamp: any) {
+		return new Date(timestamp).toLocaleString(); // You can adjust the format as per your requirement
+	}
 </script>
 
 <Modal transitionIn={fade} transitionInParams={{ duration: 200 }} />
@@ -175,7 +177,6 @@
 				<span class="material-symbols-outlined"> search </span>
 				<span>Search</span>
 			</button>
-		
 		</div>
 
 		<table class="table table-hover">
@@ -217,8 +218,11 @@
 			<tbody>
 				{#each paginatedSource as row (row.id)}
 					<tr class="" on:click={() => modalData(row)}>
-						
-						<td>{row.date ? format(new Date(row.date.seconds * 1000), 'MMMM dd, yyyy hh:mm:ss a') : 'N/A'}</td>
+						<td
+							>{row.date
+								? format(new Date(row.date.seconds * 1000), 'MMMM dd, yyyy hh:mm:ss a')
+								: 'N/A'}</td
+						>
 						<!-- <td>{row.date}</td> -->
 						<!-- <td>{formatTimestamp(row.date)}</td> -->
 						<!-- <td>{convertTo12HourFormat(row.time)}</td> -->

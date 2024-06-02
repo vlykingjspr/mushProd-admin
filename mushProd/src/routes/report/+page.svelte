@@ -36,7 +36,6 @@
 	} from '$lib/components/Report/getData';
 	import ModalReport from '$lib/components/Report/ModalReport.svelte';
 	import { fade } from 'svelte/transition';
-
 	// export let parent: any;
 	let isLoading = false;
 	let farmData: any[] = [];
@@ -111,8 +110,6 @@
 	});
 	element = document.getElementById('element');
 	// Local
-	const modalStore = getModalStore();
-
 	// Base Classes
 	const cBase = 'card p-4 w-modal shadow-xl space-y-4';
 	const cHeader = 'text-2xl font-bold';
@@ -138,7 +135,6 @@
 
 			response: (r) => console.log('response:', r)
 		};
-		modalStore.trigger(modal);
 	}
 </script>
 

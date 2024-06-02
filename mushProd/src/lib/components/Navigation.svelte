@@ -8,6 +8,7 @@
 	import { loading, setLoading } from '$lib/stores/stores';
 	import { fetchFarmData } from '$lib/firebase/staticData';
 	import { updateTab } from '../../routes/records/pageTab';
+	import { notificationVisited } from '$lib/stores/modalNotifStore';
 
 	let farmData: any[] = [];
 	onMount(async () => {
@@ -95,16 +96,23 @@
 				<span><h1 class="text-sm">RECORDS</h1></span></a
 			>
 		</li>
-		<li class="mt-8 pl-2">
+
+		<li class="mt-8 pl-2 relative inline-block">
+			<span
+				style={!$notificationVisited ? 'display:flex ;' : 'display: none;'}
+				class="badge-icon variant-filled-error absolute -top-0 -right-0 z-10"
+			/>
+
 			<a
 				class=" mt-4 mb-4 font-bold text-lg"
 				href="/notification"
 				on:click={() => updateTitle('Notification')}
 			>
 				<span class="material-symbols-outlined"> notifications_active </span>
-				<span><h1 class="text-sm">NOTIFICATIONS</h1></span></a
-			>
+				<span> <h1 class="text-sm">NOTIFICATIONS</h1></span>
+			</a>
 		</li>
+
 		<li class="mt-8 pl-2">
 			<a
 				class=" mt-4 mb-4 font-bold text-lg"

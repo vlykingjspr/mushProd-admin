@@ -8,69 +8,8 @@
 	import { dateFormat, updateTime } from '../../lib/components/Data/DateAndTime';
 	import { updateTab } from '../records/pageTab';
 
-	import { getToken, onMessage } from 'firebase/messaging';
-	import { getMessaging } from 'firebase/messaging';
-	import { sendNotification } from '$lib/components/Data/addNotification';
-	import { getApp, getApps, initializeApp } from 'firebase/app';
+	import { getModalStore } from '@skeletonlabs/skeleton';
 
-	// const getMessage = async () => {
-	// 	const firebaseConfig = {
-	// 		apiKey: import.meta.env.VITE_APIKEY,
-	// 		authDomain: import.meta.env.VITE_AUTH_DOMAIN,
-	// 		databaseURL: import.meta.env.VITE_DB_URL,
-	// 		projectId: import.meta.env.VITE_PROJECT_ID,
-	// 		storageBucket: import.meta.env.VITE_STORAGE_BUCKET,
-	// 		messagingSenderId: import.meta.env.VITE_MESSAGING_SENDER_ID,
-	// 		appId: import.meta.env.VITE_APP_ID,
-	// 		measurementId: import.meta.env.VITE_MEASUREMENT_ID
-	// 	};
-
-	// 	// Initialize Firebase
-	// 	let firebaseApp;
-
-	// 	if (!getApps().length) {
-	// 		firebaseApp = initializeApp(firebaseConfig);
-	// 	} else {
-	// 		firebaseApp = getApp();
-	// 	}
-
-	// 	const messaging = getMessaging(firebaseApp);
-
-	// 	Notification.requestPermission().then((permission) => {
-	// 		if (permission === 'granted') {
-	// 			// console.log('Notification permission granted.');
-	// 		} else {
-	// 			console.log('Unable to get permission to notify.');
-	// 		}
-	// 	});
-	// 	// Get the FCM token for the current user
-	// 	onMessage(messaging, (payload) => {
-	// 		console.log('Message received. ', payload);
-	// 	});
-	// 	getToken(messaging, {
-	// 		vapidKey:
-	// 			'BKCGjREYWFg3CLjeSHSwOSR2cy8JsGvtwmsmq3EPAsJU32IKumg1uLilX_01WtKKGEJhq3L-tHoMeCoItVJgHWs'
-	// 	})
-	// 		.then((currentToken) => {
-	// 			if (currentToken) {
-	// 				// console.log(currentToken);
-	// 			} else {
-	// 				// Show permission request UI
-	// 				console.log('No registration token available. Request permission to generate one.');
-	// 				// ...
-	// 			}
-	// 		})
-	// 		.catch((err) => {
-	// 			console.log('An error occurred while retrieving token. ', err);
-	// 			// ...
-	// 		});
-	// };
-
-	// let notification = { title: '', body: '' };
-
-
-
-	function updatePage(tabNumber: number) {}
 	let farmData: any[] = [];
 	onMount(async () => {
 		farmData = await fetchFarmData();
@@ -103,14 +42,13 @@
 	}
 </script>
 
-<Modal transitionIn={fade} transitionInParams={{ duration: 200 }} />
-
 {#if $loading}
 	<!-- Display the ProgressRadial when isLoading is true -->
 	<div class="flex justify-center items-center h-screen">
 		<ProgressRadial value={undefined} />
 	</div>
 {:else}
+	<Modal transitionIn={fade} transitionInParams={{ duration: 200 }} />
 
 	<div class=" ml-4">
 		<h1 class="h1 mb-10">Welcome to MushProd</h1>
@@ -128,7 +66,6 @@
 								<div class="flex flex-col mt-2">
 									<div class="">
 										<div class="flex items-center justify-center">
-											
 											<span class="material-symbols-outlined mr-2"> calendar_month </span>
 											{dateFormat()}
 										</div>

@@ -195,7 +195,6 @@
 						<h2 class={h2Style}>Daily Average Temperature & Humidity</h2>
 					</div>
 				</div>
-				
 
 				<hr class="opacity-50 mb-4 mt-4" />
 				<div class={`p-4 bg-surface-100  `}>

@@ -7,7 +7,7 @@
 	import { loading, setLoading } from '$lib/stores/stores';
 	import '../app.postcss';
 	import { ProgressRadial, setInitialClassState } from '@skeletonlabs/skeleton';
-	import { initializeStores } from '@skeletonlabs/skeleton';
+
 	import {
 		AppShell,
 		AppBar,
@@ -20,19 +20,27 @@
 	} from '@skeletonlabs/skeleton';
 	import { computePosition, autoUpdate, flip, shift, offset, arrow } from '@floating-ui/dom';
 	//page title and nav bar
-	import { getDailyAverage } from '$lib/components/Data/calculateAverage';
 	import Navigation from '$lib/components/Navigation.svelte';
 	import PageTitle from '$lib/components/PageTitle.svelte';
 	import Footer from '$lib/components/Footer.svelte';
-	// import { createNotification, sendNotification,fetchDataFromFirebase, notifsend1 } from '$lib/components/Data/addNotification';
-	import {createNotification} from '$lib/components/Data/addNotification';
+
 	import Authenticate from '$lib/components/Authenticate.svelte';
 	import { format } from 'date-fns';
 	import { dateFormat, updateTime } from '$lib/components/Data/DateAndTime';
 	import { saveMessagingDeviceToken } from '$lib/firebase/messaging';
 	storePopup.set({ computePosition, autoUpdate, flip, shift, offset, arrow });
 
+	// // modals
+	import { fade } from 'svelte/transition';
+	import { Modal } from '@skeletonlabs/skeleton';
+	import { getModalStore } from '@skeletonlabs/skeleton';
+
+	import { initializeStores } from '@skeletonlabs/skeleton';
+	import { initializeNotificationsStore } from '$lib/stores/modalNotifStore';
+
+	// const modalStore = getModalStore();
 	initializeStores();
+
 	const drawerStore = getDrawerStore();
 	function drawerOpen(): void {
 		drawerStore.open();
@@ -89,8 +97,12 @@
 	}
 
 	// Schedule the function to execute at 3:30 PM (15:30) each day
-	
+	const modalStore = getModalStore();
+	let notificationsStore: any;
+
 	onMount(() => {
+		initializeNotificationsStore(modalStore);
+
 		timeoutId = executeAtSpecificTime(23, 59, 1);
 		setLoading(false);
 		const unsubscribe = auth.onAuthStateChanged(async (user) => {
@@ -116,67 +128,23 @@
 				users = true;
 				let dataToSetToStore: DocumentData;
 				const docRef = doc(db, 'users', user.uid);
-				saveMessagingDeviceToken(user.uid)
+				saveMessagingDeviceToken(user.uid);
 				const docSnap = await getDoc(docRef);
 			}
 		});
 
 		const queryRef = query(dateRef, limitToLast(1));
-		// const unsubscribe1 = onValue(queryRef, (snapshot) => {
-		// 	try {
-		// 		if (snapshot.exists()) {
-		// 			const data = snapshot.val();
-		// 			const lastEntryKey = Object.keys(data)[0];
-		// 			const lastEntry = data[lastEntryKey];
-		// 			humd = lastEntry.Humd;
-		// 			temp = lastEntry.Temp;
-		// 			time = lastEntry.Time;
-
-		// 			if (24 >= temp || 85 >= humd || 29 <= temp || 95 <= humd) {	
-		// 				// sendNotification1(temp, humd,time);
-		// 	// console.log('notif sent')
-		// 				// if (true) {
-		// 				// uncomment to send notif
-		// 				// Check if it's been at least 30 minutes since the last notification
-		// 				const currentTime = new Date().getTime();
-		// 				const thirtyMinutesInMillis = 30 * 60 * 1000; // 30 minutes in milliseconds
-
-		// 				if (
-		// 					!lastNotificationTime ||
-		// 					currentTime - lastNotificationTime >= thirtyMinutesInMillis
-		// 				) {
-		// 					// Send the notification
-						
-		// 					//notifsend1()
-							
-		// 					// Update the last notification time
-		// 					lastNotificationTime = currentTime;
-		// 				}
-		// 			}createNotification()
-		// 			setLoading(false);
-		// 		} else {
-		// 			console.log('it does not exist');
-		// 		}
-		// 	} catch (error) {
-		// 		console.log('Error fetching data: ', error);
-		// 	}
-		// });
 
 		return unsubscribe;
 	});
-	
-	
-	
-	
-	
 </script>
 
 {#if users}
 	<Drawer>
 		<Navigation />
 	</Drawer>
-
-	<AppShell slotSidebarLeft="w-0 md:w-52 bg-secondary-500  "  slotLead="bg-tertiary-500">
+	<Modal transitionIn={fade} transitionInParams={{ duration: 200 }} />
+	<AppShell slotSidebarLeft="w-0 md:w-52 bg-secondary-500  " slotLead="bg-tertiary-500">
 		<svelte:fragment slot="sidebarLeft">
 			<Navigation />
 		</svelte:fragment>
@@ -206,13 +174,13 @@
 						</span>
 					</button>
 				</svelte:fragment>
-				<div class=" flex justify-between items-center ">
+				<div class=" flex justify-between items-center">
 					<span class="material-symbols-outlined"> psychiatry </span>
 					<h1>MushProd</h1>
 				</div>
 
 				<svelte:fragment slot="trail">
-					<LightSwitch /> 
+					<LightSwitch />
 				</svelte:fragment>
 			</AppBar>
 			<PageTitle /></svelte:fragment
@@ -228,5 +196,3 @@
 
 <style>
 </style>
-
-
