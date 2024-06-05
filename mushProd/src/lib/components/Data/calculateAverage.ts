@@ -21,8 +21,8 @@ const calculateAverage = (arr: number[]): number => {
 export function getHourlyAverages(): Promise<{ Hour: string, AverageHumidity: number, AverageTemperature: number }[]> {
     return new Promise((resolve, reject) => {
         const rdb = getDatabase();
-         const dateRef = ref(rdb, `/BETAPEAK/${formattedDate}`);
-        // const dateRef = ref(rdb, `/BETAPEAK/2024-04-25`);
+        // const dateRef = ref(rdb, `/BETAPEAK/${formattedDate}`);
+        const dateRef = ref(rdb, `/BETAPEAK/2024-04-20`);
         const queryRef = query(dateRef);
 
         const hourlyAverages: Record<string, { Humd: number; Temp: number }[]> = {};
@@ -113,7 +113,7 @@ export async function getDailyAverage(): Promise<{ AverageHumidity: number; Aver
         const formattedDailyAverageHumidity = parseFloat(dailyAverageHumidity.toFixed(2));
         const formattedDailyAverageTemperature = parseFloat(dailyAverageTemperature.toFixed(2));
 
-        const specificDate = new Date(`2024-04-25T23:59:59`); 
+        const specificDate = new Date(`2024-04-25T23:59:59`);
 
         const timestamp = new Timestamp(specificDate.getTime() / 1000, 0);
 
