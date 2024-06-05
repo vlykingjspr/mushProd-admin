@@ -33,15 +33,15 @@
 			return hourA - hourB;
 		});
 
-		// tempData = averagesArray.map((entry) => Math.floor(entry.AverageTemperature));
-		// humdData = averagesArray.map((entry) => Math.floor(entry.AverageHumidity));
-		// hrData = averagesArray.map((entry) => entry.Hour);
+		tempData = averagesArray.map((entry) => Math.floor(entry.AverageTemperature));
+		humdData = averagesArray.map((entry) => Math.floor(entry.AverageHumidity));
+		hrData = averagesArray.map((entry) => entry.Hour);
 		// console.log(tempData);
 		// console.log(humdData);
 		// console.log(hrData);
-		tempData = [27, 28, 28, 25, 24, 28, 27, 28, 30];
-		humdData = [98, 95, 95, 95, 97, 98, 95, 96, 92];
-		hrData = ['5 AM', '6 AM', '7 AM', '8 AM', '9 AM', '10 AM', '11 AM', '12 PM', '1 PM'];
+		// tempData = [27, 28, 28, 25, 24, 28, 27, 28, 30];
+		// humdData = [98, 95, 95, , 97, 98, 95, 96, 92];
+		// hrData = ['5 AM', '6 AM', '7 AM', '8 AM', '9 AM', '10 AM', '11 AM', '12 PM', '1 PM'];
 		dailyTempHumd = {
 			labels: hrData,
 			datasets: [

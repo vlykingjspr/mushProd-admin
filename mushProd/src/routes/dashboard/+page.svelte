@@ -139,10 +139,10 @@
 				</div>
 				<hr class="opacity-50" />
 				<div class={valueStyle}>
-					<!-- {#if temp} -->
-					{#if true}
-						<!-- <h1>{temp}°C</h1> -->
-						<h1>31°C</h1>
+					{#if temp}
+						<!-- {#if true} -->
+						<h1>{temp}°C</h1>
+						<!-- <h1>31°C</h1> -->
 					{:else}
 						<div class="flex justify-center items-center">
 							<ProgressRadial width="w-20" value={undefined} />
@@ -163,9 +163,9 @@
 				<hr class="opacity-50" />
 
 				<div class={valueStyle}>
-					<!-- {#if humd} -->
-					{#if true}
-						<h1>81%</h1>
+					{#if humd}
+						<!-- {#if true} -->
+						<h1>{humd}%</h1>
 					{:else}
 						<div class="flex justify-center items-center">
 							<ProgressRadial width="w-20" value={undefined} />
