@@ -3,7 +3,7 @@
 	import { onMount } from 'svelte';
 	import { Line } from 'svelte-chartjs';
 	import { getTempHumidAveAsc } from '../Report/getData';
-	// import { selectedMonth } from '$lib/stores/stores';
+
 	// import { everyTempHumid } from './data.js';
 
 	import {
@@ -17,33 +17,46 @@
 		CategoryScale
 	} from 'chart.js';
 
-	export let selectedMonth;
-
 	ChartJS.register(Title, Tooltip, Legend, LineElement, LinearScale, PointElement, CategoryScale);
 
-	let noData = false;
 	let everyTempHumid: any;
-	$: selectedMonth, getData(selectedMonth);
-	$: everyTempHumid, (data = everyTempHumid);
-	const currentYear = new Date().getFullYear();
-	async function getData(month: string) {
+	async function getData() {
 		let dayTempHumd: any = await getTempHumidAveAsc();
-		// console.log(dayTempHumd);
-		dayTempHumd = dayTempHumd.filter((entry) => {
-			const entryDateParts = entry.date.split(', ');
-			const entryMonth = entryDateParts[0].split(' ')[0];
-			const entryYear = Number(entryDateParts[1]);
+		console.log(dayTempHumd);
 
-			// Check if the entry is from the selected month and the current year
-			return entryMonth === month && entryYear === currentYear;
+		// Group data by year
+		const groupedByYear = {};
+		dayTempHumd.forEach((entry) => {
+			const entryDate = new Date(entry.date);
+			const yearKey = entryDate.getFullYear();
+
+			if (!groupedByYear[yearKey]) {
+				groupedByYear[yearKey] = {
+					'ave temp': 0,
+					'ave humidity': 0,
+					count: 0
+				};
+			}
+
+			groupedByYear[yearKey]['ave temp'] += entry['ave temp'];
+			groupedByYear[yearKey]['ave humidity'] += entry['ave humidity'];
+			groupedByYear[yearKey].count += 1;
 		});
 
-		const dayDateData = dayTempHumd.map((entry: any) => entry.date);
-		const dayTempData = dayTempHumd.map((entry: any) => entry['ave temp']);
-		const dayHumdData = dayTempHumd.map((entry: any) => entry['ave humidity']);
+		// Calculate average temperature and humidity for each year
+		for (const yearKey in groupedByYear) {
+			if (groupedByYear[yearKey].count > 0) {
+				groupedByYear[yearKey]['ave temp'] /= groupedByYear[yearKey].count;
+				groupedByYear[yearKey]['ave humidity'] /= groupedByYear[yearKey].count;
+			}
+		}
+
+		const yearKeys = Object.keys(groupedByYear);
+		const yearTempData = yearKeys.map((key) => groupedByYear[key]['ave temp']);
+		const yearHumdData = yearKeys.map((key) => groupedByYear[key]['ave humidity']);
 
 		everyTempHumid = {
-			labels: dayDateData,
+			labels: yearKeys,
 			datasets: [
 				{
 					label: 'Temperature',
@@ -64,7 +77,7 @@
 					pointHoverBorderWidth: 2,
 					pointRadius: 1,
 					pointHitRadius: 10,
-					data: dayTempData
+					data: yearTempData
 				},
 				{
 					label: 'Humidity',
@@ -85,14 +98,14 @@
 					pointHoverBorderWidth: 2,
 					pointRadius: 1,
 					pointHitRadius: 10,
-					data: dayHumdData
+					data: yearHumdData
 				}
 			]
 		};
 	}
 
 	onMount(async () => {
-		await getData(selectedMonth);
+		await getData();
 		data = everyTempHumid; // Assign data after fetching is complete
 	});
 	let data = everyTempHumid;
@@ -102,6 +115,13 @@
 	{data}
 	options={{
 		responsive: true,
+		// plugins: {
+		// 	title: {
+		// 		display: true,
+		// 		text: 'Daily Average',
+		// 		position: 'top'
+		// 	}
+		// },
 		scales: {
 			y: {
 				beginAtZero: true

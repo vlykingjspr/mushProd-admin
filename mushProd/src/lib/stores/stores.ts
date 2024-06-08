@@ -13,7 +13,7 @@ export const notifications = writable({
     temperature: 0,
     humidity: 0,
     alertMessage: '',
-    time:''
+    time: ''
 });
 export const harvested = writable({
     batch_id: '',
@@ -60,3 +60,7 @@ export const growing = writable({
     analysishumdSugg: '',
 
 })
+
+export const selectedMonth = writable("");
+export const selectedYear = writable(0);
+export const yearsStore = writable([]);
