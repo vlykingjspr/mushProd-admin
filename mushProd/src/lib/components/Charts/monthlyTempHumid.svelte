@@ -17,27 +17,25 @@
 		CategoryScale
 	} from 'chart.js';
 
+	export let selectedYear;
+
 	ChartJS.register(Title, Tooltip, Legend, LineElement, LinearScale, PointElement, CategoryScale);
 
 	let everyTempHumid: any;
-
+	$: {
+		getData();
+	}
+	$: selectedYear, getData(selectedYear);
+	$: everyTempHumid, (data = everyTempHumid);
 	async function getData() {
 		let dayTempHumd: any = await getTempHumidAveAsc();
-		console.log(dayTempHumd);
 
-		// Get the range of years in the data
-		const yearsCount = dayTempHumd.map((entry) => new Date(entry.date).getFullYear());
-		const uniqueYears = [...new Set(yearsCount)]; // Remove duplicates
+		// Filter data for the selected year
+		dayTempHumd = dayTempHumd.filter(
+			(entry) => new Date(entry.date).getFullYear() === selectedYear
+		);
 
-		// Update the yearsStore with the unique years
-		yearsStore.set(uniqueYears);
-
-		// Get the range of years in the data
-		const years = dayTempHumd.map((entry) => new Date(entry.date).getFullYear());
-		const minYear = Math.min(...years);
-		const maxYear = Math.max(...years);
-
-		// Initialize groupedByMonth with all months for the range of years
+		// Initialize groupedByMonth with all months for the selected year
 		const groupedByMonth = {};
 		const monthNames = [
 			'January',
@@ -53,21 +51,19 @@
 			'November',
 			'December'
 		];
-		for (let year = minYear; year <= maxYear; year++) {
-			for (let month = 0; month < 12; month++) {
-				const monthYearKey = `${monthNames[month]}-${year}`;
-				groupedByMonth[monthYearKey] = {
-					'ave temp': 0,
-					'ave humidity': 0,
-					count: 0
-				};
-			}
+		for (let month = 0; month < 12; month++) {
+			const monthYearKey = `${monthNames[month]}-${selectedYear}`;
+			groupedByMonth[monthYearKey] = {
+				'ave temp': 0,
+				'ave humidity': 0,
+				count: 0
+			};
 		}
 
 		// Group data by month
 		dayTempHumd.forEach((entry) => {
 			const entryDate = new Date(entry.date);
-			const monthYearKey = `${monthNames[entryDate.getMonth()]}-${entryDate.getFullYear()}`;
+			const monthYearKey = `${monthNames[entryDate.getMonth()]}-${selectedYear}`;
 
 			groupedByMonth[monthYearKey]['ave temp'] += entry['ave temp'];
 			groupedByMonth[monthYearKey]['ave humidity'] += entry['ave humidity'];
@@ -136,7 +132,7 @@
 	}
 
 	onMount(async () => {
-		await getData();
+		await getData(selectedYear);
 		data = everyTempHumid; // Assign data after fetching is complete
 	});
 	let data = everyTempHumid;

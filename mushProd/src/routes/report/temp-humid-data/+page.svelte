@@ -3,6 +3,7 @@
 
 	import { onMount } from 'svelte';
 	import EveryTempHumid2 from '$lib/components/Charts/everyTempHumid2.svelte';
+	import EveryTempHumid from '$lib/components/Charts/everyTempHumid.svelte';
 	import MonthlyTempHumid from '$lib/components/Charts/monthlyTempHumid.svelte';
 	import { getAllAveTempHumd } from '$lib/firebase/allRecord';
 	import { getTempHumidAveAsc, getTempHumidAveDesc } from '$lib/components/Report/getData';
@@ -89,7 +90,7 @@
 				paginationSettings.page * paginationSettings.limit + paginationSettings.limit
 			);
 	}
-	let selectedPeriod = 'daily';
+	let selectedPeriod = 'lastTenDays';
 	let month = new Date().getMonth();
 	let year = new Date().getFullYear();
 	const monthNames = [
@@ -110,6 +111,7 @@
 	selectedMonth.set(monthString);
 	selectedYear.set(year);
 	console.log(year);
+	$: selectedYear.set(year);
 </script>
 
 {#if isLoading}
@@ -138,6 +140,7 @@
 					Filter
 				</button>-->
 				<select class="form-select bg-inherit mt-2" bind:value={selectedPeriod}>
+					<option value="lastTenDays">Last 10 Days</option>
 					<option value="daily">Daily</option>
 					<option value="monthly">Monthly</option>
 					<option value="yearly">Yearly</option>
@@ -175,10 +178,12 @@
 					<div class={`md:col-span-12 sm:col-span-1`}>
 						<div class="m-2">
 							<div class="mb-2 flex items-center justify-center">
-								{#if selectedPeriod === 'daily'}
+								{#if selectedPeriod === 'lastTenDays'}
+									<EveryTempHumid />
+								{:else if selectedPeriod === 'daily'}
 									<EveryTempHumid2 selectedMonth={$selectedMonth} />
 								{:else if selectedPeriod === 'monthly'}
-									<MonthlyTempHumid />
+									<MonthlyTempHumid selectedYear={$selectedYear} />
 								{:else if selectedPeriod === 'yearly'}
 									<YearlyTempHumid />
 								{/if}
