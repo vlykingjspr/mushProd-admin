@@ -1,6 +1,23 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import { Tab, TabAnchor, TabGroup } from '@skeletonlabs/skeleton';
+	import { yearsStore } from '$lib/stores/stores';
+	import { getAllAveTempHumd } from '$lib/firebase/allRecord';
+	import { getTempHumidAveAsc } from '$lib/components/Report/getData';
+
+	async function getYear() {
+		let dayTempHumd: any = await getTempHumidAveAsc();
+
+		// Get the range of years in the data
+		const years = dayTempHumd.map((entry: { date: string | number | Date }) =>
+			new Date(entry.date).getFullYear()
+		);
+		const uniqueYears: unknown[] = [...new Set(years)]; // Remove duplicates
+
+		// Update the yearsStore with the unique years
+		yearsStore.set(uniqueYears);
+	}
+	getYear();
 </script>
 
 <TabGroup active="variant-filled-primary">

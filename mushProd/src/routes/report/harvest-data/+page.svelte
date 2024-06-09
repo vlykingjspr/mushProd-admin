@@ -4,8 +4,11 @@
 	import { onMount } from 'svelte';
 	import { getHarvestData } from '$lib/components/Report/getData';
 	import HarvestedData from '$lib/components/Charts/harvestData.svelte';
+	import MonthlyHarvestedData from '$lib/components/Charts/monthlyharvestData.svelte';
 	import { collection, doc, getDocs, orderBy, query } from 'firebase/firestore';
 	import { db } from '$lib/firebase/firebase';
+	import { selectedMonth } from '$lib/stores/stores';
+
 	let source: any = [];
 
 	let harvestData: any = [];
@@ -52,6 +55,25 @@
 				paginationSettings.page * paginationSettings.limit + paginationSettings.limit
 			);
 	}
+	let selectedPeriod = 'batch';
+	let month = new Date().getMonth();
+	let year = new Date().getFullYear();
+	const monthNames = [
+		'January',
+		'February',
+		'March',
+		'April',
+		'May',
+		'June',
+		'July',
+		'August',
+		'September',
+		'October',
+		'November',
+		'December'
+	];
+	let monthString = monthNames[month];
+	selectedMonth.set(monthString);
 </script>
 
 {#if isLoading}
@@ -69,10 +91,43 @@
 		</blockquote>
 		<div class="flex-container">
 			<div class="chart-container1">
+				<select class="form-select bg-inherit mt-2" bind:value={selectedPeriod}>
+					<option value="batch">Last 5 Batch Planted</option>
+					<option value="monthly">Monthly</option>
+					<option value="yearly">Yearly</option>
+				</select>
+				<!-- svelte-ignore empty-block -->
+				{#if selectedPeriod === 'daily'}
+					<select class="form-select bg-inherit mt-2" bind:value={$selectedMonth}>
+						<option value="January">January</option>
+						<option value="February">February</option>
+						<option value="March">March</option>
+						<option value="April">April</option>
+						<option value="May">May</option>
+						<option value="June">June</option>
+						<option value="July">July</option>
+						<option value="August">August</option>
+						<option value="September">September</option>
+						<option value="October">October</option>
+						<option value="November">November</option>
+						<option value="December">December</option>
+					</select>
+					<!-- <button
+						type="button"
+						class="btn btn-sm variant-filled-tertiary h-8 mt-2 ml-2 mb-2"
+						on:click={applyMonthFilter}
+					>
+						Apply
+					</button> -->
+				{:else if selectedPeriod === 'monthly'}{/if}
 				<div class="w-full text-token grid grid-cols-1 md:grid-cols-4 gap-4 pr-4 pl-4 pb-2">
 					<div class={`md:col-span-2 sm:col-span-1`}>
 						<div class="m-2">
-							<HarvestedData />
+							{#if selectedPeriod === 'batch'}
+								<HarvestedData />
+							{:else if selectedPeriod === 'monthly'}
+								<MonthlyHarvestedData />
+							{/if}
 						</div>
 					</div>
 				</div>

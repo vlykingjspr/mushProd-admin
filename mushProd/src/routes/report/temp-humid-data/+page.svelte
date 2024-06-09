@@ -110,8 +110,10 @@
 	let monthString = monthNames[month];
 	selectedMonth.set(monthString);
 	selectedYear.set(year);
-	console.log(year);
 	$: selectedYear.set(year);
+	yearsStore.subscribe((data) => {
+		console.log(data);
+	});
 </script>
 
 {#if isLoading}
@@ -168,11 +170,11 @@
 						Apply
 					</button> -->
 				{:else if selectedPeriod === 'monthly'}
-					<select class="form-select bg-inherit mt-2" bind:value={year}
-						>{#each $yearsStore as year}
+					<select class="form-select bg-inherit mt-2" bind:value={year}>
+						{#each $yearsStore as year}
 							<option value={year}>{year}</option>
-						{/each}</select
-					>
+						{/each}
+					</select>
 				{/if}
 				<div class="w-full text-token grid grid-cols-1 md:grid-cols-4 gap-4 pr-4 pl-4 pb-2">
 					<div class={`md:col-span-12 sm:col-span-1`}>
