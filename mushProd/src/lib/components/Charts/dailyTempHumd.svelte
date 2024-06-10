@@ -35,7 +35,16 @@
 
 		tempData = averagesArray.map((entry) => Math.floor(entry.AverageTemperature));
 		humdData = averagesArray.map((entry) => Math.floor(entry.AverageHumidity));
-		hrData = averagesArray.map((entry) => entry.Hour);
+		hrData = averagesArray.map((entry) => {
+			let hour = parseInt(entry.Hour);
+			let period = hour >= 12 ? 'PM' : 'AM';
+			if (hour == 0) {
+				hour = 12;
+			} else if (hour > 12) {
+				hour -= 12;
+			}
+			return `${hour}:00 ${period}`;
+		});
 		// console.log(tempData);
 		// console.log(humdData);
 		// console.log(hrData);
