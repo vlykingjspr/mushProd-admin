@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import { Tab, TabAnchor, TabGroup } from '@skeletonlabs/skeleton';
-	import { yearsStore } from '$lib/stores/stores';
+	import { yearsStore, yearHarvest } from '$lib/stores/stores';
 	import { getAllAveTempHumd } from '$lib/firebase/allRecord';
-	import { getTempHumidAveAsc } from '$lib/components/Report/getData';
+	import { getHarvestData, getTempHumidAveAsc } from '$lib/components/Report/getData';
 
 	async function getYear() {
 		let dayTempHumd: any = await getTempHumidAveAsc();
@@ -16,6 +16,20 @@
 
 		// Update the yearsStore with the unique years
 		yearsStore.set(uniqueYears);
+
+		const harvData: any = await getHarvestData();
+		const groupedData = harvData.reduce((acc: any, curr: any) => {
+			const year = curr.batchCode.slice(-2);
+			if (!acc[year]) {
+				acc[year] = { totalHarvests: 0, totalGrams: 0 };
+			}
+			acc[year].totalHarvests += curr.totalHarvests;
+			acc[year].totalGrams += curr.totalGrams;
+			return acc;
+		}, {});
+
+		const harvCode = Object.keys(groupedData);
+		yearHarvest.set(harvCode);
 	}
 	getYear();
 </script>

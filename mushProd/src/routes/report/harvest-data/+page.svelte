@@ -5,9 +5,15 @@
 	import { getHarvestData } from '$lib/components/Report/getData';
 	import HarvestedData from '$lib/components/Charts/harvestData.svelte';
 	import MonthlyHarvestedData from '$lib/components/Charts/monthlyharvestData.svelte';
+	import YearlyHarvestedData from '$lib/components/Charts/YearlyDataHarvest.svelte';
 	import { collection, doc, getDocs, orderBy, query } from 'firebase/firestore';
 	import { db } from '$lib/firebase/firebase';
-	import { selectedMonth } from '$lib/stores/stores';
+	import {
+		selectedMonth,
+		yearHarvest,
+		selectedYear,
+		selectedYearHarvest
+	} from '$lib/stores/stores';
 
 	let source: any = [];
 
@@ -57,7 +63,8 @@
 	}
 	let selectedPeriod = 'batch';
 	let month = new Date().getMonth();
-	let year = new Date().getFullYear();
+	let yearCurrHarvest = +new Date().getFullYear().toString().slice(-2);
+	console.log(yearCurrHarvest);
 	const monthNames = [
 		'January',
 		'February',
@@ -74,6 +81,8 @@
 	];
 	let monthString = monthNames[month];
 	selectedMonth.set(monthString);
+	selectedYearHarvest.set(yearCurrHarvest);
+	$: selectedYearHarvest.set(yearCurrHarvest);
 </script>
 
 {#if isLoading}
@@ -96,7 +105,7 @@
 					<option value="monthly">Monthly</option>
 					<option value="yearly">Yearly</option>
 				</select>
-				<!-- svelte-ignore empty-block -->
+
 				{#if selectedPeriod === 'daily'}
 					<select class="form-select bg-inherit mt-2" bind:value={$selectedMonth}>
 						<option value="January">January</option>
@@ -119,14 +128,22 @@
 					>
 						Apply
 					</button> -->
-				{:else if selectedPeriod === 'monthly'}{/if}
+				{:else if selectedPeriod === 'monthly'}
+					<select class="form-select bg-inherit mt-2" bind:value={yearCurrHarvest}>
+						{#each $yearHarvest as yearCurrHarvest}
+							<option value={yearCurrHarvest}>20{yearCurrHarvest}</option>
+						{/each}
+					</select>
+				{/if}
 				<div class="w-full text-token grid grid-cols-1 md:grid-cols-4 gap-4 pr-4 pl-4 pb-2">
 					<div class={`md:col-span-2 sm:col-span-1`}>
 						<div class="m-2">
 							{#if selectedPeriod === 'batch'}
 								<HarvestedData />
 							{:else if selectedPeriod === 'monthly'}
-								<MonthlyHarvestedData />
+								<MonthlyHarvestedData yearCurrHarvest={$selectedYearHarvest} />
+							{:else if selectedPeriod === 'yearly'}
+								<YearlyHarvestedData />
 							{/if}
 						</div>
 					</div>

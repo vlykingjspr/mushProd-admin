@@ -64,3 +64,5 @@ export const growing = writable({
 export const selectedMonth = writable("");
 export const selectedYear = writable(0);
 export const yearsStore = writable<unknown[]>([]);
+export const selectedYearHarvest = writable(0);
+export const yearHarvest = writable<unknown[]>([]);

@@ -111,9 +111,6 @@
 	selectedMonth.set(monthString);
 	selectedYear.set(year);
 	$: selectedYear.set(year);
-	yearsStore.subscribe((data) => {
-		console.log(data);
-	});
 </script>
 
 {#if isLoading}

@@ -10,14 +10,28 @@
 
 	let harvestData: any;
 
+	function getMonthFromBatchCode(batchCode: string) {
+		return batchCode.slice(-2);
+	}
+
 	async function getData() {
 		const harvData: any = await getHarvestData();
 
-		const harvCode = harvData.map((entry: any) => entry.batchCode).slice(-5);
-		const harvGrams = harvData.map((entry: any) => entry.totalGrams).slice(-5);
+		const groupedData = harvData.reduce((acc: any, curr: any) => {
+			const month = getMonthFromBatchCode(curr.batchCode);
+			if (!acc[month]) {
+				acc[month] = { totalHarvests: 0, totalGrams: 0 };
+			}
+			acc[month].totalHarvests += curr.totalHarvests;
+			acc[month].totalGrams += curr.totalGrams;
+			return acc;
+		}, {});
+
+		const harvCode = Object.keys(groupedData);
+		const harvGrams = Object.values(groupedData).map((entry: any) => entry.totalGrams);
 
 		harvestData = {
-			labels: harvCode,
+			labels: harvCode.map((code) => '20' + code),
 			datasets: [
 				{
 					label: 'Grams',

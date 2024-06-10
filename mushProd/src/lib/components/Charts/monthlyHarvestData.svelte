@@ -11,11 +11,19 @@
 	let harvestData: any;
 
 	function getMonthFromBatchCode(batchCode: string) {
-		return batchCode.slice(-3);
+		return batchCode.slice(-5, -2);
 	}
+	export let yearCurrHarvest;
 
+	$: {
+		getData();
+	}
+	$: yearCurrHarvest, getData(yearCurrHarvest);
+	$: harvestData, (data = harvestData);
 	async function getData() {
-		const harvData: any = await getHarvestData();
+		console.log(yearCurrHarvest);
+		let harvData: any = await getHarvestData();
+		harvData = harvData.filter((data: any) => data.batchCode.slice(-2) === yearCurrHarvest);
 		const groupedData = harvData.reduce((acc: any, curr: any) => {
 			const month = getMonthFromBatchCode(curr.batchCode);
 			if (!acc[month]) {
